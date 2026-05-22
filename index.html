@@ -246,25 +246,28 @@
 const PLAN = [
   { key:'pushA', title:'PUSH A', subtitle:'Schwerpunkt: Brust', type:'push', emoji:'🔴',
     exercises:[
+      // ── Freihanteln / Maschinen ──
       {id:'pA1',  name:'Schrägbankdrücken (LH)',      sets:4,reps:'10–12',rest:90, notes:'Kontrolle beim Absenken'},
       {id:'pA2',  name:'Flachbankdrücken (KH)',        sets:3,reps:'12–15',rest:75},
+      {id:'pA4',  name:'Schulterdrücken (KH, sitz.)',  sets:4,reps:'10–12',rest:75},
+      {id:'pA8',  name:'Skull Crushers',                sets:3,reps:'12–15',rest:60, notes:'Ellbogen fixiert'},
+      // ── Kabelzug-Block ──
       {id:'pA3',  name:'Kabelfliegens (oben → Mitte)', sets:3,reps:'15–20',rest:60, superset:true,notes:'Superset mit Push-Ups ↓'},
       {id:'pA3b', name:'Push-Ups (enger Griff)',       sets:3,reps:'15–20',rest:60, superset:true},
-      {id:'pA4',  name:'Schulterdrücken (KH, sitz.)',  sets:4,reps:'10–12',rest:75},
       {id:'pA5',  name:'Seitheben (Kabel)',             sets:3,reps:'15–20',rest:60, notes:'Ellbogen leicht gebeugt'},
       {id:'pA6',  name:'Frontheben abwechselnd (KH)',  sets:3,reps:'12–15',rest:60, superset:true,notes:'Superset mit Face Pulls ↓'},
       {id:'pA6b', name:'Face Pulls (Kabel)',            sets:3,reps:'15–20',rest:60, superset:true},
       {id:'pA7',  name:'Trizeps-Pushdown (Seil)',       sets:3,reps:'12–15',rest:60},
-      {id:'pA8',  name:'Skull Crushers',                sets:3,reps:'12–15',rest:60, notes:'Ellbogen fixiert'},
     ]},
   { key:'pullA', title:'PULL A', subtitle:'Schwerpunkt: Rücken', type:'pull', emoji:'🟢',
     exercises:[
       {id:'plA1',  name:'Klimmzüge / Latziehen weit',   sets:4,reps:'8–12', rest:90, notes:'Volle Streckung unten'},
       {id:'plA2',  name:'Sitzrudern (Kabel, eng)',       sets:4,reps:'10–12',rest:75, notes:'Schulterblätter zusammen'},
       {id:'plA3',  name:'Einarmiges KH-Rudern',           sets:3,reps:'12–15',rest:60},
+      {id:'plA5',  name:'Bizeps-Curls (LH / EZ)',         sets:3,reps:'10–12',rest:60},
+      // ── Kabelzug-Block ──
       {id:'plA4',  name:'Hyperextensions',                sets:3,reps:'15–20',rest:60, superset:true,notes:'Superset mit Reverse Flyes ↓'},
       {id:'plA4b', name:'Reverse Flyes (Kabel)',          sets:3,reps:'15–20',rest:60, superset:true},
-      {id:'plA5',  name:'Bizeps-Curls (LH / EZ)',         sets:3,reps:'10–12',rest:60},
       {id:'plA6',  name:'Hammercurls (KH)',                sets:3,reps:'12–15',rest:60, superset:true,notes:'Superset mit Kabel-Curls ↓'},
       {id:'plA6b', name:'Kabel-Bizeps-Curls (einzeln)',   sets:3,reps:'15',   rest:60, superset:true},
     ]},
@@ -284,20 +287,22 @@ const PLAN = [
       {id:'pB1',  name:'Schulterdrücken (LH, stehend)',  sets:4,reps:'8–10', rest:90},
       {id:'pB2',  name:'Flachbankdrücken (LH)',           sets:4,reps:'10–12',rest:75},
       {id:'pB3',  name:'Dips (gewichtet / BW)',            sets:3,reps:'10–15',rest:75, notes:'Vorwärts neigen = Brust'},
+      {id:'pB7',  name:'Trizeps-Dips (Bank)',              sets:3,reps:'15–20',rest:60},
       {id:'pB4',  name:'Seitheben (KH, sitzend)',          sets:4,reps:'15–20',rest:60, superset:true,notes:'Superset mit Arnold Press ↓'},
       {id:'pB4b', name:'Arnold Press (KH)',                sets:4,reps:'12',   rest:60, superset:true},
+      // ── Kabelzug-Block ──
       {id:'pB5',  name:'Kabel Crossover (tief → oben)',   sets:3,reps:'15',   rest:60},
       {id:'pB6',  name:'Trizeps Overhead (Kabel/KH)',      sets:3,reps:'12–15',rest:60},
-      {id:'pB7',  name:'Trizeps-Dips (Bank)',              sets:3,reps:'15–20',rest:60},
     ]},
   { key:'pullB', title:'PULL B', subtitle:'Schwerpunkt: Kraft & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
       {id:'plB1',  name:'Kreuzheben (konventionell)',            sets:4,reps:'6–8',  rest:120,notes:'Hauptübung – starker Fokus'},
       {id:'plB2',  name:'T-Rudern / LH-Rudern',                 sets:4,reps:'10–12',rest:75},
+      // ── Kabelzug-Block ──
       {id:'plB3',  name:'Latziehen (Untergriff)',                sets:3,reps:'12–15',rest:75},
       {id:'plB3b', name:'Straight-Arm Pulldown (selbes Gerät)', sets:3,reps:'15',   rest:60, notes:'Direkt am Latziehen-Kabel'},
-      {id:'plB5',  name:'Concentration Curls (KH)',              sets:3,reps:'12–15',rest:60},
       {id:'plB6',  name:'Kabel Bizeps 21er',                     sets:3,reps:'21',   rest:75, notes:'7 unten / 7 oben / 7 voll'},
+      {id:'plB5',  name:'Concentration Curls (KH)',              sets:3,reps:'12–15',rest:60},
       {id:'plB7',  name:'Reverse Curls (EZ-Stange)',             sets:3,reps:'12–15',rest:60, notes:'Unterarm-Training'},
       {id:'plB8',  name:'Hanging Knee Raises',                   sets:3,reps:'15–20',rest:45, notes:'Core-Finish'},
     ]},
