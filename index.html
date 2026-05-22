@@ -543,8 +543,11 @@ function updateDayProgress() {
 function skipDay() {
   planOffset++;
   localStorage.setItem('tp_planOffset', planOffset);
-  activeDay = getTodayIndex();
-  showToast('⏭ Tag übersprungen — Plan verschoben');
+  // Nächsten Trainingstag anzeigen (kein Ruhetag)
+  let next = (activeDay + 1) % 7;
+  while (DAYS[next].type === 'rest') next = (next + 1) % 7;
+  activeDay = next;
+  showToast('⏭ Tag übersprungen — nächster Tag: ' + DAYS[activeDay].title);
   render();
 }
 
