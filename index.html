@@ -23,49 +23,29 @@
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
   /* ── TOP BAR ── */
-  .topbar {
-    position: sticky; top: 0; z-index: 100;
-    background: #fff; border-bottom: 1px solid var(--border);
-    padding: 12px 16px 8px;
-    display: flex; align-items: center; justify-content: space-between;
-    box-shadow: var(--shadow);
-  }
+  .topbar { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid var(--border); padding: 12px 16px 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
   .topbar-title { font-size: 18px; font-weight: 700; color: var(--text); }
   .topbar-date  { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .topbar-right { display: flex; gap: 8px; }
   .btn-icon { background: var(--bg); border: none; border-radius: 8px; padding: 6px 10px; font-size: 16px; cursor: pointer; }
 
   /* ── DAY TABS ── */
-  .day-tabs {
-    display: flex; overflow-x: auto; gap: 6px;
-    padding: 10px 12px; background: #fff;
-    border-bottom: 1px solid var(--border);
-    scrollbar-width: none;
-  }
+  .day-tabs { display: flex; overflow-x: auto; gap: 6px; padding: 10px 12px; background: #fff; border-bottom: 1px solid var(--border); scrollbar-width: none; }
   .day-tabs::-webkit-scrollbar { display: none; }
-  .day-tab {
-    flex-shrink: 0; padding: 6px 12px; border-radius: 20px;
-    border: 2px solid transparent; font-size: 12px; font-weight: 600;
-    cursor: pointer; transition: all 0.2s; background: var(--bg); color: var(--muted);
-    white-space: nowrap;
-  }
-  .day-tab.active   { color: #fff; border-color: transparent; }
-  .day-tab.today    { box-shadow: 0 0 0 2px currentColor; }
+  .day-tab { flex-shrink: 0; padding: 6px 12px; border-radius: 20px; border: 2px solid transparent; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
   .day-tab[data-type=push]  { --tc: var(--push); }
   .day-tab[data-type=pull]  { --tc: var(--pull); }
   .day-tab[data-type=legs]  { --tc: var(--legs); }
   .day-tab[data-type=rest]  { --tc: var(--rest); }
-  .day-tab.active  { background: var(--tc); color: #fff; }
+  .day-tab.active  { background: var(--tc); color: #fff; border-color: transparent; }
   .day-tab:not(.active) { color: var(--tc); border-color: var(--tc); background: #fff; }
+  .day-tab.today { box-shadow: 0 0 0 2px var(--tc); }
 
   /* ── CONTENT ── */
   .content { padding: 12px; padding-bottom: 80px; max-width: 520px; margin: 0 auto; }
 
   /* ── DAY HEADER ── */
-  .day-header {
-    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px;
-    color: #fff; display: flex; align-items: center; justify-content: space-between;
-  }
+  .day-header { border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
   .day-header h2  { font-size: 16px; font-weight: 700; }
   .day-header p   { font-size: 12px; opacity: 0.85; margin-top: 2px; }
   .day-header-left { flex: 1; }
@@ -73,12 +53,15 @@
   .progress-ring svg { transform: rotate(-90deg); }
   .progress-ring .pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
 
+  /* ── SKIP DAY BANNER ── */
+  .skip-day-bar { background: #fff3cd; border: 1px solid #ffc107; border-radius: var(--radius); padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .skip-day-bar span { font-size: 12px; color: #856404; font-weight: 600; }
+  .skip-day-btn { background: #856404; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .skip-day-btn.undo { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .offset-badge { background: #e74c3c; color: #fff; border-radius: 10px; padding: 2px 7px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+
   /* ── INFO BOX ── */
   .info-box { background: #fff; border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px; border-left: 4px solid; box-shadow: var(--shadow); }
-  .info-box h3 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-  .info-box ul { list-style: none; }
-  .info-box ul li { font-size: 12px; color: var(--muted); padding: 2px 0; }
-  .info-box ul li::before { content: "▸ "; color: inherit; }
 
   /* ── SUPERSET BADGE ── */
   .superset-divider { display: flex; align-items: center; gap: 8px; margin: -4px 0 -4px; }
@@ -86,75 +69,45 @@
   .superset-divider::before,.superset-divider::after { content: ''; flex: 1; height: 1px; background: #27ae60; opacity: 0.4; }
 
   /* ── EXERCISE CARD ── */
-  .ex-card {
-    background: var(--card); border-radius: var(--radius);
-    margin-bottom: 8px; box-shadow: var(--shadow);
-    border: 1px solid var(--border); overflow: hidden;
-    transition: box-shadow 0.2s;
-  }
+  .ex-card { background: var(--card); border-radius: var(--radius); margin-bottom: 8px; box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; transition: box-shadow 0.2s; }
   .ex-card.superset { border-left: 3px solid #27ae60; }
   .ex-card.done-all { border-color: #27ae60; background: #f0fff4; }
+  .ex-card.skipped  { border-color: #bbb; background: #f8f8f8; opacity: 0.7; }
 
-  .ex-header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 14px; cursor: pointer;
-  }
-  .ex-nr {
-    width: 26px; height: 26px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
-  }
+  .ex-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+  .ex-nr { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .ex-card.skipped .ex-nr { background: #bbb !important; }
   .ex-info { flex: 1; min-width: 0; }
   .ex-name { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .ex-card.skipped .ex-name { text-decoration: line-through; color: var(--muted); }
   .ex-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .ex-status { font-size: 18px; flex-shrink: 0; }
   .ex-chevron { font-size: 12px; color: var(--muted); flex-shrink: 0; transition: transform 0.2s; }
   .ex-card.open .ex-chevron { transform: rotate(180deg); }
 
+  /* ── SKIP EXERCISE BUTTON ── */
+  .skip-ex-btn { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 8px; border: 1px solid; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
+  .skip-ex-btn.active   { background: #f0f0f0; color: #999; border-color: #ccc; }
+  .skip-ex-btn.inactive { background: #fff3f3; color: #c0392b; border-color: #e8b4b4; }
+  .skipped-label { font-size: 11px; color: #999; font-style: italic; padding: 6px 14px 10px; }
+
   /* ── SETS ── */
   .ex-sets { padding: 0 14px 12px; display: none; }
   .ex-card.open .ex-sets { display: block; }
-
-  .sets-header {
-    display: grid; grid-template-columns: 36px 1fr 1fr 36px;
-    gap: 6px; font-size: 10px; font-weight: 700; color: var(--muted);
-    text-align: center; padding-bottom: 4px; text-transform: uppercase;
-    border-bottom: 1px solid var(--border); margin-bottom: 6px;
-  }
-  .set-row {
-    display: grid; grid-template-columns: 36px 1fr 1fr 36px;
-    gap: 6px; align-items: center; margin-bottom: 6px;
-  }
-  .set-nr {
-    width: 28px; height: 28px; border-radius: 50%; background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; color: var(--muted);
-    margin: 0 auto;
-  }
-  .set-input {
-    border: 1.5px solid var(--border); border-radius: 8px;
-    padding: 6px 8px; font-size: 14px; font-weight: 600; text-align: center;
-    width: 100%; color: var(--text); background: #fff;
-    transition: border-color 0.2s; -webkit-appearance: none;
-  }
+  .sets-header { display: grid; grid-template-columns: 36px 1fr 1fr 36px; gap: 6px; font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; padding-bottom: 4px; text-transform: uppercase; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+  .set-row { display: grid; grid-template-columns: 36px 1fr 1fr 36px; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .set-nr { width: 28px; height: 28px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--muted); margin: 0 auto; }
+  .set-input { border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 14px; font-weight: 600; text-align: center; width: 100%; color: var(--text); background: #fff; transition: border-color 0.2s; -webkit-appearance: none; }
   .set-input:focus { outline: none; border-color: #3498db; }
   .set-input::placeholder { color: #ccc; font-weight: 400; }
-  .set-done-btn {
-    width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border);
-    background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 14px; transition: all 0.15s; margin: 0 auto;
-  }
+  .set-done-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; margin: 0 auto; }
   .set-done-btn.done { background: #27ae60; border-color: #27ae60; }
   .set-row.done .set-nr { background: #e8f8f0; color: #27ae60; }
   .set-row.done .set-input { background: #f0fff4; border-color: #a8e6c0; color: #1e8449; }
-
   .notes-text { font-size: 11px; color: #e67e22; background: #fef9f0; border-radius: 6px; padding: 5px 8px; margin-top: 4px; }
 
   /* ── REST TIMER ── */
-  .rest-timer-bar {
-    display: none; background: var(--bg); border-radius: 8px; padding: 8px 12px;
-    margin-top: 8px; align-items: center; gap: 10px;
-  }
+  .rest-timer-bar { display: none; background: var(--bg); border-radius: 8px; padding: 8px 12px; margin-top: 8px; align-items: center; gap: 10px; }
   .rest-timer-bar.active { display: flex; }
   .timer-display { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; min-width: 48px; }
   .timer-label { font-size: 11px; color: var(--muted); flex: 1; }
@@ -169,7 +122,7 @@
   .rest-view p  { color: var(--muted); font-size: 14px; }
 
   /* ── WEEK OVERVIEW ── */
-  .week-overview { display: none; padding: 0; }
+  .week-overview { display: none; }
   .week-overview.active { display: block; }
   .week-card { background: #fff; border-radius: var(--radius); padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 14px; cursor: pointer; border: 1px solid var(--border); transition: transform 0.1s; }
   .week-card:active { transform: scale(0.98); }
@@ -179,14 +132,8 @@
   .week-card-info p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .week-card-badge { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 10px; }
 
-  /* ── FLOATING BUTTON ── */
-  .fab {
-    position: fixed; bottom: 20px; right: 16px; z-index: 200;
-    width: 50px; height: 50px; border-radius: 50%; border: none;
-    font-size: 22px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-    display: flex; align-items: center; justify-content: center;
-    transition: transform 0.15s;
-  }
+  /* ── FAB ── */
+  .fab { position: fixed; bottom: 20px; right: 16px; z-index: 200; width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 22px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; transition: transform 0.15s; }
   .fab:active { transform: scale(0.92); }
 
   /* ── MODAL ── */
@@ -196,6 +143,8 @@
   .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
   .modal-btn { width: 100%; padding: 13px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
   .modal-btn.danger  { background: #fdecea; color: #c0392b; }
+  .modal-btn.warning { background: #fff3cd; color: #856404; }
+  .modal-btn.success { background: #e8f8f0; color: #1e8449; }
   .modal-btn.neutral { background: var(--bg); color: var(--text); }
   .modal-btn.cancel  { background: transparent; color: var(--muted); }
 
@@ -206,7 +155,6 @@
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="topbar">
   <div>
     <div class="topbar-title">💪 Trainingsplan</div>
@@ -218,16 +166,10 @@
   </div>
 </div>
 
-<!-- DAY TABS -->
 <div class="day-tabs" id="dayTabs"></div>
-
-<!-- CONTENT -->
 <div class="content" id="content"></div>
+<button class="fab" id="fab" onclick="fabAction()" style="background:#3498db;color:#fff;">✓</button>
 
-<!-- FAB -->
-<button class="fab" id="fab" onclick="fabAction()" style="background:#3498db;color:#fff;" title="Alle Sätze abgehakt?">✓</button>
-
-<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" id="modal">
     <h3 id="modalTitle">Optionen</h3>
@@ -235,237 +177,220 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ─────────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────────
+// ─── DATA ───────────────────────────────────────────────────
 const DAYS = [
   {
-    key: 'pushA', short: 'Mo', label: 'Montag', type: 'push',
-    title: 'PUSH A', subtitle: 'Schwerpunkt: Brust', emoji: '🔴',
-    exercises: [
-      { id:'pA1',  name:'Schrägbankdrücken (LH)',     sets:4, reps:'10–12', rest:90,  notes:'Kontrolle beim Absenken' },
-      { id:'pA2',  name:'Flachbankdrücken (KH)',       sets:3, reps:'12–15', rest:75 },
-      { id:'pA3',  name:'Kabelfliegens (oben → Mitte)',sets:3, reps:'15–20', rest:60,  superset:true, notes:'Superset mit Push-Ups ↓' },
-      { id:'pA3b', name:'Push-Ups (enger Griff)',      sets:3, reps:'15–20', rest:60,  superset:true },
-      { id:'pA4',  name:'Schulterdrücken (KH, sitz.)', sets:4, reps:'10–12', rest:75 },
-      { id:'pA5',  name:'Seitheben (Kabel)',            sets:3, reps:'15–20', rest:60,  notes:'Ellbogen leicht gebeugt' },
-      { id:'pA6',  name:'Frontheben abwechselnd (KH)', sets:3, reps:'12–15', rest:60,  superset:true, notes:'Superset mit Face Pulls ↓' },
-      { id:'pA6b', name:'Face Pulls (Kabel)',           sets:3, reps:'15–20', rest:60,  superset:true },
-      { id:'pA7',  name:'Trizeps-Pushdown (Seil)',      sets:3, reps:'12–15', rest:60 },
-      { id:'pA8',  name:'Skull Crushers',               sets:3, reps:'12–15', rest:60,  notes:'Ellbogen fixiert' },
+    key:'pushA', short:'Mo', label:'Montag', type:'push',
+    title:'PUSH A', subtitle:'Schwerpunkt: Brust', emoji:'🔴',
+    exercises:[
+      {id:'pA1',  name:'Schrägbankdrücken (LH)',      sets:4, reps:'10–12', rest:90,  notes:'Kontrolle beim Absenken'},
+      {id:'pA2',  name:'Flachbankdrücken (KH)',        sets:3, reps:'12–15', rest:75},
+      {id:'pA3',  name:'Kabelfliegens (oben → Mitte)', sets:3, reps:'15–20', rest:60,  superset:true, notes:'Superset mit Push-Ups ↓'},
+      {id:'pA3b', name:'Push-Ups (enger Griff)',       sets:3, reps:'15–20', rest:60,  superset:true},
+      {id:'pA4',  name:'Schulterdrücken (KH, sitz.)',  sets:4, reps:'10–12', rest:75},
+      {id:'pA5',  name:'Seitheben (Kabel)',             sets:3, reps:'15–20', rest:60,  notes:'Ellbogen leicht gebeugt'},
+      {id:'pA6',  name:'Frontheben abwechselnd (KH)',  sets:3, reps:'12–15', rest:60,  superset:true, notes:'Superset mit Face Pulls ↓'},
+      {id:'pA6b', name:'Face Pulls (Kabel)',            sets:3, reps:'15–20', rest:60,  superset:true},
+      {id:'pA7',  name:'Trizeps-Pushdown (Seil)',       sets:3, reps:'12–15', rest:60},
+      {id:'pA8',  name:'Skull Crushers',                sets:3, reps:'12–15', rest:60,  notes:'Ellbogen fixiert'},
     ]
   },
   {
-    key: 'pullA', short: 'Di', label: 'Dienstag', type: 'pull',
-    title: 'PULL A', subtitle: 'Schwerpunkt: Rücken', emoji: '🟢',
-    exercises: [
-      { id:'plA1',  name:'Klimmzüge / Latziehen weit', sets:4, reps:'8–12',  rest:90,  notes:'Volle Streckung unten' },
-      { id:'plA2',  name:'Sitzrudern (Kabel, eng)',     sets:4, reps:'10–12', rest:75,  notes:'Schulterblätter zusammen' },
-      { id:'plA3',  name:'Einarmiges KH-Rudern',         sets:3, reps:'12–15', rest:60 },
-      { id:'plA4',  name:'Hyperextensions',              sets:3, reps:'15–20', rest:60,  superset:true, notes:'Superset mit Reverse Flyes ↓' },
-      { id:'plA4b', name:'Reverse Flyes (Kabel)',        sets:3, reps:'15–20', rest:60,  superset:true },
-      { id:'plA5',  name:'Bizeps-Curls (LH / EZ)',       sets:3, reps:'10–12', rest:60 },
-      { id:'plA6',  name:'Hammercurls (KH)',              sets:3, reps:'12–15', rest:60,  superset:true, notes:'Superset mit Kabel-Curls ↓' },
-      { id:'plA6b', name:'Kabel-Bizeps-Curls (einzeln)', sets:3, reps:'15',    rest:60,  superset:true },
+    key:'pullA', short:'Di', label:'Dienstag', type:'pull',
+    title:'PULL A', subtitle:'Schwerpunkt: Rücken', emoji:'🟢',
+    exercises:[
+      {id:'plA1',  name:'Klimmzüge / Latziehen weit',   sets:4, reps:'8–12',  rest:90,  notes:'Volle Streckung unten'},
+      {id:'plA2',  name:'Sitzrudern (Kabel, eng)',       sets:4, reps:'10–12', rest:75,  notes:'Schulterblätter zusammen'},
+      {id:'plA3',  name:'Einarmiges KH-Rudern',           sets:3, reps:'12–15', rest:60},
+      {id:'plA4',  name:'Hyperextensions',                sets:3, reps:'15–20', rest:60,  superset:true, notes:'Superset mit Reverse Flyes ↓'},
+      {id:'plA4b', name:'Reverse Flyes (Kabel)',          sets:3, reps:'15–20', rest:60,  superset:true},
+      {id:'plA5',  name:'Bizeps-Curls (LH / EZ)',         sets:3, reps:'10–12', rest:60},
+      {id:'plA6',  name:'Hammercurls (KH)',                sets:3, reps:'12–15', rest:60,  superset:true, notes:'Superset mit Kabel-Curls ↓'},
+      {id:'plA6b', name:'Kabel-Bizeps-Curls (einzeln)',   sets:3, reps:'15',    rest:60,  superset:true},
     ]
   },
   {
-    key: 'legsA', short: 'Mi', label: 'Mittwoch', type: 'legs',
-    title: 'BEINE A', subtitle: 'Schwerpunkt: Quadrizeps', emoji: '🟣',
-    exercises: [
-      { id:'lA1',  name:'Kniebeugen (Langhantel)',        sets:4, reps:'8–10',   rest:120, notes:'Volle Tiefe' },
-      { id:'lA2',  name:'Beinpresse (45°)',                sets:3, reps:'12–15',  rest:90 },
-      { id:'lA3',  name:'Beinstrecker (Maschine)',         sets:3, reps:'15–20',  rest:60,  notes:'Oben kontrahieren' },
-      { id:'lA4',  name:'Walking Lunges (KH)',             sets:3, reps:'12/Bein',rest:75 },
-      { id:'lA5',  name:'Rumänisches Kreuzheben (LH)',     sets:3, reps:'12–15',  rest:75,  superset:true, notes:'Superset mit Beinbeuger ↓' },
-      { id:'lA5b', name:'Beinbeuger liegend (Maschine)',   sets:3, reps:'15',     rest:75,  superset:true },
-      { id:'lA6',  name:'Wadenheben stehend (Maschine)',   sets:4, reps:'15–20',  rest:60 },
-      { id:'lA7',  name:'Plank',                           sets:3, reps:'45–60 s',rest:45 },
+    key:'legsA', short:'Mi', label:'Mittwoch', type:'legs',
+    title:'BEINE A', subtitle:'Schwerpunkt: Quadrizeps', emoji:'🟣',
+    exercises:[
+      {id:'lA1',  name:'Kniebeugen (Langhantel)',       sets:4, reps:'8–10',   rest:120, notes:'Volle Tiefe'},
+      {id:'lA2',  name:'Beinpresse (45°)',               sets:3, reps:'12–15',  rest:90},
+      {id:'lA3',  name:'Beinstrecker (Maschine)',         sets:3, reps:'15–20',  rest:60,  notes:'Oben kontrahieren'},
+      {id:'lA4',  name:'Walking Lunges (KH)',             sets:3, reps:'12/Bein',rest:75},
+      {id:'lA5',  name:'Rumänisches Kreuzheben (LH)',     sets:3, reps:'12–15',  rest:75,  superset:true, notes:'Superset mit Beinbeuger ↓'},
+      {id:'lA5b', name:'Beinbeuger liegend (Maschine)',   sets:3, reps:'15',     rest:75,  superset:true},
+      {id:'lA6',  name:'Wadenheben stehend (Maschine)',   sets:4, reps:'15–20',  rest:60},
+      {id:'lA7',  name:'Plank',                           sets:3, reps:'45–60 s',rest:45},
     ]
   },
   {
-    key: 'pushB', short: 'Do', label: 'Donnerstag', type: 'push',
-    title: 'PUSH B', subtitle: 'Schwerpunkt: Schulter', emoji: '🔴',
-    exercises: [
-      { id:'pB1',  name:'Schulterdrücken (LH, stehend)',  sets:4, reps:'8–10',  rest:90 },
-      { id:'pB2',  name:'Flachbankdrücken (LH)',          sets:4, reps:'10–12', rest:75 },
-      { id:'pB3',  name:'Dips (gewichtet / BW)',          sets:3, reps:'10–15', rest:75,  notes:'Vorwärts neigen = Brust' },
-      { id:'pB4',  name:'Seitheben (KH, sitzend)',        sets:4, reps:'15–20', rest:60,  superset:true, notes:'Superset mit Arnold Press ↓' },
-      { id:'pB4b', name:'Arnold Press (KH)',              sets:4, reps:'12',    rest:60,  superset:true },
-      { id:'pB5',  name:'Kabel Crossover (tief → oben)', sets:3, reps:'15',    rest:60 },
-      { id:'pB6',  name:'Trizeps Overhead (Kabel/KH)',   sets:3, reps:'12–15', rest:60 },
-      { id:'pB7',  name:'Trizeps-Dips (Bank)',            sets:3, reps:'15–20', rest:60 },
+    key:'pushB', short:'Do', label:'Donnerstag', type:'push',
+    title:'PUSH B', subtitle:'Schwerpunkt: Schulter', emoji:'🔴',
+    exercises:[
+      {id:'pB1',  name:'Schulterdrücken (LH, stehend)',  sets:4, reps:'8–10',  rest:90},
+      {id:'pB2',  name:'Flachbankdrücken (LH)',           sets:4, reps:'10–12', rest:75},
+      {id:'pB3',  name:'Dips (gewichtet / BW)',            sets:3, reps:'10–15', rest:75,  notes:'Vorwärts neigen = Brust'},
+      {id:'pB4',  name:'Seitheben (KH, sitzend)',          sets:4, reps:'15–20', rest:60,  superset:true, notes:'Superset mit Arnold Press ↓'},
+      {id:'pB4b', name:'Arnold Press (KH)',                sets:4, reps:'12',    rest:60,  superset:true},
+      {id:'pB5',  name:'Kabel Crossover (tief → oben)',   sets:3, reps:'15',    rest:60},
+      {id:'pB6',  name:'Trizeps Overhead (Kabel/KH)',      sets:3, reps:'12–15', rest:60},
+      {id:'pB7',  name:'Trizeps-Dips (Bank)',              sets:3, reps:'15–20', rest:60},
     ]
   },
   {
-    key: 'pullB', short: 'Fr', label: 'Freitag', type: 'pull',
-    title: 'PULL B', subtitle: 'Schwerpunkt: Kraft & Bizeps', emoji: '🟢',
-    exercises: [
-      { id:'plB1',  name:'Kreuzheben (konventionell)',    sets:4, reps:'6–8',   rest:120, notes:'Hauptübung – starker Fokus' },
-      { id:'plB2',  name:'T-Rudern / LH-Rudern',         sets:4, reps:'10–12', rest:75 },
-      { id:'plB3',  name:'Latziehen (Untergriff)',        sets:3, reps:'12–15', rest:60,  superset:true, notes:'Superset mit Kabel Pullover ↓' },
-      { id:'plB3b', name:'Kabel Pullover',                sets:3, reps:'15',    rest:60,  superset:true },
-      { id:'plB4',  name:'Concentration Curls (KH)',      sets:3, reps:'12–15', rest:60 },
-      { id:'plB5',  name:'Kabel Bizeps 21er',             sets:3, reps:'21',    rest:75,  notes:'7 unten / 7 oben / 7 voll' },
-      { id:'plB6',  name:'Reverse Curls (EZ-Stange)',     sets:3, reps:'12–15', rest:60 },
-      { id:'plB7',  name:'Hanging Knee Raises',           sets:3, reps:'15–20', rest:45 },
+    key:'pullB', short:'Fr', label:'Freitag', type:'pull',
+    title:'PULL B', subtitle:'Schwerpunkt: Kraft & Bizeps', emoji:'🟢',
+    exercises:[
+      {id:'plB1',  name:'Kreuzheben (konventionell)',           sets:4, reps:'6–8',   rest:120, notes:'Hauptübung – starker Fokus'},
+      {id:'plB2',  name:'T-Rudern / LH-Rudern',                sets:4, reps:'10–12', rest:75},
+      {id:'plB3',  name:'Latziehen (Untergriff)',               sets:3, reps:'12–15', rest:75},
+      {id:'plB3b', name:'Straight-Arm Pulldown (selbes Gerät)', sets:3, reps:'15',    rest:60,  notes:'Direkt am Latziehen-Kabel'},
+      {id:'plB5',  name:'Concentration Curls (KH)',             sets:3, reps:'12–15', rest:60},
+      {id:'plB6',  name:'Kabel Bizeps 21er',                    sets:3, reps:'21',    rest:75,  notes:'7 unten / 7 oben / 7 voll'},
+      {id:'plB7',  name:'Reverse Curls (EZ-Stange)',            sets:3, reps:'12–15', rest:60,  notes:'Unterarm-Training'},
+      {id:'plB8',  name:'Hanging Knee Raises',                  sets:3, reps:'15–20', rest:45,  notes:'Core-Finish'},
     ]
   },
   {
-    key: 'legsB', short: 'Sa', label: 'Samstag', type: 'legs',
-    title: 'BEINE B', subtitle: 'Schwerpunkt: Hamstrings & Gesäß', emoji: '🟣',
-    exercises: [
-      { id:'lB1',  name:'Rumänisches Kreuzheben (LH)',    sets:4, reps:'10–12',  rest:90 },
-      { id:'lB2',  name:'Bulgarische Kniebeugen (KH)',    sets:3, reps:'10/Bein',rest:90 },
-      { id:'lB3',  name:'Sumo-Kniebeugen (KH / LH)',     sets:3, reps:'12–15',  rest:75 },
-      { id:'lB4',  name:'Beinbeuger stehend (Maschine)', sets:3, reps:'15',      rest:60,  superset:true, notes:'Superset mit Hip Thrust ↓' },
-      { id:'lB4b', name:'Hip Thrust (LH / Maschine)',    sets:3, reps:'15',      rest:60,  superset:true },
-      { id:'lB5',  name:'Ausfallschritte seitlich (KH)', sets:3, reps:'12/Bein', rest:60 },
-      { id:'lB6',  name:'Wadenheben sitzend (Maschine)', sets:4, reps:'15–20',   rest:60,  notes:'Soleus-Fokus' },
-      { id:'lB7',  name:'Cable Crunch / AB-Wheel',       sets:3, reps:'15–20',   rest:45 },
+    key:'legsB', short:'Sa', label:'Samstag', type:'legs',
+    title:'BEINE B', subtitle:'Schwerpunkt: Hamstrings & Gesäß', emoji:'🟣',
+    exercises:[
+      {id:'lB1',  name:'Rumänisches Kreuzheben (LH)',    sets:4, reps:'10–12',  rest:90},
+      {id:'lB2',  name:'Bulgarische Kniebeugen (KH)',    sets:3, reps:'10/Bein',rest:90},
+      {id:'lB3',  name:'Sumo-Kniebeugen (KH / LH)',     sets:3, reps:'12–15',  rest:75},
+      {id:'lB4',  name:'Beinbeuger stehend (Maschine)', sets:3, reps:'15',      rest:60,  superset:true, notes:'Superset mit Hip Thrust ↓'},
+      {id:'lB4b', name:'Hip Thrust (LH / Maschine)',    sets:3, reps:'15',      rest:60,  superset:true},
+      {id:'lB5',  name:'Ausfallschritte seitlich (KH)', sets:3, reps:'12/Bein', rest:60},
+      {id:'lB6',  name:'Wadenheben sitzend (Maschine)', sets:4, reps:'15–20',   rest:60,  notes:'Soleus-Fokus'},
+      {id:'lB7',  name:'Cable Crunch / AB-Wheel',       sets:3, reps:'15–20',   rest:45},
     ]
   },
   {
-    key: 'rest', short: 'So', label: 'Sonntag', type: 'rest',
-    title: 'PAUSE', subtitle: 'Regeneration', emoji: '💤', exercises: []
+    key:'rest', short:'So', label:'Sonntag', type:'rest',
+    title:'PAUSE', subtitle:'Regeneration', emoji:'💤', exercises:[]
   }
 ];
 
-const TYPE_COLORS = { push:'#c0392b', pull:'#1e8449', legs:'#7d3c98', rest:'#7f8c8d' };
-const STORAGE_KEY = 'tp_v2_';
+const TYPE_COLORS = {push:'#c0392b', pull:'#1e8449', legs:'#7d3c98', rest:'#7f8c8d'};
+const SK = 'tp_v2_';
 
-// ─────────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────────
-let activeDay = getTodayIndex();
+// ─── STATE ──────────────────────────────────────────────────
+let planOffset    = parseInt(localStorage.getItem('tp_planOffset') || '0');
+let activeDay     = getTodayIndex();
 let openExercises = new Set();
 let timerInterval = null;
 let timerRemaining = 0;
-let timerTotal = 0;
-let viewMode = 'day'; // 'day' | 'overview'
+let timerTotal     = 0;
+let viewMode       = 'day';
 
+// ─── HELPERS ────────────────────────────────────────────────
+function getRawTodayIndex() {
+  const map = [6,0,1,2,3,4,5]; // Sun→rest, Mon→pushA…
+  return map[new Date().getDay()];
+}
 function getTodayIndex() {
-  const jsDay = new Date().getDay(); // 0=Sun, 1=Mon ... 6=Sat
-  const map = [6, 0, 1, 2, 3, 4, 5]; // Sun→6(rest), Mon→0(pushA)...
-  return map[jsDay];
+  return (getRawTodayIndex() - planOffset + 70) % 7;
 }
 
-function storageKey(dayKey, exId, setIdx, field) {
-  return STORAGE_KEY + dayKey + '_' + exId + '_s' + setIdx + '_' + field;
-}
-
-function saveSet(dayKey, exId, setIdx, field, value) {
-  localStorage.setItem(storageKey(dayKey, exId, setIdx, field), value);
-}
-
-function loadSet(dayKey, exId, setIdx, field) {
-  return localStorage.getItem(storageKey(dayKey, exId, setIdx, field)) || '';
-}
-
-function isDone(dayKey, exId, setIdx) {
-  return localStorage.getItem(storageKey(dayKey, exId, setIdx, 'done')) === '1';
-}
+function sk(dayKey, exId, setIdx, field) { return SK+dayKey+'_'+exId+'_s'+setIdx+'_'+field; }
+function saveSet(dk,ei,si,f,v)  { localStorage.setItem(sk(dk,ei,si,f), v); }
+function loadSet(dk,ei,si,f)    { return localStorage.getItem(sk(dk,ei,si,f)) || ''; }
+function isDone(dk,ei,si)       { return localStorage.getItem(sk(dk,ei,si,'done')) === '1'; }
+function isSkipped(dk,ei)       { return localStorage.getItem(SK+dk+'_'+ei+'_skipped') === '1'; }
+function setSkipped(dk,ei,v)    { localStorage.setItem(SK+dk+'_'+ei+'_skipped', v?'1':'0'); }
 
 function getDayProgress(day) {
-  if (!day.exercises.length) return { done: 0, total: 0 };
-  let done = 0, total = 0;
+  if (!day.exercises.length) return {done:0, total:0};
+  let done=0, total=0;
   day.exercises.forEach(ex => {
-    for (let s = 0; s < ex.sets; s++) {
-      total++;
-      if (isDone(day.key, ex.id, s)) done++;
-    }
+    if (isSkipped(day.key, ex.id)) { done++; total++; return; } // überspringen = zählt als erledigt
+    for (let s=0; s<ex.sets; s++) { total++; if (isDone(day.key,ex.id,s)) done++; }
   });
-  return { done, total };
+  return {done, total};
 }
 
-// ─────────────────────────────────────────────
-// RENDER
-// ─────────────────────────────────────────────
-function render() {
-  renderTabs();
-  renderContent();
-  updateFab();
-}
+// ─── RENDER ─────────────────────────────────────────────────
+function render() { renderTabs(); renderContent(); updateFab(); }
 
 function renderTabs() {
   const tabs = document.getElementById('dayTabs');
   const todayIdx = getTodayIndex();
   tabs.innerHTML = '';
-  DAYS.forEach((d, i) => {
-    const { done, total } = getDayProgress(d);
-    const pct = total > 0 ? Math.round(done/total*100) : 0;
+  DAYS.forEach((d,i) => {
+    const {done,total} = getDayProgress(d);
+    const pct = total>0 ? Math.round(done/total*100) : 0;
     const tab = document.createElement('button');
-    tab.className = 'day-tab' + (i===activeDay?' active':'') + (i===todayIdx?' today':'');
+    tab.className = 'day-tab'+(i===activeDay?' active':'')+(i===todayIdx?' today':'');
     tab.dataset.type = d.type;
-    tab.innerHTML = `${d.short}${pct>0&&pct<100?' <small>'+pct+'%</small>':pct===100?' ✓':''}`;
-    tab.onclick = () => { activeDay = i; viewMode = 'day'; render(); };
+    tab.innerHTML = d.short+(pct===100?' ✓':pct>0?' <small>'+pct+'%</small>':'');
+    tab.onclick = () => { activeDay=i; viewMode='day'; render(); };
     tabs.appendChild(tab);
   });
-  // Overview tab
+  // Offset-Anzeige
+  if (planOffset !== 0) {
+    const badge = document.createElement('span');
+    badge.className = 'offset-badge';
+    badge.textContent = (planOffset>0?'+':'')+planOffset+'d';
+    tabs.appendChild(badge);
+  }
   const ov = document.createElement('button');
-  ov.className = 'day-tab' + (viewMode==='overview'?' active':'');
-  ov.style.cssText = '--tc:#3498db';
-  ov.dataset.type = 'rest';
-  ov.textContent = '📋';
+  ov.className = 'day-tab'+(viewMode==='overview'?' active':'');
+  ov.style.cssText='--tc:#3498db';
+  ov.dataset.type='rest';
+  ov.textContent='📋';
   ov.onclick = showOverview;
   tabs.appendChild(ov);
 }
 
 function renderContent() {
   const el = document.getElementById('content');
-  if (viewMode === 'overview') { renderOverview(el); return; }
+  if (viewMode==='overview') { renderOverview(el); return; }
   const day = DAYS[activeDay];
-  if (day.type === 'rest') { renderRest(el); return; }
+  if (day.type==='rest') { renderRest(el); return; }
   renderDay(el, day);
 }
 
 function renderRest(el) {
-  el.innerHTML = `
-    <div class="rest-view">
-      <div class="rest-icon">🛌</div>
-      <h2>Ruhetag</h2>
-      <p>Heute ist Pause.<br>Erholung ist Teil des Trainings!</p>
-      <br><p style="color:#888;font-size:12px">Optional: 20–30 min leichtes Cardio oder Stretching</p>
-    </div>`;
+  el.innerHTML=`<div class="rest-view"><div class="rest-icon">🛌</div><h2>Ruhetag</h2><p>Heute ist Pause.<br>Erholung ist Teil des Trainings!</p><br><p style="color:#888;font-size:12px">Optional: 20–30 min leichtes Cardio oder Stretching</p></div>`;
 }
 
 function renderOverview(el) {
   const todayIdx = getTodayIndex();
   el.innerHTML = '<div class="week-overview active" id="weekOverview"></div>';
   const ov = document.getElementById('weekOverview');
-  DAYS.forEach((d, i) => {
-    const { done, total } = getDayProgress(d);
-    const pct = total > 0 ? Math.round(done/total*100) : -1;
+  DAYS.forEach((d,i) => {
+    const {done,total} = getDayProgress(d);
+    const pct = total>0 ? Math.round(done/total*100) : -1;
     const card = document.createElement('div');
-    card.className = 'week-card';
-    card.onclick = () => { activeDay = i; viewMode = 'day'; render(); };
-    const badgeColor = pct === 100 ? '#1e8449' : pct > 0 ? '#e67e22' : '#bbb';
-    const badgeBg    = pct === 100 ? '#e8f8f0' : pct > 0 ? '#fff3e0' : '#f4f5f7';
-    const badgeText  = pct === 100 ? '✓ Fertig' : pct > 0 ? pct+'%' : '–';
-    const isToday = i === todayIdx;
-    card.innerHTML = `
-      <div class="week-card-dot" style="background:${TYPE_COLORS[d.type]}22;font-size:22px">${d.emoji}</div>
+    card.className='week-card';
+    card.onclick=()=>{activeDay=i;viewMode='day';render();};
+    const bc=pct===100?'#1e8449':pct>0?'#e67e22':'#bbb';
+    const bb=pct===100?'#e8f8f0':pct>0?'#fff3e0':'#f4f5f7';
+    const bt=pct===100?'✓ Fertig':pct>0?pct+'%':'–';
+    card.innerHTML=`
+      <div class="week-card-dot" style="background:${TYPE_COLORS[d.type]}22">${d.emoji}</div>
       <div class="week-card-info">
         <h3 style="color:${TYPE_COLORS[d.type]}">${d.short} – ${d.title}</h3>
-        <p>${d.subtitle}${isToday ? ' · <strong>Heute</strong>' : ''}</p>
+        <p>${d.subtitle}${i===todayIdx?' · <strong>Heute</strong>':''}</p>
       </div>
-      <span class="week-card-badge" style="color:${badgeColor};background:${badgeBg}">${badgeText}</span>`;
+      <span class="week-card-badge" style="color:${bc};background:${bb}">${bt}</span>`;
     ov.appendChild(card);
   });
 }
 
 function renderDay(el, day) {
-  const { done, total } = getDayProgress(day);
-  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  const {done,total} = getDayProgress(day);
+  const pct = total>0 ? Math.round(done/total*100) : 0;
   const color = TYPE_COLORS[day.type];
-  const circumference = 2 * Math.PI * 20;
-  const offset = circumference * (1 - pct/100);
+  const C = 2*Math.PI*20;
+  const offset = C*(1-pct/100);
+  const todayIdx = getTodayIndex();
+  const isToday = activeDay === todayIdx;
 
-  el.innerHTML = `
+  el.innerHTML=`
     <div class="day-header" style="background:${color}">
       <div class="day-header-left">
         <h2>${day.title}</h2>
@@ -475,14 +400,18 @@ function renderDay(el, day) {
         <svg width="52" height="52" viewBox="0 0 52 52">
           <circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="4"/>
           <circle cx="26" cy="26" r="20" fill="none" stroke="white" stroke-width="4"
-            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
-            stroke-linecap="round" style="transition:stroke-dashoffset 0.5s"/>
+            stroke-dasharray="${C}" stroke-dashoffset="${offset}" stroke-linecap="round"
+            style="transition:stroke-dashoffset 0.5s"/>
         </svg>
         <div class="pct">${pct}%</div>
       </div>
     </div>
+    <div class="skip-day-bar">
+      <span>⏭ ${isToday ? 'Heute' : day.label} auslassen?</span>
+      <button class="skip-day-btn" onclick="skipDay()">Tag überspringen</button>
+    </div>
     <div id="timerBar" class="rest-timer-bar">
-      <div>
+      <div style="flex:1">
         <div class="timer-display" id="timerDisplay">0:00</div>
         <div class="timer-label">⏱ Pause läuft…</div>
         <div class="timer-progress"><div class="timer-progress-fill" id="timerFill" style="width:100%"></div></div>
@@ -491,203 +420,197 @@ function renderDay(el, day) {
     </div>
     <div id="exerciseList"></div>`;
 
-  if (timerInterval) {
-    document.getElementById('timerBar').classList.add('active');
-    updateTimerDisplay();
-  }
-
+  if (timerInterval) { document.getElementById('timerBar').classList.add('active'); updateTimerDisplay(); }
   renderExercises(day, color);
 }
 
 function renderExercises(day, color) {
   const list = document.getElementById('exerciseList');
   if (!list) return;
-  list.innerHTML = '';
-
+  list.innerHTML='';
   day.exercises.forEach((ex, exIdx) => {
-    // Superset divider
-    if (ex.superset && exIdx > 0 && !day.exercises[exIdx-1].superset) {
-      const div = document.createElement('div');
-      div.className = 'superset-divider';
-      div.innerHTML = '<span>SUPERSATZ</span>';
-      list.appendChild(div);
+    if (ex.superset && exIdx>0 && !day.exercises[exIdx-1].superset) {
+      const div=document.createElement('div'); div.className='superset-divider';
+      div.innerHTML='<span>SUPERSATZ</span>'; list.appendChild(div);
     }
+    const skipped = isSkipped(day.key, ex.id);
+    const allDone = !skipped && Array.from({length:ex.sets},(_,s)=>isDone(day.key,ex.id,s)).every(Boolean);
+    const card=document.createElement('div');
+    card.className='ex-card'+(ex.superset?' superset':'')+(allDone?' done-all':'')+(skipped?' skipped':'')+(openExercises.has(ex.id)?' open':'');
+    card.id='card_'+ex.id;
 
-    const allDone = Array.from({length: ex.sets}, (_,s) => isDone(day.key, ex.id, s)).every(Boolean);
-    const card = document.createElement('div');
-    card.className = 'ex-card' + (ex.superset?' superset':'') + (allDone?' done-all':'') + (openExercises.has(ex.id)?' open':'');
-    card.id = 'card_' + ex.id;
+    const nrColor = skipped?'#bbb':ex.superset?'#27ae60':color;
+    const skipBtnClass = skipped?'active':'inactive';
+    const skipBtnLabel = skipped?'↩ Wiederherstellen':'⏭ Überspringen';
 
-    // Header
-    const header = document.createElement('div');
-    header.className = 'ex-header';
-    header.onclick = () => toggleEx(ex.id);
-    const nrColor = ex.superset ? '#27ae60' : color;
-    header.innerHTML = `
+    const header=document.createElement('div');
+    header.className='ex-header';
+    header.innerHTML=`
       <div class="ex-nr" style="background:${nrColor}">${exIdx+1}</div>
-      <div class="ex-info">
+      <div class="ex-info" onclick="toggleEx('${ex.id}')">
         <div class="ex-name">${ex.name}</div>
-        <div class="ex-meta">${ex.sets} × ${ex.reps}${ex.rest ? ' · ' + formatRest(ex.rest) + ' Pause' : ''}</div>
+        <div class="ex-meta">${ex.sets} × ${ex.reps}${ex.rest?' · '+formatRest(ex.rest)+' Pause':''}</div>
       </div>
-      <div class="ex-status">${allDone ? '✅' : ''}</div>
-      <div class="ex-chevron">▼</div>`;
+      <div class="ex-status">${allDone?'✅':skipped?'⏭':''}</div>
+      <button class="skip-ex-btn ${skipBtnClass}" onclick="toggleSkipExercise('${day.key}','${ex.id}')">${skipBtnLabel}</button>`;
     card.appendChild(header);
 
-    // Sets
-    const setsDiv = document.createElement('div');
-    setsDiv.className = 'ex-sets';
-
-    const hdr = document.createElement('div');
-    hdr.className = 'sets-header';
-    hdr.innerHTML = '<span>Satz</span><span>Kg</span><span>Wdh.</span><span>✓</span>';
-    setsDiv.appendChild(hdr);
-
-    for (let s = 0; s < ex.sets; s++) {
-      const done = isDone(day.key, ex.id, s);
-      const kg   = loadSet(day.key, ex.id, s, 'kg');
-      const reps = loadSet(day.key, ex.id, s, 'reps');
-      const row  = document.createElement('div');
-      row.className = 'set-row' + (done ? ' done' : '');
-      row.id = `row_${ex.id}_${s}`;
-      row.innerHTML = `
-        <div class="set-nr">${s+1}</div>
-        <input class="set-input" type="number" inputmode="decimal" placeholder="–"
-               value="${kg}" min="0" step="0.5"
-               onchange="saveSetField('${day.key}','${ex.id}',${s},'kg',this.value)">
-        <input class="set-input" type="number" inputmode="numeric" placeholder="–"
-               value="${reps}" min="0"
-               onchange="saveSetField('${day.key}','${ex.id}',${s},'reps',this.value)">
-        <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}"
-                onclick="toggleSetDone('${day.key}','${ex.id}',${s},${ex.rest},${exIdx},'${day.key}')">
-          ${done ? '✓' : ''}
-        </button>`;
-      setsDiv.appendChild(row);
+    if (skipped) {
+      const lbl=document.createElement('div'); lbl.className='skipped-label';
+      lbl.textContent='Übung ausgelassen'; card.appendChild(lbl);
+    } else {
+      const setsDiv=document.createElement('div'); setsDiv.className='ex-sets';
+      const hdr=document.createElement('div'); hdr.className='sets-header';
+      hdr.innerHTML='<span>Satz</span><span>Kg</span><span>Wdh.</span><span>✓</span>';
+      setsDiv.appendChild(hdr);
+      for (let s=0; s<ex.sets; s++) {
+        const done=isDone(day.key,ex.id,s);
+        const kg=loadSet(day.key,ex.id,s,'kg');
+        const reps=loadSet(day.key,ex.id,s,'reps');
+        const row=document.createElement('div');
+        row.className='set-row'+(done?' done':'');
+        row.id=`row_${ex.id}_${s}`;
+        row.innerHTML=`
+          <div class="set-nr">${s+1}</div>
+          <input class="set-input" type="number" inputmode="decimal" placeholder="–" value="${kg}" min="0" step="0.5"
+                 onchange="saveSet('${day.key}','${ex.id}',${s},'kg',this.value)">
+          <input class="set-input" type="number" inputmode="numeric" placeholder="–" value="${reps}" min="0"
+                 onchange="saveSet('${day.key}','${ex.id}',${s},'reps',this.value)">
+          <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}"
+                  onclick="toggleSetDone('${day.key}','${ex.id}',${s},${ex.rest})">
+            ${done?'✓':''}
+          </button>`;
+        setsDiv.appendChild(row);
+      }
+      if (ex.notes) {
+        const note=document.createElement('div'); note.className='notes-text';
+        note.textContent='💡 '+ex.notes; setsDiv.appendChild(note);
+      }
+      card.appendChild(setsDiv);
     }
-
-    if (ex.notes) {
-      const note = document.createElement('div');
-      note.className = 'notes-text';
-      note.textContent = '💡 ' + ex.notes;
-      setsDiv.appendChild(note);
-    }
-
-    card.appendChild(setsDiv);
     list.appendChild(card);
   });
 }
 
-function formatRest(s) {
-  if (s >= 60) return Math.floor(s/60) + ' min ' + (s%60>0?s%60+'s':'');
-  return s + 's';
-}
+function formatRest(s) { return s>=60?Math.floor(s/60)+' min'+(s%60>0?' '+s%60+'s':''):s+'s'; }
 
-// ─────────────────────────────────────────────
-// INTERACTIONS
-// ─────────────────────────────────────────────
+// ─── INTERACTIONS ────────────────────────────────────────────
 function toggleEx(exId) {
-  if (openExercises.has(exId)) openExercises.delete(exId);
-  else openExercises.add(exId);
-  const card = document.getElementById('card_' + exId);
-  if (card) {
-    card.classList.toggle('open', openExercises.has(exId));
-    const chevron = card.querySelector('.ex-chevron');
-    if (chevron) chevron.style.transform = openExercises.has(exId) ? 'rotate(180deg)' : '';
-  }
+  if (openExercises.has(exId)) openExercises.delete(exId); else openExercises.add(exId);
+  const card=document.getElementById('card_'+exId);
+  if (card) card.classList.toggle('open', openExercises.has(exId));
 }
 
-function saveSetField(dayKey, exId, setIdx, field, value) {
-  saveSet(dayKey, exId, setIdx, field, value);
-}
-
-function toggleSetDone(dayKey, exId, setIdx, restSecs, exIdx, currentDayKey) {
-  const wasDone = isDone(dayKey, exId, setIdx);
-  saveSet(dayKey, exId, setIdx, 'done', wasDone ? '0' : '1');
-
-  const btn = document.getElementById(`doneBtn_${exId}_${setIdx}`);
-  const row = document.getElementById(`row_${exId}_${setIdx}`);
-  if (btn) { btn.classList.toggle('done', !wasDone); btn.textContent = wasDone ? '' : '✓'; }
-  if (row) { row.classList.toggle('done', !wasDone); }
-
-  if (!wasDone && restSecs > 0) startTimer(restSecs);
-
-  // Re-render header area for progress
-  const day = DAYS[activeDay];
-  const { done, total } = getDayProgress(day);
-  const pct = total > 0 ? Math.round(done/total*100) : 0;
-  const circum = 2 * Math.PI * 20;
-  const offset = circum * (1 - pct/100);
-  const pctEl = document.querySelector('.pct');
-  const circle = document.querySelector('.progress-ring circle:last-child');
-  if (pctEl) pctEl.textContent = pct + '%';
-  if (circle) circle.setAttribute('stroke-dashoffset', offset);
-
-  // Check if all done
-  const card = document.getElementById('card_' + exId);
-  const allDone = Array.from({length: DAYS[activeDay].exercises.find(e=>e.id===exId)?.sets || 0}, (_,s) => isDone(dayKey, exId, s)).every(Boolean);
-  if (card) { card.classList.toggle('done-all', allDone); card.querySelector('.ex-status').textContent = allDone ? '✅' : ''; }
-
+function toggleSetDone(dayKey, exId, setIdx, restSecs) {
+  const wasDone=isDone(dayKey,exId,setIdx);
+  saveSet(dayKey,exId,setIdx,'done',wasDone?'0':'1');
+  const btn=document.getElementById(`doneBtn_${exId}_${setIdx}`);
+  const row=document.getElementById(`row_${exId}_${setIdx}`);
+  if (btn){btn.classList.toggle('done',!wasDone);btn.textContent=wasDone?'':'✓';}
+  if (row) row.classList.toggle('done',!wasDone);
+  if (!wasDone && restSecs>0) startTimer(restSecs);
+  updateDayProgress();
   renderTabs();
   updateFab();
-  if (pct === 100) showToast('🎉 Training abgeschlossen!');
+  const day=DAYS[activeDay];
+  const {done,total}=getDayProgress(day);
+  if (done===total&&total>0) showToast('🎉 Training abgeschlossen!');
 }
 
-// ─────────────────────────────────────────────
-// TIMER
-// ─────────────────────────────────────────────
-function startTimer(seconds) {
-  stopTimer();
-  timerRemaining = seconds;
-  timerTotal = seconds;
-  const bar = document.getElementById('timerBar');
-  if (bar) bar.classList.add('active');
-  updateTimerDisplay();
-  timerInterval = setInterval(() => {
-    timerRemaining--;
-    updateTimerDisplay();
-    if (timerRemaining <= 0) {
-      stopTimer();
-      showToast('⏱ Pause vorbei – nächster Satz!');
-    }
-  }, 1000);
+function toggleSkipExercise(dayKey, exId) {
+  const wasSkipped = isSkipped(dayKey, exId);
+  setSkipped(dayKey, exId, !wasSkipped);
+  showToast(wasSkipped ? '↩ Übung wiederhergestellt' : '⏭ Übung übersprungen');
+  const day=DAYS[activeDay];
+  renderExercises(day, TYPE_COLORS[day.type]);
+  updateDayProgress();
+  renderTabs();
+  updateFab();
 }
 
-function stopTimer() {
-  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-  const bar = document.getElementById('timerBar');
-  if (bar) bar.classList.remove('active');
+function updateDayProgress() {
+  const day=DAYS[activeDay];
+  const {done,total}=getDayProgress(day);
+  const pct=total>0?Math.round(done/total*100):0;
+  const C=2*Math.PI*20;
+  const pctEl=document.querySelector('.pct');
+  const circle=document.querySelector('.progress-ring circle:last-child');
+  if (pctEl) pctEl.textContent=pct+'%';
+  if (circle) circle.setAttribute('stroke-dashoffset', C*(1-pct/100));
 }
 
-function updateTimerDisplay() {
-  const d = document.getElementById('timerDisplay');
-  const f = document.getElementById('timerFill');
-  if (d) d.textContent = Math.floor(timerRemaining/60) + ':' + String(timerRemaining%60).padStart(2,'0');
-  if (f) f.style.width = (timerRemaining/timerTotal*100) + '%';
-}
-
-// ─────────────────────────────────────────────
-// FAB & OPTIONS
-// ─────────────────────────────────────────────
-function updateFab() {
-  const fab = document.getElementById('fab');
-  const day = DAYS[activeDay];
-  if (!day || day.type === 'rest' || viewMode === 'overview') { fab.style.display='none'; return; }
-  fab.style.display = 'flex';
-  const { done, total } = getDayProgress(day);
-  fab.style.background = done===total && total>0 ? '#27ae60' : '#3498db';
-}
-
-function fabAction() {
-  showToast('Tippe auf ✓ bei jedem Satz um ihn abzuhaken!');
-}
-
-function showOverview() {
-  viewMode = 'overview';
+// ─── DAY SKIP ────────────────────────────────────────────────
+function skipDay() {
+  planOffset++;
+  localStorage.setItem('tp_planOffset', planOffset);
+  activeDay = getTodayIndex();
+  showToast('⏭ Tag übersprungen — Plan verschoben');
   render();
 }
 
+function undoSkip() {
+  if (planOffset<=0) { showToast('Kein Versatz vorhanden'); return; }
+  planOffset--;
+  localStorage.setItem('tp_planOffset', planOffset);
+  activeDay = getTodayIndex();
+  showToast('↩ Verschiebung rückgängig');
+  closeModal();
+  render();
+}
+
+function resetOffset() {
+  planOffset=0;
+  localStorage.setItem('tp_planOffset', '0');
+  activeDay = getTodayIndex();
+  showToast('✓ Plan auf Originalplan zurückgesetzt');
+  closeModal();
+  render();
+}
+
+// ─── TIMER ───────────────────────────────────────────────────
+function startTimer(seconds) {
+  stopTimer(); timerRemaining=seconds; timerTotal=seconds;
+  const bar=document.getElementById('timerBar');
+  if (bar) bar.classList.add('active');
+  updateTimerDisplay();
+  timerInterval=setInterval(()=>{
+    timerRemaining--;
+    updateTimerDisplay();
+    if (timerRemaining<=0){stopTimer();showToast('⏱ Pause vorbei – nächster Satz!');}
+  },1000);
+}
+function stopTimer() {
+  if (timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  const bar=document.getElementById('timerBar');
+  if (bar) bar.classList.remove('active');
+}
+function updateTimerDisplay() {
+  const d=document.getElementById('timerDisplay');
+  const f=document.getElementById('timerFill');
+  if (d) d.textContent=Math.floor(timerRemaining/60)+':'+String(timerRemaining%60).padStart(2,'0');
+  if (f) f.style.width=(timerRemaining/timerTotal*100)+'%';
+}
+
+// ─── FAB ─────────────────────────────────────────────────────
+function updateFab() {
+  const fab=document.getElementById('fab');
+  const day=DAYS[activeDay];
+  if (!day||day.type==='rest'||viewMode==='overview'){fab.style.display='none';return;}
+  fab.style.display='flex';
+  const {done,total}=getDayProgress(day);
+  fab.style.background=done===total&&total>0?'#27ae60':'#3498db';
+}
+function fabAction() { showToast('Tippe ✓ bei jedem Satz um ihn abzuhaken!'); }
+
+// ─── OPTIONS ─────────────────────────────────────────────────
+function showOverview() { viewMode='overview'; render(); }
+
 function showOptions() {
-  document.getElementById('modalTitle').textContent = '⚙️ Optionen';
-  document.getElementById('modalBody').innerHTML = `
+  const offsetInfo = planOffset!==0 ? ` (aktuell: ${planOffset>0?'+':''}${planOffset} Tage)` : '';
+  document.getElementById('modalTitle').textContent='⚙️ Optionen';
+  document.getElementById('modalBody').innerHTML=`
+    ${planOffset>0?`<button class="modal-btn warning" onclick="undoSkip()">↩ Letzten Skip rückgängig${offsetInfo}</button>`:''}
+    ${planOffset>0?`<button class="modal-btn success" onclick="resetOffset()">📅 Auf Originalplan zurücksetzen</button>`:''}
     <button class="modal-btn danger" onclick="confirmReset()">🗑 Heutigen Tag zurücksetzen</button>
     <button class="modal-btn danger" onclick="confirmResetAll()">⚠️ Alle Daten löschen</button>
     <button class="modal-btn neutral" onclick="exportData()">📤 Fortschritt exportieren</button>
@@ -697,67 +620,57 @@ function showOptions() {
 
 function confirmReset() {
   closeModal();
-  const day = DAYS[activeDay];
-  day.exercises.forEach(ex => {
-    for (let s=0; s<ex.sets; s++) {
-      ['kg','reps','done'].forEach(f => localStorage.removeItem(storageKey(day.key, ex.id, s, f)));
-    }
+  const day=DAYS[activeDay];
+  day.exercises.forEach(ex=>{
+    for(let s=0;s<ex.sets;s++) ['kg','reps','done'].forEach(f=>localStorage.removeItem(sk(day.key,ex.id,s,f)));
+    localStorage.removeItem(SK+day.key+'_'+ex.id+'_skipped');
   });
-  openExercises.clear();
-  render();
-  showToast('Tag zurückgesetzt.');
+  openExercises.clear(); render(); showToast('Tag zurückgesetzt.');
 }
 
 function confirmResetAll() {
   closeModal();
-  const keys = Object.keys(localStorage).filter(k => k.startsWith(STORAGE_KEY));
-  keys.forEach(k => localStorage.removeItem(k));
-  openExercises.clear();
-  render();
-  showToast('Alle Daten gelöscht.');
+  Object.keys(localStorage).filter(k=>k.startsWith(SK)||k==='tp_planOffset').forEach(k=>localStorage.removeItem(k));
+  planOffset=0; openExercises.clear(); render(); showToast('Alle Daten gelöscht.');
 }
 
 function exportData() {
   closeModal();
-  let out = 'Trainingsfortschritt\n\n';
-  DAYS.forEach(day => {
+  let out='Trainingsfortschritt\n\n';
+  DAYS.forEach(day=>{
     if (!day.exercises.length) return;
-    const { done, total } = getDayProgress(day);
-    out += `${day.label} — ${day.title} (${done}/${total} Sätze)\n`;
-    day.exercises.forEach(ex => {
-      out += `  ${ex.name}:\n`;
-      for (let s=0; s<ex.sets; s++) {
-        const kg = loadSet(day.key, ex.id, s, 'kg');
-        const reps = loadSet(day.key, ex.id, s, 'reps');
-        const done = isDone(day.key, ex.id, s);
-        if (kg || reps) out += `    Satz ${s+1}: ${kg||'?'} kg × ${reps||'?'} Wdh ${done?'✓':''}\n`;
+    const {done,total}=getDayProgress(day);
+    out+=`${day.label} — ${day.title} (${done}/${total})\n`;
+    day.exercises.forEach(ex=>{
+      if (isSkipped(day.key,ex.id)){out+=`  ${ex.name}: übersprungen\n`;return;}
+      out+=`  ${ex.name}:\n`;
+      for(let s=0;s<ex.sets;s++){
+        const kg=loadSet(day.key,ex.id,s,'kg');
+        const reps=loadSet(day.key,ex.id,s,'reps');
+        if(kg||reps) out+=`    Satz ${s+1}: ${kg||'?'} kg × ${reps||'?'} Wdh ${isDone(day.key,ex.id,s)?'✓':''}\n`;
       }
     });
-    out += '\n';
+    out+='\n';
   });
-  const blob = new Blob([out], {type:'text/plain'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'Trainingsfortschritt.txt'; a.click();
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([out],{type:'text/plain'}));
+  a.download='Trainingsfortschritt.txt'; a.click();
   showToast('Export erstellt!');
 }
 
 function closeModal(e) {
-  if (!e || e.target === document.getElementById('modalOverlay'))
+  if (!e||e.target===document.getElementById('modalOverlay'))
     document.getElementById('modalOverlay').classList.remove('open');
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
-document.getElementById('topbarDate').textContent = new Date().toLocaleDateString('de-DE', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+// ─── INIT ────────────────────────────────────────────────────
+document.getElementById('topbarDate').textContent=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 render();
 </script>
 </body>
