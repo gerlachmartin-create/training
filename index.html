@@ -54,6 +54,14 @@
   .superset-divider span{font-size:10px;font-weight:700;color:#fff;background:#27ae60;padding:2px 8px;border-radius:10px;white-space:nowrap;}
   .superset-divider::before,.superset-divider::after{content:'';flex:1;height:1px;background:#27ae60;opacity:0.4;}
 
+  .floor-divider{display:flex;align-items:center;gap:8px;margin:6px 0 2px;}
+  .floor-divider span{font-size:10px;font-weight:700;color:#fff;padding:3px 10px;border-radius:10px;white-space:nowrap;}
+  .floor-divider::before,.floor-divider::after{content:'';flex:1;height:1px;opacity:0.45;}
+  .floor-divider.floor-up span{background:#d35400;}
+  .floor-divider.floor-up::before,.floor-divider.floor-up::after{background:#d35400;}
+  .floor-divider.floor-down span{background:#5d6d7e;}
+  .floor-divider.floor-down::before,.floor-divider.floor-down::after{background:#5d6d7e;}
+
   .ex-card{background:var(--card);border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
   .ex-card.superset{border-left:3px solid #27ae60;}
   .ex-card.done-all{border-color:#27ae60;background:#f0fff4;}
@@ -272,7 +280,7 @@ const PLAN = [
       {id:'pA7', name:'Butterfly Reverse',                sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
       {id:'pA5', name:'Trizepsmaschine',                  sets:4,reps:'12–15',rest:60, notes:'Ellbogen fixiert'},
       // ── Oben: Freihanteln & Kabelzug ──
-      {id:'pA3', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'↑ nach oben  ·  2×12,5 kg'},
+      {id:'pA3', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'2×12,5 kg', floorUp:true},
       {id:'pA6', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60},
       {id:'pA8', name:'Kabel Overhead Extension',        sets:3,reps:'12–15',rest:60, notes:'langer Trizepskopf'},
     ]},
@@ -287,14 +295,14 @@ const PLAN = [
       {id:'plA8', name:'Butterfly Reverse',               sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
       {id:'plA5', name:'Bizepsmaschine',                  sets:4,reps:'10–12',rest:60, notes:'letzter Satz: bis Versagen'},
       // ── Oben: Kabelzug ──
-      {id:'plA6', name:'Kabel-Bizeps-Curls',             sets:3,reps:'12–15',rest:60, notes:'↑ nach oben  ·  volle Kontraktion'},
+      {id:'plA6', name:'Kabel-Bizeps-Curls',             sets:3,reps:'12–15',rest:60, notes:'volle Kontraktion', floorUp:true},
     ]},
   { key:'legsA', title:'BEINE A', subtitle:'Quadrizeps-Fokus', type:'legs', emoji:'🟣',
     exercises:[
       // ── Oben: Freihanteln ──
-      {id:'lA2', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'↑ start oben  ·  2×15 kg, volle Tiefe'},
+      {id:'lA2', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'2×15 kg, volle Tiefe'},
       // ── Unten: Maschinen ──
-      {id:'lA1', name:'Beinpresse (E01)',                 sets:4,reps:'10–12',rest:90, notes:'↓ nach unten  ·  letztes steigern'},
+      {id:'lA1', name:'Beinpresse (E01)',                 sets:4,reps:'10–12',rest:90, notes:'letztes steigern', floorDown:true},
       {id:'lA3', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'oben 1 Sek. halten'},
       {id:'lA4', name:'Einbein (E24)',                    sets:3,reps:'12/Bein',rest:75},
       {id:'lA7', name:'Rückseite Beine (E05)',            sets:3,reps:'12–15',rest:60, notes:'Ferse Richtung Gesäß'},
@@ -311,7 +319,7 @@ const PLAN = [
       {id:'pB3', name:'Seitenrunterdrücken (Maschine)',   sets:3,reps:'12–15',rest:60},
       {id:'pB4', name:'Trizepsmaschine',                  sets:4,reps:'12–15',rest:60},
       // ── Oben: Freihanteln & Kabelzug ──
-      {id:'pB6', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'↑ nach oben  ·  2×12,5 kg'},
+      {id:'pB6', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'2×12,5 kg', floorUp:true},
       {id:'pB5', name:'Kabel Overhead Extension',        sets:3,reps:'12–15',rest:60, notes:'langer Trizepskopf'},
       {id:'pB8', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60, notes:'Ellbogen am Körper'},
     ]},
@@ -326,14 +334,14 @@ const PLAN = [
       {id:'plB8', name:'Seitenrunterdrücken (Maschine)', sets:3,reps:'12–15',rest:60},
       {id:'plB5', name:'Bizepsmaschine',                  sets:4,reps:'10–12',rest:60, notes:'letzter Satz: bis Versagen'},
       // ── Oben: Kabelzug ──
-      {id:'plB6', name:'Kabel-Bizeps-21er',              sets:3,reps:'21',   rest:75, notes:'↑ nach oben  ·  7 unten / 7 oben / 7 voll'},
+      {id:'plB6', name:'Kabel-Bizeps-21er',              sets:3,reps:'21',   rest:75, notes:'7 unten / 7 oben / 7 voll', floorUp:true},
     ]},
   { key:'legsB', title:'BEINE B', subtitle:'Hamstrings & Gesäß', type:'legs', emoji:'🟣',
     exercises:[
       // ── Oben: Freihanteln ──
-      {id:'lB6', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'↑ start oben  ·  2×15 kg'},
+      {id:'lB6', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'2×15 kg'},
       // ── Unten: Maschinen ──
-      {id:'lB1', name:'Beinpresse (E01)',                 sets:4,reps:'12–15',rest:90, notes:'↓ nach unten  ·  Füße höher = Hamstring'},
+      {id:'lB1', name:'Beinpresse (E01)',                 sets:4,reps:'12–15',rest:90, notes:'Füße höher = Hamstring', floorDown:true},
       {id:'lB2', name:'Rückseite Beine (E05)',            sets:4,reps:'12–15',rest:75, notes:'letztes steigern'},
       {id:'lB7', name:'Einbein (E24)',                    sets:3,reps:'12/Bein',rest:75, notes:'Gesäß aktivieren'},
       {id:'lB8', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'Quadrizeps-Balance'},
@@ -894,6 +902,14 @@ function renderExercises(w,color){
     if(ex.superset&&idx>0&&!w.exercises[idx-1].superset){
       const d=document.createElement('div');d.className='superset-divider';
       d.innerHTML='<span>SUPERSATZ</span>';list.appendChild(d);
+    }
+    if(ex.floorUp){
+      const d=document.createElement('div');d.className='floor-divider floor-up';
+      d.innerHTML='<span>▲ Wechsel nach oben — Freihanteln &amp; Kabelzug</span>';list.appendChild(d);
+    }
+    if(ex.floorDown){
+      const d=document.createElement('div');d.className='floor-divider floor-down';
+      d.innerHTML='<span>▼ Wechsel nach unten — Maschinen</span>';list.appendChild(d);
     }
     const skipped=isExSkipped(w.key,ex.id);
     const allDone=!skipped&&Array.from({length:ex.sets},(_,s)=>isDone(w.key,ex.id,s)).every(Boolean);
