@@ -135,6 +135,25 @@
   .rest-view h2{font-size:20px;font-weight:700;margin-bottom:8px;}
   .rest-view p{color:var(--muted);font-size:14px;}
 
+  /* ── WORKOUT PICKER ──────────────────────────────────────── */
+  .rec-card{background:#fff;border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:2px solid #3498db;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform 0.1s;}
+  .rec-card:active{transform:scale(0.98);}
+  .rec-icon{font-size:28px;flex-shrink:0;}
+  .rec-body{flex:1;}
+  .rec-title{font-size:16px;font-weight:700;}
+  .rec-reason{font-size:12px;color:var(--muted);margin-top:3px;}
+  .rec-arrow{font-size:22px;font-weight:700;flex-shrink:0;}
+  .picker-heading{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 8px;}
+  .picker-card{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:8px;box-shadow:var(--shadow);border:1.5px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform 0.1s;}
+  .picker-card:active{transform:scale(0.98);}
+  .picker-card.recommended{border-width:2px;}
+  .picker-dot{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+  .picker-info{flex:1;}
+  .picker-name{font-size:14px;font-weight:700;}
+  .picker-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+  .picker-badge{font-size:12px;font-weight:700;flex-shrink:0;margin-right:4px;}
+  .picker-arr{font-size:18px;color:var(--muted);flex-shrink:0;}
+
   .week-overview{display:none;}
   .week-overview.active{display:block;}
   .week-card{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;cursor:pointer;border:1px solid var(--border);transition:transform 0.1s;}
@@ -244,78 +263,83 @@
 <script>
 // ─── PLAN DATA ───────────────────────────────────────────────
 const PLAN = [
-  { key:'pushA', title:'PUSH A', subtitle:'Schwerpunkt: Brust', type:'push', emoji:'🔴',
+  { key:'pushA', title:'PUSH A', subtitle:'Brust & Trizeps', type:'push', emoji:'🔴',
     exercises:[
-      // ── Freihanteln / Maschinen ──
-      {id:'pA1',  name:'Schrägbankdrücken (LH)',      sets:4,reps:'10–12',rest:90, notes:'Kontrolle beim Absenken'},
-      {id:'pA2',  name:'Flachbankdrücken (KH)',        sets:3,reps:'12–15',rest:75},
-      {id:'pA4',  name:'Schulterdrücken (KH, sitz.)',  sets:4,reps:'10–12',rest:75},
-      {id:'pA8',  name:'Skull Crushers',                sets:3,reps:'12–15',rest:60, notes:'Ellbogen fixiert'},
-      // ── Kabelzug-Block ──
-      {id:'pA3',  name:'Kabelfliegens (oben → Mitte)', sets:3,reps:'15–20',rest:60, superset:true,notes:'Superset mit Push-Ups ↓'},
-      {id:'pA3b', name:'Push-Ups (enger Griff)',       sets:3,reps:'15–20',rest:60, superset:true},
-      {id:'pA5',  name:'Seitheben (Kabel)',             sets:3,reps:'15–20',rest:60, notes:'Ellbogen leicht gebeugt'},
-      {id:'pA6',  name:'Frontheben abwechselnd (KH)',  sets:3,reps:'12–15',rest:60, superset:true,notes:'Superset mit Face Pulls ↓'},
-      {id:'pA6b', name:'Face Pulls (Kabel)',            sets:3,reps:'15–20',rest:60, superset:true},
-      {id:'pA7',  name:'Trizeps-Pushdown (Seil)',       sets:3,reps:'12–15',rest:60},
+      // ── Unten: Maschinen ──
+      {id:'pA1', name:'Brustpresse (Maschine)',           sets:4,reps:'10–12',rest:90, notes:'letztes steigern'},
+      {id:'pA2', name:'Butterfly / Pec Deck (A02)',       sets:4,reps:'12–15',rest:75, notes:'Brust am Endpunkt zusammenkneifen'},
+      {id:'pA4', name:'Seitheben (Maschine)',             sets:4,reps:'15–20',rest:60, notes:'4 Sek. absenken'},
+      {id:'pA7', name:'Butterfly Reverse',                sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
+      {id:'pA5', name:'Trizepsmaschine',                  sets:4,reps:'12–15',rest:60, notes:'Ellbogen fixiert'},
+      // ── Oben: Freihanteln & Kabelzug ──
+      {id:'pA3', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'↑ nach oben  ·  2×12,5 kg'},
+      {id:'pA6', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60},
+      {id:'pA8', name:'Kabel Overhead Extension',        sets:3,reps:'12–15',rest:60, notes:'langer Trizepskopf'},
     ]},
-  { key:'pullA', title:'PULL A', subtitle:'Schwerpunkt: Rücken', type:'pull', emoji:'🟢',
+  { key:'pullA', title:'PULL A', subtitle:'Rücken & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
-      {id:'plA1',  name:'Klimmzüge / Latziehen weit',   sets:4,reps:'8–12', rest:90, notes:'Volle Streckung unten'},
-      {id:'plA2',  name:'Sitzrudern (Kabel, eng)',       sets:4,reps:'10–12',rest:75, notes:'Schulterblätter zusammen'},
-      {id:'plA3',  name:'Einarmiges KH-Rudern',           sets:3,reps:'12–15',rest:60},
-      {id:'plA5',  name:'Bizeps-Curls (LH / EZ)',         sets:3,reps:'10–12',rest:60},
-      // ── Kabelzug-Block ──
-      {id:'plA4',  name:'Hyperextensions',                sets:3,reps:'15–20',rest:60, superset:true,notes:'Superset mit Reverse Flyes ↓'},
-      {id:'plA4b', name:'Reverse Flyes (Kabel)',          sets:3,reps:'15–20',rest:60, superset:true},
-      {id:'plA6',  name:'Hammercurls (KH)',                sets:3,reps:'12–15',rest:60, superset:true,notes:'Superset mit Kabel-Curls ↓'},
-      {id:'plA6b', name:'Kabel-Bizeps-Curls (einzeln)',   sets:3,reps:'15',   rest:60, superset:true},
+      // ── Unten: Maschinen ──
+      {id:'plA7', name:'Klimmzüge mit Unterstützung (B04)', sets:4,reps:'8–12', rest:90, notes:'volle Streckung unten'},
+      {id:'plA1', name:'Latzug (B02)',                    sets:4,reps:'10–12',rest:75, notes:'Schulterblätter zusammenziehen'},
+      {id:'plA2', name:'Ruderzugmaschine (B01)',           sets:4,reps:'10–12',rest:75, notes:'letztes steigern'},
+      {id:'plA3', name:'Seitenrunterdrücken (Maschine)',  sets:4,reps:'12–15',rest:60},
+      {id:'plA4', name:'Überzugmaschine (B21)',           sets:3,reps:'12–15',rest:60},
+      {id:'plA8', name:'Butterfly Reverse',               sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
+      {id:'plA5', name:'Bizepsmaschine',                  sets:4,reps:'10–12',rest:60, notes:'letzter Satz: bis Versagen'},
+      // ── Oben: Kabelzug ──
+      {id:'plA6', name:'Kabel-Bizeps-Curls',             sets:3,reps:'12–15',rest:60, notes:'↑ nach oben  ·  volle Kontraktion'},
     ]},
-  { key:'legsA', title:'BEINE A', subtitle:'Schwerpunkt: Quadrizeps', type:'legs', emoji:'🟣',
+  { key:'legsA', title:'BEINE A', subtitle:'Quadrizeps-Fokus', type:'legs', emoji:'🟣',
     exercises:[
-      {id:'lA1',  name:'Kniebeugen (Langhantel)',       sets:4,reps:'8–10',   rest:120,notes:'Volle Tiefe'},
-      {id:'lA2',  name:'Beinpresse (45°)',               sets:3,reps:'12–15',  rest:90},
-      {id:'lA3',  name:'Beinstrecker (Maschine)',         sets:3,reps:'15–20',  rest:60, notes:'Oben kontrahieren'},
-      {id:'lA4',  name:'Walking Lunges (KH)',             sets:3,reps:'12/Bein',rest:75},
-      {id:'lA5',  name:'Rumänisches Kreuzheben (LH)',     sets:3,reps:'12–15',  rest:75, superset:true,notes:'Superset mit Beinbeuger ↓'},
-      {id:'lA5b', name:'Beinbeuger liegend (Maschine)',   sets:3,reps:'15',     rest:75, superset:true},
-      {id:'lA6',  name:'Wadenheben stehend (Maschine)',   sets:4,reps:'15–20',  rest:60},
-      {id:'lA7',  name:'Plank',                           sets:3,reps:'45–60 s',rest:45},
+      // ── Oben: Freihanteln ──
+      {id:'lA2', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'↑ start oben  ·  2×15 kg, volle Tiefe'},
+      // ── Unten: Maschinen ──
+      {id:'lA1', name:'Beinpresse (E01)',                 sets:4,reps:'10–12',rest:90, notes:'↓ nach unten  ·  letztes steigern'},
+      {id:'lA3', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'oben 1 Sek. halten'},
+      {id:'lA4', name:'Einbein (E24)',                    sets:3,reps:'12/Bein',rest:75},
+      {id:'lA7', name:'Rückseite Beine (E05)',            sets:3,reps:'12–15',rest:60, notes:'Ferse Richtung Gesäß'},
+      {id:'lA5', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
+      {id:'lA8', name:'Adduktion (E02)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
+      {id:'lA6', name:'Wadenmaschine',                    sets:4,reps:'15–20',rest:45, notes:'vollen Bewegungsradius nutzen'},
     ]},
-  { key:'pushB', title:'PUSH B', subtitle:'Schwerpunkt: Schulter', type:'push', emoji:'🔴',
+  { key:'pushB', title:'PUSH B', subtitle:'Schulter & Trizeps', type:'push', emoji:'🔴',
     exercises:[
-      {id:'pB1',  name:'Schulterdrücken (LH, stehend)',  sets:4,reps:'8–10', rest:90},
-      {id:'pB2',  name:'Flachbankdrücken (LH)',           sets:4,reps:'10–12',rest:75},
-      {id:'pB3',  name:'Dips (gewichtet / BW)',            sets:3,reps:'10–15',rest:75, notes:'Vorwärts neigen = Brust'},
-      {id:'pB7',  name:'Trizeps-Dips (Bank)',              sets:3,reps:'15–20',rest:60},
-      {id:'pB4',  name:'Seitheben (KH, sitzend)',          sets:4,reps:'15–20',rest:60, superset:true,notes:'Superset mit Arnold Press ↓'},
-      {id:'pB4b', name:'Arnold Press (KH)',                sets:4,reps:'12',   rest:60, superset:true},
-      // ── Kabelzug-Block ──
-      {id:'pB5',  name:'Kabel Crossover (tief → oben)',   sets:3,reps:'15',   rest:60},
-      {id:'pB6',  name:'Trizeps Overhead (Kabel/KH)',      sets:3,reps:'12–15',rest:60},
+      // ── Unten: Maschinen ──
+      {id:'pB7', name:'Butterfly / Pec Deck (A02)',       sets:3,reps:'15–20',rest:60, notes:'höhere Wdh. als Push A'},
+      {id:'pB1', name:'Seitheben (Maschine)',             sets:4,reps:'15–20',rest:60, notes:'4 Sek. absenken'},
+      {id:'pB2', name:'Butterfly Reverse',                sets:4,reps:'15–20',rest:60, notes:'volle Kontraktion'},
+      {id:'pB3', name:'Seitenrunterdrücken (Maschine)',   sets:3,reps:'12–15',rest:60},
+      {id:'pB4', name:'Trizepsmaschine',                  sets:4,reps:'12–15',rest:60},
+      // ── Oben: Freihanteln & Kabelzug ──
+      {id:'pB6', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'↑ nach oben  ·  2×12,5 kg'},
+      {id:'pB5', name:'Kabel Overhead Extension',        sets:3,reps:'12–15',rest:60, notes:'langer Trizepskopf'},
+      {id:'pB8', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60, notes:'Ellbogen am Körper'},
     ]},
-  { key:'pullB', title:'PULL B', subtitle:'Schwerpunkt: Kraft & Bizeps', type:'pull', emoji:'🟢',
+  { key:'pullB', title:'PULL B', subtitle:'Kraft & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
-      {id:'plB1',  name:'Kreuzheben (konventionell)',            sets:4,reps:'6–8',  rest:120,notes:'Hauptübung – starker Fokus'},
-      {id:'plB2',  name:'T-Rudern / LH-Rudern',                 sets:4,reps:'10–12',rest:75},
-      // ── Kabelzug-Block ──
-      {id:'plB3',  name:'Latziehen (Untergriff)',                sets:3,reps:'12–15',rest:75},
-      {id:'plB3b', name:'Straight-Arm Pulldown (selbes Gerät)', sets:3,reps:'15',   rest:60, notes:'Direkt am Latziehen-Kabel'},
-      {id:'plB6',  name:'Kabel Bizeps 21er',                     sets:3,reps:'21',   rest:75, notes:'7 unten / 7 oben / 7 voll'},
-      {id:'plB5',  name:'Concentration Curls (KH)',              sets:3,reps:'12–15',rest:60},
-      {id:'plB7',  name:'Reverse Curls (EZ-Stange)',             sets:3,reps:'12–15',rest:60, notes:'Unterarm-Training'},
-      {id:'plB8',  name:'Hanging Knee Raises',                   sets:3,reps:'15–20',rest:45, notes:'Core-Finish'},
+      // ── Unten: Maschinen ──
+      {id:'plB1', name:'Klimmzüge mit Unterstützung (B04)',sets:4,reps:'8–10',rest:90, notes:'volle Streckung unten'},
+      {id:'plB2', name:'Latzug (B02)',                    sets:4,reps:'10–12',rest:75},
+      {id:'plB3', name:'Ruderzugmaschine (B01)',          sets:3,reps:'10–12',rest:75, notes:'letztes steigern'},
+      {id:'plB7', name:'Überzugmaschine (B21)',          sets:3,reps:'12–15',rest:60},
+      {id:'plB4', name:'Butterfly Reverse',               sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
+      {id:'plB8', name:'Seitenrunterdrücken (Maschine)', sets:3,reps:'12–15',rest:60},
+      {id:'plB5', name:'Bizepsmaschine',                  sets:4,reps:'10–12',rest:60, notes:'letzter Satz: bis Versagen'},
+      // ── Oben: Kabelzug ──
+      {id:'plB6', name:'Kabel-Bizeps-21er',              sets:3,reps:'21',   rest:75, notes:'↑ nach oben  ·  7 unten / 7 oben / 7 voll'},
     ]},
-  { key:'legsB', title:'BEINE B', subtitle:'Schwerpunkt: Hamstrings & Gesäß', type:'legs', emoji:'🟣',
+  { key:'legsB', title:'BEINE B', subtitle:'Hamstrings & Gesäß', type:'legs', emoji:'🟣',
     exercises:[
-      {id:'lB1',  name:'Rumänisches Kreuzheben (LH)',    sets:4,reps:'10–12', rest:90},
-      {id:'lB2',  name:'Bulgarische Kniebeugen (KH)',    sets:3,reps:'10/Bein',rest:90},
-      {id:'lB3',  name:'Sumo-Kniebeugen (KH / LH)',     sets:3,reps:'12–15', rest:75},
-      {id:'lB4',  name:'Beinbeuger stehend (Maschine)', sets:3,reps:'15',     rest:60, superset:true,notes:'Superset mit Hip Thrust ↓'},
-      {id:'lB4b', name:'Hip Thrust (LH / Maschine)',    sets:3,reps:'15',     rest:60, superset:true},
-      {id:'lB5',  name:'Ausfallschritte seitlich (KH)', sets:3,reps:'12/Bein',rest:60},
-      {id:'lB6',  name:'Wadenheben sitzend (Maschine)', sets:4,reps:'15–20',  rest:60, notes:'Soleus-Fokus'},
-      {id:'lB7',  name:'Cable Crunch / AB-Wheel',       sets:3,reps:'15–20',  rest:45},
+      // ── Oben: Freihanteln ──
+      {id:'lB6', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'↑ start oben  ·  2×15 kg'},
+      // ── Unten: Maschinen ──
+      {id:'lB1', name:'Beinpresse (E01)',                 sets:4,reps:'12–15',rest:90, notes:'↓ nach unten  ·  Füße höher = Hamstring'},
+      {id:'lB2', name:'Rückseite Beine (E05)',            sets:4,reps:'12–15',rest:75, notes:'letztes steigern'},
+      {id:'lB7', name:'Einbein (E24)',                    sets:3,reps:'12/Bein',rest:75, notes:'Gesäß aktivieren'},
+      {id:'lB8', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'Quadrizeps-Balance'},
+      {id:'lB3', name:'Adduktion (E02)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
+      {id:'lB4', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
+      {id:'lB5', name:'Waden (E07)',                      sets:4,reps:'15–20',rest:45, notes:'vollen Bewegungsradius nutzen'},
     ]},
   { key:'rest', title:'PAUSE', subtitle:'Regeneration', type:'rest', emoji:'💤', exercises:[] }
 ];
@@ -324,209 +348,201 @@ const PLAN = [
 const EX_INFO = {
   // PUSH A
   'pA1': {
-    desc:'Lege dich auf die 30–45° Schrägbank. Schulterblätter zusammenziehen und in die Bank drücken. Hantel kontrolliert zur unteren Brust absenken, dann explosiv nach oben drücken. Ellbogen ca. 75° zum Körper.',
-    video:'https://www.youtube.com/results?search_query=Schrägbankdrücken+Langhantel+Technik+richtige+Ausführung'
+    desc:'Sitz einstellen, damit die Griffe auf mittlerer Brusthöhe sind. Schulterblätter zusammenziehen und in die Rückenlehne drücken. Gleichmäßig nach vorne drücken bis die Arme fast gestreckt sind, dann kontrolliert zurück. Keine Ruckelei.',
+    video:'https://www.youtube.com/results?search_query=Brustpresse+Maschine+Chest+Press+Technik+richtige+Ausführung'
   },
   'pA2': {
-    desc:'Hanteln auf Schulterhöhe, Ellbogen ca. 45° vom Körper. Kontrolliert bis Ellbogen parallel zum Boden absenken, dann nach oben und leicht zur Mitte drücken. Mehr Bewegungsfreiheit als LH.',
-    video:'https://www.youtube.com/results?search_query=Flachbankdrücken+Kurzhantel+Technik+richtige+Ausführung'
+    desc:'Aufrecht sitzen, Rücken am Polster. Unterarme auf den Pads, Ellbogen auf Brusthöhe. Arme wie eine Umarmung zusammenführen und Brust oben aktiv zusammenkneifen. Langsam zurück bis zur vollen Dehnung.',
+    video:'https://www.youtube.com/results?search_query=Butterfly+Pec+Deck+Maschine+Brust+Technik+richtige+Ausführung'
   },
   'pA3': {
-    desc:'Kabel auf Schulter- oder Augenhöhe einstellen. Arme leicht gebeugt halten. Bewegung wie eine Umarmung – von außen zur Körpermitte führen. Brust am Endpunkt aktiv zusammenkneifen.',
-    video:'https://www.youtube.com/results?search_query=Kabelfliegens+Brust+Technik+richtige+Ausführung'
-  },
-  'pA3b': {
-    desc:'Hände schulterbreit oder enger, Ellbogen nah am Körper halten (nicht wie normaler Liegestütz spreizen). Brust kurz über den Boden, dann explosiv hoch. Körper gerade wie ein Brett.',
-    video:'https://www.youtube.com/results?search_query=enger+Griff+Liegestütz+Trizeps+Technik'
+    desc:'Auf der Bank liegend mit 2×12,5 kg. Hanteln auf Brusthöhe, Ellbogen ca. 75° zum Körper. Nach oben drücken und leicht zur Mitte zusammenführen. Langsam und kontrolliert absenken – mehr Bewegungsfreiheit als Maschine.',
+    video:'https://www.youtube.com/results?search_query=Brustpresse+liegend+Kurzhantel+Flachbank+Technik+richtige+Ausführung'
   },
   'pA4': {
-    desc:'Aufrecht sitzen, kein Hohlkreuz. Hanteln auf Ohrhöhe starten. Nach oben drücken ohne am Ende zu sperren – Schultern aktiv unter Spannung halten. Ellbogen leicht nach vorne, nicht seitlich.',
-    video:'https://www.youtube.com/results?search_query=Schulterdrücken+sitzend+Kurzhantel+Technik'
+    desc:'Sitz so einstellen, dass die Ellbogen-Pads auf Schulterhöhe sind. Mit den Ellbogen (nicht Händen) nach oben-außen drücken. Sehr langsam (4 Sek.) zurückführen – das erzeugt den stärksten Reiz für die seitliche Schulter.',
+    video:'https://www.youtube.com/results?search_query=Seitheben+Maschine+Schulter+Lateral+Raise+Technik+richtige+Ausführung'
   },
   'pA5': {
-    desc:'Stand seitlich zum Kabel. Arm leicht gebeugt, Schulterblatt aktiv fixiert. Arm bis Schulterhöhe lateral heben – kleiner Finger leicht höher als Daumen. Sehr langsam absenken für maximalen Reiz.',
-    video:'https://www.youtube.com/results?search_query=Seitheben+Kabel+Schulter+Technik+richtige+Ausführung'
+    desc:'Sitz korrekt einstellen. Griffe auf Schulterhöhe, Ellbogen ca. 90°. Arme gleichmäßig nach unten strecken bis zur vollen Extension, Trizeps am Endpunkt aktiv anspannen. Kontrolliert zurück.',
+    video:'https://www.youtube.com/results?search_query=Trizeps+Maschine+Technik+richtige+Ausführung'
   },
   'pA6': {
-    desc:'Hanteln abwechselnd frontal bis Schulterhöhe heben, Daumen nach oben oder innen. Kein Schwingen – vordere Schulter isoliert ansprechen. Leichtes Gewicht wählen, langsames Tempo.',
-    video:'https://www.youtube.com/results?search_query=Frontheben+Kurzhantel+Technik+vordere+Schulter'
-  },
-  'pA6b': {
-    desc:'Kabel auf Augenhöhe, Seil mit beiden Händen. Richtung Gesicht ziehen, Ellbogen weit nach außen und nach hinten führen. Hintere Schulter und Rotatorenmanschette. Leichtes Gewicht, saubere Form.',
-    video:'https://www.youtube.com/results?search_query=Face+Pulls+Kabel+Technik+Schulter+richtige+Ausführung'
+    desc:'Kabel von oben, Seil-Aufsatz. Leicht nach vorne lehnen, Ellbogen dicht am Körper fixiert. Nur der Unterarm bewegt sich: Seil nach unten durchdrücken bis zur vollen Streckung, Trizeps am Tiefpunkt aktiv anspannen. Langsam zurück.',
+    video:'https://www.youtube.com/results?search_query=Trizeps+Pushdown+Seil+Kabel+Technik+richtige+Ausführung'
   },
   'pA7': {
-    desc:'Kabel von oben, Seil oder Stange. Oberkörper leicht vorgeneigt, Ellbogen fixiert am Körper – nur der Unterarm bewegt sich. Bis zur vollen Streckung durchdrücken, dann kontrolliert zurück.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Pushdown+Seil+Technik+richtige+Ausführung'
+    desc:'Butterfly-Maschine umgekehrt nutzen: Gesicht zur Maschine. Arme starten vorne und werden nach hinten-außen geführt. Trainiert die hintere Schulter (Rear Delts) und Rhomboiden. Leichtes Gewicht, bewusste Kontraktion.',
+    video:'https://www.youtube.com/results?search_query=Reverse+Butterfly+Pec+Deck+hintere+Schulter+Rear+Delt+Technik'
   },
   'pA8': {
-    desc:'Flachbank, EZ-Stange oder LH. Ellbogen zeigen zur Decke, bleiben fixiert. Stange langsam zur Stirn/Schläfe absenken, dann strecken. Keine Ausweichbewegung der Ellbogen. Kein Schwingen.',
-    video:'https://www.youtube.com/results?search_query=Skull+Crushers+EZ+Stange+Technik+richtige+Ausführung'
+    desc:'Kabel von oben, Seil oder Einzelgriff. Ellbogen zeigen nach vorne, bleiben fixiert. Arm nach oben-vorne strecken – der lange Trizepskopf wird maximal gedehnt. Leichtes Gewicht, langsame Bewegung für maximale Dehnung.',
+    video:'https://www.youtube.com/results?search_query=Trizeps+Overhead+Extension+Kabel+langer+Kopf+Technik+richtige+Ausführung'
   },
   // PULL A
   'plA1': {
-    desc:'Weiter Obergriff, Schulterblätter aktiv nach unten-hinten zusammenziehen. Am Tiefpunkt vollständig strecken. Stange/Körper zur oberen Brust ziehen. Kein Schwingen – langsam und kontrolliert.',
-    video:'https://www.youtube.com/results?search_query=Latziehen+weiter+Griff+Technik+richtige+Ausführung'
+    desc:'Schulterbreiter Obergriff. Schulterblätter aktiv nach unten-hinten zusammenziehen bevor du ziehst. Stange zur oberen Brust führen. Am Tiefpunkt vollständig strecken für maximale Dehnung des Lats.',
+    video:'https://www.youtube.com/results?search_query=Latzug+Maschine+Rückenziehstange+Technik+richtige+Ausführung'
   },
   'plA2': {
-    desc:'Aufrecht sitzen, Brust raus. Enger Griff zum Bauch ziehen, dabei Schulterblätter aktiv einrollen und zusammendrücken. Arme vollständig strecken und wieder ziehen – kein Schwung mit Oberkörper.',
-    video:'https://www.youtube.com/results?search_query=Sitzrudern+Kabel+enger+Griff+Technik+richtige+Ausführung'
+    desc:'Aufrecht sitzen, Brust am Polster. Griffe zum Bauch ziehen, dabei Schulterblätter aktiv einrollen und zusammenpressen. Am Endpunkt 1 Sekunde halten. Zwischen Wiederholungen Arme vollständig strecken.',
+    video:'https://www.youtube.com/results?search_query=Ruderzugmaschine+Rudermaschine+Technik+richtige+Ausführung'
   },
   'plA3': {
-    desc:'Eine Hand und gleichseitiges Knie auf der Bank abstützen. Rücken gerade, Hantel zum Hüftbereich (nicht zur Schulter!) ziehen. Schulterblatt am oberen Punkt einrollen. Volle Streckung unten.',
-    video:'https://www.youtube.com/results?search_query=einarmiges+Kurzhantelrudern+Technik+richtige+Ausführung'
+    desc:'Gegenteil von Seitheben: Arme starten seitlich erhoben und werden kontrolliert nach unten-innen gedrückt. Trainiert Latissimus und Teres Major. Arme leicht gebeugt halten, langsam und bewusst ausführen.',
+    video:'https://www.youtube.com/results?search_query=Seitenrunterdrücken+Latissimus+Maschine+Technik+richtige+Ausführung'
   },
   'plA4': {
-    desc:'Bein fixiert, Hüfte als Drehpunkt. Körper bis 90° absenken, dann mit unterem Rücken, Gesäß und hinteren Oberschenkeln zurück. Nicht überstrecken am oberen Ende. Optional Gewicht an Brust halten.',
-    video:'https://www.youtube.com/results?search_query=Hyperextensions+Rücken+Technik+richtige+Ausführung'
-  },
-  'plA4b': {
-    desc:'Kabel auf Bodenhöhe, beide Griffe überkreuzt nehmen. Leicht vorgebeugt, Arme seitlich nach außen-oben führen wie ein umgekehrter Fly. Hintere Schulter und Rotatorenmanschette werden trainiert.',
-    video:'https://www.youtube.com/results?search_query=Reverse+Flyes+Kabel+hintere+Schulter+Technik'
+    desc:'Oberkörper aufrecht, Oberarme auf den Pads. Die Maschine führt die Überzug-Bewegung. Arme von vorne-oben im Bogen nach unten-hinten bewegen. Dehnung am Anfang bewusst spüren, am Tiefpunkt zusammenkneifen.',
+    video:'https://www.youtube.com/results?search_query=Überzugmaschine+Pullover+Maschine+Technik+richtige+Ausführung'
   },
   'plA5': {
-    desc:'Stand, Ellbogen am Körper fixiert – sie sind das Drehgelenk. Nur der Unterarm bewegt sich. EZ-Stange schont die Handgelenke. Langsam absenken (3–4 Sek.) für maximalen Bizeps-Reiz.',
-    video:'https://www.youtube.com/results?search_query=Bizeps+Curls+EZ+Stange+Technik+richtige+Ausführung'
+    desc:'Oberarme vollständig auf dem Pad abgestützt – kein Schwingen möglich. Konzentriere dich nur auf den Bizeps. Vollständige Streckung unten, volle Kontraktion oben kurz halten. Letzter Satz: bis zur vollständigen Erschöpfung.',
+    video:'https://www.youtube.com/results?search_query=Bizepsmaschine+Bizeps+Curl+Maschine+Technik+richtige+Ausführung'
   },
   'plA6': {
-    desc:'Neutraler Griff (Daumen oben, Handflächen einander zugewandt). Sonst normale Curl-Bewegung. Trainiert Brachialis und Brachioradialis zusätzlich zum Bizeps – für dickere Armoptik.',
-    video:'https://www.youtube.com/results?search_query=Hammer+Curls+Technik+Bizeps+Brachialis'
-  },
-  'plA6b': {
-    desc:'Kabel auf Bodenhöhe, einzeln oder beide Arme. Gibt konstante Spannung über den gesamten Bewegungsradius – ideal als Pump-Finisher nach Bizeps-Grundübungen. Kurze Pause oben.',
+    desc:'Kabel von unten, konstante Spannung über den gesamten Bewegungsradius. Ellbogen fixiert an den Seiten – nur der Unterarm bewegt sich. Oben kurz für Spitzenkontraktion halten. Ideal als Pump-Finisher nach der Bizepsmaschine.',
     video:'https://www.youtube.com/results?search_query=Kabel+Bizeps+Curls+Technik+richtige+Ausführung'
+  },
+  'plA7': {
+    desc:'Klimmzug-Maschine mit Gewichtsunterstützung (B04). Das Zusatzgewicht reduziert dein Körpergewicht – je mehr Gewicht eingestellt, desto leichter. Breiter Griff für Lat-Fokus. Am Tiefpunkt vollständig strecken, bis Kinn die Stange passiert. Volle Kontrolle beim Absenken.',
+    video:'https://www.youtube.com/results?search_query=Klimmzüge+Maschine+Unterstützung+assisted+pullup+Technik+richtige+Ausführung'
+  },
+  'plA8': {
+    desc:'Butterfly-Maschine umgekehrt nutzen: Gesicht zur Maschine, Arme von vorne nach hinten-außen führen. Trainiert hintere Schulter und Rhomboiden. Leichtes Gewicht, kontrollierte Bewegung – diese kleinen Muskeln reagieren auf Sauberkeit, nicht Gewicht.',
+    video:'https://www.youtube.com/results?search_query=Reverse+Fly+Maschine+hintere+Schulter+Technik+richtige+Ausführung'
   },
   // LEGS A
   'lA1': {
-    desc:'Stange auf unterem Trapez, Füße schulterbreit. Knie in Richtung Zehen drücken, Brust hoch, Rücken neutral. Volle Tiefe wenn möglich. Tief Luft holen vor dem Weg nach unten – Bauch anspannen.',
-    video:'https://www.youtube.com/results?search_query=Kniebeugen+Technik+Langhantel+richtige+Ausführung+Anfänger'
+    desc:'Füße schulterbreit, mittig auf der Plattform. Beim Absenken Knie in Richtung Zehen drücken. Beine am oberen Punkt nicht vollständig durchstrecken – Knie weich lassen. Rücken fest am Polster. Dein Gewicht: ~117 kg.',
+    video:'https://www.youtube.com/results?search_query=Beinpresse+Maschine+Technik+richtige+Ausführung+Leg+Press'
   },
   'lA2': {
-    desc:'Füße schulterbreit, mittig auf der Plattform. Knie beim Absenken leicht nach außen drücken. Beine nicht vollständig strecken am oberen Ende – Knie immer weich lassen. Rücken am Polster halten.',
-    video:'https://www.youtube.com/results?search_query=Beinpresse+45+Grad+Technik+richtige+Ausführung'
+    desc:'Stange auf unterem Trapez, Füße schulterbreit. Knie in Richtung Zehen drücken, Brust hoch, Rücken neutral. Volle Tiefe wenn möglich. Tief Luft holen vor dem Abstieg, Core anspannen.',
+    video:'https://www.youtube.com/results?search_query=Kniebeugen+Langhantel+Technik+richtige+Ausführung+Squat'
   },
   'lA3': {
-    desc:'Knie am Gelenkpunkt der Maschine positionieren. Oben 1 Sekunde halten und Quadrizeps aktiv anspannen. Sehr langsam absenken (4 Sek.). Leichtes Gewicht reicht – der Muskelreiz entsteht durch Zeit.',
-    video:'https://www.youtube.com/results?search_query=Beinstrecker+Maschine+Technik+richtige+Ausführung'
+    desc:'Kniegelenk am Drehpunkt der Maschine positionieren. Am oberen Punkt 1 Sekunde halten und Quadrizeps aktiv anspannen. Sehr langsam absenken (4 Sek.) – der Reiz entsteht durch die Zeit unter Spannung.',
+    video:'https://www.youtube.com/results?search_query=Beinstrecker+Maschine+Leg+Extension+Technik+richtige+Ausführung'
   },
   'lA4': {
-    desc:'Großer Schritt nach vorne, Oberkörper aufrecht und gerade. Hinteres Knie kurz über den Boden ohne aufzusetzen. Fuß des vorderen Beins fest aufsetzen, Gewicht auf Ferse drücken, aufstehen.',
-    video:'https://www.youtube.com/results?search_query=Walking+Lunges+Technik+Kurzhantel+richtige+Ausführung'
+    desc:'Einbein-Übung an der Maschine (E24). Ein Bein belastet, das andere minimal. Knie des belasteten Beins in Richtung Zehe drücken. Gleichmäßige Kraft auf beiden Seiten entwickeln – Ungleichgewichte ausgleichen.',
+    video:'https://www.youtube.com/results?search_query=Einbeinige+Beinpresse+Legpress+Technik+richtige+Ausführung'
   },
   'lA5': {
-    desc:'Füße hüftbreit, Knie leicht gebeugt bleiben so. Hüfte nach hinten schieben (nicht Knie beugen!), Rücken bleibt neutral. Hantel nah am Körper entlangführen, Dehnung der hinteren Oberschenkel spüren.',
-    video:'https://www.youtube.com/results?search_query=Rumänisches+Kreuzheben+Technik+Hamstrings+richtige+Ausführung'
-  },
-  'lA5b': {
-    desc:'Bauchlage, Kniegelenk am Drehpunkt der Maschine. Fersen Richtung Gesäß ziehen, oben kurz halten. Kontrolliert und langsam zurück. Hüfte bleibt auf der Liege – nicht mitheben.',
-    video:'https://www.youtube.com/results?search_query=Beinbeuger+liegend+Maschine+Technik+richtige+Ausführung'
+    desc:'Hüft-Abduktionsmaschine (E03). Beine aus der Hüfte nach außen drücken gegen den Widerstand. Am Endpunkt Gesäß aktiv anspannen. Kontrolliert zurück – nicht zurückschnappen lassen.',
+    video:'https://www.youtube.com/results?search_query=Abduktion+Maschine+Hip+Abduction+Technik+richtige+Ausführung'
   },
   'lA6': {
-    desc:'Voller Bewegungsradius ist entscheidend: unten komplett dehnen (Ferse tief), dann maximal auf Zehenspitzen steigen und 1–2 Sek. halten. Langsam und kontrolliert – Waden reagieren gut auf Time under Tension.',
-    video:'https://www.youtube.com/results?search_query=Wadenheben+stehend+Maschine+Technik+richtige+Ausführung'
+    desc:'Voller Bewegungsradius ist entscheidend: unten komplett dehnen, dann maximal auf Zehenspitzen steigen und 1–2 Sek. oben halten. Langsam und kontrolliert – Waden reagieren besonders gut auf Time under Tension.',
+    video:'https://www.youtube.com/results?search_query=Wadenheben+stehend+Maschine+Calf+Raise+Technik+richtige+Ausführung'
   },
   'lA7': {
-    desc:'Unterarme und Zehen tragen das Gewicht. Körper gerade wie ein Brett – kein Hohlkreuz, kein Hintern hochziehen. Bauch und Gesäß aktiv anspannen. Normal atmen und Position halten.',
-    video:'https://www.youtube.com/results?search_query=Plank+richtige+Ausführung+Technik+Bauch'
+    desc:'Beinbeuger-Maschine (E05). Kniegelenk am Drehpunkt positionieren. Ferse Richtung Gesäß ziehen, am oberen Punkt kurz halten. Sehr langsam strecken (4 Sek.) – isoliert Hamstrings optimal. Hüfte bleibt auf der Liege.',
+    video:'https://www.youtube.com/results?search_query=Beinbeuger+Maschine+Hamstring+Curl+Technik+richtige+Ausführung'
+  },
+  'lA8': {
+    desc:'Hüft-Adduktionsmaschine (E02). Beine aus der Seitenposition zusammendrücken. Innere Oberschenkel (Adduktoren) werden trainiert. Kontrolliert zurück – nicht die Knie auseinanderschnappen lassen.',
+    video:'https://www.youtube.com/results?search_query=Adduktion+Maschine+Hip+Adduction+innere+Oberschenkel+Technik+richtige+Ausführung'
   },
   // PUSH B
   'pB1': {
-    desc:'Stand, LH vor dem Körper auf Schlüsselbeinhöhe. Core anspannen, kein Hohlkreuz. Stange senkrecht über Kopf drücken – Kopf beim Hochdrücken leicht zurückweichen, dann wieder nach vorne.',
-    video:'https://www.youtube.com/results?search_query=Schulterdrücken+Langhantel+stehend+Technik+richtige+Ausführung'
+    desc:'Sitz auf Schulterhöhe einstellen. Ellbogen-Pads nutzen und mit den Ellbogen (nicht Händen) nach oben führen. Sehr langsam (4 Sek.) zurückführen – das erzeugt den stärksten Trainingsreiz für die seitliche Schulter.',
+    video:'https://www.youtube.com/results?search_query=Seitheben+Maschine+Lateral+Raise+Schulter+Technik+richtige+Ausführung'
   },
   'pB2': {
-    desc:'Schulterblätter zusammenziehen und in die Bank drücken (Bogen). Breiter Griff (etwas mehr als Schulterbreite). Stange zur unteren Brust, Ellbogen ca. 75° zum Körper – nicht 90° spreizen.',
-    video:'https://www.youtube.com/results?search_query=Flachbankdrücken+Langhantel+Technik+richtige+Ausführung'
+    desc:'Butterfly-Maschine umgekehrt: Gesicht zur Maschine. Arme starten vorne, werden nach hinten-außen geführt (Reverse Fly). Trainiert hintere Schulter (Rear Delts) und Rhomboiden. Leichtes Gewicht, saubere Ausführung.',
+    video:'https://www.youtube.com/results?search_query=Reverse+Butterfly+Pec+Deck+hintere+Schulter+Rear+Delt+Technik'
   },
   'pB3': {
-    desc:'Parallel-Griffe, Oberkörper leicht nach vorne neigen für Brust-Fokus. Bis die Ellbogen 90° erreichen, dann drücken. Nicht zu tief gehen – schützt die Schultern. Aufrecht = mehr Trizeps.',
-    video:'https://www.youtube.com/results?search_query=Dips+Brust+Trizeps+Technik+richtige+Ausführung'
+    desc:'Das Gegenteil von Seitheben: Arme seitlich nach unten drücken gegen Widerstand. Trainiert den unteren Teil des M. deltoideus und den Teres minor. Ellbogen leicht gebeugt halten, Bewegung kontrolliert und langsam.',
+    video:'https://www.youtube.com/results?search_query=Seitenrunterdrücken+Schulter+Maschine+Kabel+Technik+richtige+Ausführung'
   },
   'pB4': {
-    desc:'Sitzend für weniger Schwung. Hanteln seitlich bis Schulterhöhe heben, kleiner Finger leicht höher als Daumen (als würdest du ausgießen). Sehr langsam absenken (4 Sek.) für maximalen Reiz.',
-    video:'https://www.youtube.com/results?search_query=Seitheben+sitzend+Kurzhantel+Technik+richtige+Ausführung'
-  },
-  'pB4b': {
-    desc:'Start: Hanteln vor dem Körper, Handflächen innen. Beim Hochdrücken drehen bis Handflächen nach außen. Rotation trainiert alle drei Schulterköpfe. Benannt nach Arnold Schwarzenegger.',
-    video:'https://www.youtube.com/results?search_query=Arnold+Press+Technik+Schulter+richtige+Ausführung'
+    desc:'Trizepsmaschine: Arme nah am Körper, nur der Unterarm bewegt sich. Beim letzten Satz 2 Sek. unten halten, dann explosiv strecken. Intensiviert den Trizeps-Reiz deutlich.',
+    video:'https://www.youtube.com/results?search_query=Trizeps+Maschine+Technik+richtige+Ausführung'
   },
   'pB5': {
-    desc:'Kabel auf Bodenhöhe, Arme von unten nach oben-innen führen wie ein umgekehrter Fly. Aktiviert obere Brust und vorderen Schulter. Arme leicht gebeugt, Brust aktiv zusammenkneifen.',
-    video:'https://www.youtube.com/results?search_query=Kabel+Crossover+tief+obere+Brust+Technik+richtige+Ausführung'
+    desc:'Kabel von oben, Seil oder einzelner Griff. Ellbogen zeigen nach vorne und bleiben fixiert. Arm nach oben-vorne strecken – der lange Trizepskopf wird maximal gedehnt. Langsam bewegen, leichtes Gewicht für maximale Dehnung.',
+    video:'https://www.youtube.com/results?search_query=Trizeps+Overhead+Extension+Kabel+langer+Kopf+Technik+richtige+Ausführung'
   },
   'pB6': {
-    desc:'Kabel oder Kurzhantel über dem Kopf, Ellbogen zeigen nach vorne und bleiben fixiert. Unterarm nach oben strecken – langer Trizepskopf wird besonders gedehnt und trainiert. Leichtes Gewicht.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Overhead+Extension+Kabel+Technik+richtige+Ausführung'
+    desc:'Auf der Bank liegend mit 2×12,5 kg. Heute mit Fokus auf das Brust-Gefühl statt Gewicht. Hanteln auf Brusthöhe, Ellbogen ca. 75° zum Körper. Nach oben drücken, leicht zur Mitte zusammenführen. Langsam absenken.',
+    video:'https://www.youtube.com/results?search_query=Brustpresse+liegend+Kurzhantel+Flachbank+Technik+richtige+Ausführung'
   },
   'pB7': {
-    desc:'Hände auf Bank hinter dir, Beine gestreckt oder gebeugt. Körper eng an der Bank entlangführen, Ellbogen bleiben nah am Körper. Kein Ausweichen mit den Schultern. Kontrolliert absenken.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Dips+Bank+Technik+richtige+Ausführung'
+    desc:'Gleiche Butterfly-Maschine (A02) wie in Push A, aber heute mit höheren Wiederholungen und etwas weniger Gewicht. Fokus auf das Brust-Gefühl und die Pumpe, nicht auf maximale Last.',
+    video:'https://www.youtube.com/results?search_query=Butterfly+Pec+Deck+Maschine+Brust+Technik+richtige+Ausführung'
+  },
+  'pB8': {
+    desc:'Kabel von oben, Seil-Aufsatz. Leicht nach vorne lehnen, Ellbogen dicht am Körper fixiert. Nur der Unterarm bewegt sich: Seil nach unten durchdrücken bis zur vollen Streckung, Trizeps am Tiefpunkt aktiv anspannen. Zweiter Kabel-Finisher nach Overhead.',
+    video:'https://www.youtube.com/results?search_query=Trizeps+Pushdown+Seil+Kabel+Technik+richtige+Ausführung'
   },
   // PULL B
   'plB1': {
-    desc:'Füße hüftbreit, Stange über dem Mittelfuß. Schulterblätter zurückziehen, Rücken absolut neutral – KEINE Rundung. Durch den Boden drücken, Stange nah am Schienbein entlang. Wichtigste Übung: Form > Gewicht.',
-    video:'https://www.youtube.com/results?search_query=Kreuzheben+Technik+konventionell+richtige+Ausführung+Anfänger'
+    desc:'Klimmzug-Maschine mit Gewichtsunterstützung (B04). Das Zusatzgewicht reduziert dein Körpergewicht. Breiter Griff für Lat-Fokus. Am Tiefpunkt vollständig strecken, bis Kinn die Stange passiert. Volle Kontrolle beim Absenken.',
+    video:'https://www.youtube.com/results?search_query=Klimmzüge+Maschine+Unterstützung+assisted+pullup+Technik+richtige+Ausführung'
   },
   'plB2': {
-    desc:'Oberkörper 45–90° nach vorne. Stange zum Bauch ziehen, Schulterblätter aktiv zusammenführen am Endpunkt. Arme vollständig strecken zwischen den Wiederholungen. Kein Reißen mit Schwung.',
-    video:'https://www.youtube.com/results?search_query=Langhantelrudern+T-Rudern+Technik+richtige+Ausführung'
+    desc:'Gleiche Maschine wie PULL A. Fokus auf Schulterblätter vollständig zusammenziehen und kurz halten. Bewusste Pause am Tiefpunkt für maximale Latissimus-Dehnung.',
+    video:'https://www.youtube.com/results?search_query=Latzug+Maschine+Technik+richtige+Ausführung'
   },
   'plB3': {
-    desc:'Schulterbreiter Untergriff (Handflächen zeigen zu dir). Schulterblätter nach unten-hinten einrollen, Stange zur oberen Brust ziehen. Untergriff bringt mehr Bizepsbeteiligung für mehr Zugkraft.',
-    video:'https://www.youtube.com/results?search_query=Latziehen+Untergriff+Technik+richtige+Ausführung'
+    desc:'Ruderzugmaschine (B01). Heute 3 Sätze. Fokus auf maximale Kontraktion der Schulterblätter am Endpunkt – 2 Sekunden halten. Arme vollständig strecken zwischen Wiederholungen.',
+    video:'https://www.youtube.com/results?search_query=Ruderzugmaschine+Rudern+Technik+richtige+Ausführung'
   },
-  'plB3b': {
-    desc:'Kabel hoch, gerade Stange oder Seil. Arme fast gestreckt lassen – Bewegung kommt aus der Schulter, nicht dem Ellbogen. Stange von oben zum Körper drücken. Reiner Latissimus-Fokus, kein Bizeps.',
-    video:'https://www.youtube.com/results?search_query=Straight+Arm+Pulldown+Technik+Latissimus+richtige+Ausführung'
+  'plB4': {
+    desc:'Reverse Butterfly auf der Maschine. Hintere Schultermuskulatur (hintere Delts) und Rhomboiden. Arme leicht gebeugt. Nicht reißen – langsame, kontrollierte Bewegung für maximale Wirkung auf die kleine Muskelgruppe.',
+    video:'https://www.youtube.com/results?search_query=Reverse+Fly+Maschine+hintere+Schulter+Technik+richtige+Ausführung'
   },
   'plB5': {
-    desc:'Auf Bank sitzen, Ellbogen auf dem inneren Oberschenkel abstützen. Maximale Isolation – kein Schwingen möglich. Langsam und kontrolliert bewegen, oben kurz halten. Sehr effektiv für Bizepspeak.',
-    video:'https://www.youtube.com/results?search_query=Concentration+Curls+Technik+Bizeps+richtige+Ausführung'
+    desc:'Oberarme vollständig auf dem Pad, kein Schwingen möglich. Heute inkl. Max-Satz: letzten Satz bis zur vollständigen Erschöpfung. Kein Schwingen. Konzentration liegt voll auf dem Bizeps.',
+    video:'https://www.youtube.com/results?search_query=Bizepsmaschine+Bizeps+Curl+Maschine+Technik+richtige+Ausführung'
   },
   'plB6': {
-    desc:'7 halbe Wdh. unten (0–90°), 7 halbe oben (90°–oben), 7 volle Wdh. = ein Satz. Enorme metabolische Erschöpfung des Bizeps. Gewicht stark reduzieren! Kurze Pause zwischen den 3 Abschnitten ok.',
+    desc:'7 halbe Wdh. unten (0–90°), 7 halbe oben (90°–oben), 7 volle Wdh. = 1 Satz. Enorme metabolische Erschöpfung des Bizeps. Gewicht stark reduzieren! Kurze Pause zwischen den 3 Abschnitten ist ok.',
     video:'https://www.youtube.com/results?search_query=Bizeps+21er+Kabel+Technik+richtige+Ausführung'
   },
   'plB7': {
-    desc:'Obergriff (Handrücken oben, Daumen nach unten). Normale Curl-Bewegung mit EZ-Stange oder LH. Handgelenke neutral, nicht abknicken. Trainiert Brachioradialis und Unterarmmuskeln intensiv.',
-    video:'https://www.youtube.com/results?search_query=Reverse+Curls+EZ+Stange+Unterarm+Technik+richtige+Ausführung'
+    desc:'Überzugmaschine (B21). Oberkörper aufrecht, Oberarme auf den Pads. Die Maschine führt die Überzug-Bewegung. Arme von vorne-oben im Bogen nach unten-hinten bewegen. Dehnung am Anfang bewusst spüren, am Tiefpunkt zusammenkneifen.',
+    video:'https://www.youtube.com/results?search_query=Überzugmaschine+Pullover+Maschine+Technik+richtige+Ausführung'
   },
   'plB8': {
-    desc:'An der Klimmzugstange hängen, Schultern aktiv nach unten ziehen. Knie kontrolliert zur Brust heben – kein Schwingen. Untere Bauchmuskulatur und Hüftbeuger. Langsam absenken für volle Kontrolle.',
-    video:'https://www.youtube.com/results?search_query=Hanging+Knee+Raises+Technik+Bauch+richtige+Ausführung'
+    desc:'Seitenrunterdrücken (Maschine): Gegenteil von Seitheben. Arme starten seitlich erhoben und werden kontrolliert nach unten-innen gedrückt. Trainiert Latissimus und Teres Major. Ellbogen leicht gebeugt, langsam und bewusst ausführen.',
+    video:'https://www.youtube.com/results?search_query=Seitenrunterdrücken+Latissimus+Maschine+Technik+richtige+Ausführung'
   },
   // LEGS B
   'lB1': {
-    desc:'Hüfte nach hinten schieben, nicht die Knie beugen (das ist der Unterschied zum normalen KH). Rücken bleibt neutral. Stange/Hanteln nah am Körper entlang. Dehnung der hinteren Oberschenkel deutlich spüren.',
-    video:'https://www.youtube.com/results?search_query=Rumänisches+Kreuzheben+Langhantel+Hamstrings+Technik'
+    desc:'Gleiche Maschine wie BEINE A, Füße etwas weiter oben auf der Plattform platzieren – das betont die Hamstrings stärker. Etwas leichteres Gewicht, dafür mehr Kontrolle in der Absenkphase.',
+    video:'https://www.youtube.com/results?search_query=Beinpresse+Maschine+Hamstrings+Fußposition+Technik+richtige+Ausführung'
   },
   'lB2': {
-    desc:'Hinterer Fuß auf Bank/Box. Gewicht auf dem Vorderfuß. Aufrecht absenken, hinteres Knie zur Erde. Sehr koordinativ anspruchsvoll – anfangs leicht oder ohne Gewicht beginnen. Effektivste Beinübung überhaupt.',
-    video:'https://www.youtube.com/results?search_query=Bulgarische+Kniebeugen+Technik+richtige+Ausführung'
+    desc:'Beinbeuger-Maschine (E05). Kniegelenk am Drehpunkt. Ferse Richtung Gesäß ziehen, am oberen Punkt kurz halten. Sehr langsam strecken (4 Sek.) – isoliert Hamstrings optimal. Hüfte bleibt auf der Liege.',
+    video:'https://www.youtube.com/results?search_query=Beinbeuger+Maschine+Hamstring+Curl+Technik+richtige+Ausführung'
   },
   'lB3': {
-    desc:'Breite Fußstellung (1,5× Schulterbreite), Zehen ca. 45° nach außen. Knie in Richtung Zehen drücken. Betont besonders innere Oberschenkel (Adduktoren) und Gesäß. Aufrechter Oberkörper.',
-    video:'https://www.youtube.com/results?search_query=Sumo+Kniebeugen+Technik+richtige+Ausführung+Beine'
+    desc:'Hüft-Adduktionsmaschine (E02). Beine aus der Seitenposition zusammendrücken. Innere Oberschenkel (Adduktoren) werden trainiert. Kontrolliert zurück – nicht die Knie auseinanderschnappen lassen.',
+    video:'https://www.youtube.com/results?search_query=Adduktion+Maschine+Hip+Adduction+innere+Oberschenkel+Technik+richtige+Ausführung'
   },
   'lB4': {
-    desc:'Im Stehen, eine Ferse wird zur Gesäß gezogen. Stabilen Stand, Oberkörper aufrecht und gerade. Hüfte nicht mit drehen. Langsam absenken für maximalen Reiz der hinteren Oberschenkel.',
-    video:'https://www.youtube.com/results?search_query=Beinbeuger+stehend+Maschine+Technik+richtige+Ausführung'
-  },
-  'lB4b': {
-    desc:'Schulterblätter auf Bank, Stange über Hüfte (Schutzpolster nutzen!). Gesäß bis zur vollen Hüftstreckung nach oben drücken. Oben 1–2 Sek. halten. Knie über den Füßen, Füße flach auf Boden.',
-    video:'https://www.youtube.com/results?search_query=Hip+Thrust+Langhantel+Technik+richtige+Ausführung+Glutes'
+    desc:'Hüft-Abduktionsmaschine (E03). Beine nach außen drücken gegen den Widerstand. Am Endpunkt Gesäß aktiv anspannen. Kontrolliert zurück. Außenseite Gesäß und Hüfte werden trainiert.',
+    video:'https://www.youtube.com/results?search_query=Abduktion+Maschine+Hip+Abduction+Gesäß+Technik+richtige+Ausführung'
   },
   'lB5': {
-    desc:'Breiter Schritt zur Seite, ein Bein gestreckt lassen. Gewicht auf das gebeugte Bein verlagern, Oberkörper leicht vorne. Innere Oberschenkel (Adduktoren) stark gedehnt. Knie über dem Fuß halten.',
-    video:'https://www.youtube.com/results?search_query=seitliche+Ausfallschritte+Technik+Adduktoren+richtige+Ausführung'
+    desc:'Wadenmachine (E07). Voller Bewegungsradius ist entscheidend: unten komplett dehnen, dann maximal hoch und 1–2 Sek. halten. Langsam und kontrolliert – Time under Tension ist bei den Waden besonders wichtig.',
+    video:'https://www.youtube.com/results?search_query=Wadenheben+Maschine+Waden+Calf+Raise+Technik+richtige+Ausführung'
   },
   'lB6': {
-    desc:'Auf Maschine oder Hanteln auf Knie. Knöchel tief anwinkeln für maximale Dehnung. Dann auf Zehenspitzen und oben kurz halten. Trainiert den tiefer liegenden Soleus-Muskel – besonders im Sitzen aktiviert.',
-    video:'https://www.youtube.com/results?search_query=Wadenheben+sitzend+Maschine+Soleus+Technik+richtige+Ausführung'
+    desc:'Stange auf unterem Trapez, Füße schulterbreit. Knie in Richtung Zehen drücken, Brust hoch, Rücken neutral. Volle Tiefe wenn möglich. Tief Luft holen vor dem Abstieg, Core anspannen. Nach den Squats folgt direkt die Beinpresse.',
+    video:'https://www.youtube.com/results?search_query=Kniebeugen+Langhantel+Technik+richtige+Ausführung+Squat'
   },
   'lB7': {
-    desc:'Cable Crunch: Knie auf Boden, Seil im Nacken – Stirn Richtung Knie runden (nicht Hüftbeugen!). AB-Wheel: langsam vorrollen mit geradem Rücken, dann mit Core zurückziehen. Beide sehr effektiv für Bauch.',
-    video:'https://www.youtube.com/results?search_query=Cable+Crunch+AB+Wheel+Technik+richtige+Ausführung+Bauch'
+    desc:'Einbein-Übung an der Maschine (E24). Ein Bein belastet, das andere minimal. Knie des belasteten Beins in Richtung Zehe drücken. Gesäß aktiv anspannen – besonders auf der Hamstring/Gesäß-Seite wirksam.',
+    video:'https://www.youtube.com/results?search_query=Einbeinige+Beinpresse+Legpress+Technik+richtige+Ausführung'
+  },
+  'lB8': {
+    desc:'Beinstrecker (E04) als Quadrizeps-Balance nach dem Hamstring-Fokus heute. Kniegelenk am Drehpunkt positionieren. Am oberen Punkt 1 Sekunde halten. Etwas leichteres Gewicht als an Beine A – Fokus auf Gefühl, nicht Last.',
+    video:'https://www.youtube.com/results?search_query=Beinstrecker+Maschine+Leg+Extension+Technik+richtige+Ausführung'
   }
 };
 
@@ -544,28 +560,71 @@ const MET = {push:4.5, pull:4.0, legs:5.5, rest:2.0};
 const SK = 'tp_v3_';
 
 // ─── STATE ───────────────────────────────────────────────────
-let planOffset    = parseInt(localStorage.getItem('tp_planOffset')||'0');
-let activeCalDay  = getRawToday();
-let openEx        = new Set();
-let timerInterval = null, timerRem = 0, timerTotal = 0;
-let viewMode      = 'day';
+let activeWorkoutKey = null; // null = picker, string = active workout key
+let openEx           = new Set();
+let timerInterval    = null, timerRem = 0, timerTotal = 0;
+let viewMode         = 'day';
 
 // ─── HELPERS ─────────────────────────────────────────────────
-function getRawToday() {
-  const map=[6,0,1,2,3,4,5];
-  return map[new Date().getDay()];
-}
 function getTodayStr() {
   return new Date().toISOString().slice(0,10);
 }
-function workoutForCal(calIdx) {
-  return PLAN[(calIdx - planOffset % 7 + 7*10) % 7];
+
+// ─── WORKOUT HISTORY & RECOMMENDATION ────────────────────────
+function getWorkoutLog() {
+  return Object.keys(localStorage)
+    .filter(k=>k.startsWith('tp_done_'))
+    .map(k=>({date:k.replace('tp_done_',''), key:localStorage.getItem(k)}))
+    .filter(e=>PLAN.some(p=>p.key===e.key&&p.type!=='rest'))
+    .sort((a,b)=>b.date.localeCompare(a.date));
 }
-function isCalSkipped(calIdx) {
-  return localStorage.getItem(SK+'cal_skip_'+calIdx)==='1';
+function getLastDoneDate(workoutKey) {
+  const e=getWorkoutLog().find(e=>e.key===workoutKey);
+  return e?e.date:null;
 }
-function setCalSkipped(calIdx, v) {
-  localStorage.setItem(SK+'cal_skip_'+calIdx, v?'1':'0');
+function daysSince(dateStr) {
+  if(!dateStr) return 999;
+  const d=new Date(dateStr+'T12:00:00');
+  const t=new Date(getTodayStr()+'T12:00:00');
+  return Math.round((t-d)/86400000);
+}
+function getRecommendation() {
+  const today=getTodayStr();
+  const todayKey=localStorage.getItem('tp_done_'+today);
+  if(todayKey&&PLAN.some(p=>p.key===todayKey))
+    return {key:todayKey, reason:'Heute bereits gestartet ✓', isActive:true};
+  const workouts=PLAN.filter(p=>p.type!=='rest');
+  const log=getWorkoutLog();
+  if(!log.length) return {key:'pushA', reason:'Noch kein Eintrag – starte mit Push A'};
+  const rotation={pushA:'pullA',pullA:'legsA',legsA:'pushB',pushB:'pullB',pullB:'legsB',legsB:'pushA'};
+  const last=log[0];
+  const nextKey=rotation[last.key];
+  const lastPlan=PLAN.find(p=>p.key===last.key);
+  const ds=daysSince(last.date);
+  if(nextKey){
+    const nextPlan=PLAN.find(p=>p.key===nextKey);
+    const dayLabel=ds===0?'heute':ds===1?'gestern':`vor ${ds} Tagen`;
+    return {key:nextKey, reason:`Nach ${lastPlan?.title} (${dayLabel}) → ${nextPlan?.title}`};
+  }
+  const sorted=workouts.slice().sort((a,b)=>daysSince(getLastDoneDate(b.key))-daysSince(getLastDoneDate(a.key)));
+  const d=daysSince(getLastDoneDate(sorted[0].key));
+  return {key:sorted[0].key, reason:d<999?`Zuletzt vor ${d} Tag${d===1?'':'en'}`:'Noch nicht gemacht'};
+}
+function getWorkoutProgress(workoutKey) {
+  const day=PLAN.find(p=>p.key===workoutKey);
+  if(!day||!day.exercises.length) return {done:0,total:0};
+  let done=0,total=0;
+  day.exercises.forEach(ex=>{
+    if(isExSkipped(workoutKey,ex.id)){done++;total++;return;}
+    for(let s=0;s<ex.sets;s++){total++;if(isDone(workoutKey,ex.id,s))done++;}
+  });
+  return {done,total};
+}
+function selectWorkout(key) {
+  activeWorkoutKey=key; viewMode='day'; openEx.clear(); render(); window.scrollTo(0,0);
+}
+function goBackToPicker() {
+  activeWorkoutKey=null; render(); window.scrollTo(0,0);
 }
 
 // ─── EXERCISE DATA ────────────────────────────────────────────
@@ -653,28 +712,23 @@ function render(){renderTabs();renderContent();updateFab();}
 
 function renderTabs(){
   const tabs=document.getElementById('dayTabs');
-  const today=getRawToday();
   tabs.innerHTML='';
-  for(let i=0;i<7;i++){
-    const w=workoutForCal(i);
-    const skipped=isCalSkipped(i);
-    const {done,total}=getDayProgress(i);
-    const pct=total>0?Math.round(done/total*100):0;
+  PLAN.filter(p=>p.type!=='rest').forEach(w=>{
+    const isActive=activeWorkoutKey===w.key&&viewMode!=='overview';
     const color=TYPE_COLORS[w.type];
+    const {done,total}=getWorkoutProgress(w.key);
+    const pct=total>0?Math.round(done/total*100):0;
+    const ds=daysSince(getLastDoneDate(w.key));
+    const badge=pct===100?'✓':pct>0?pct+'%':ds<999?ds+'d':'';
     const tab=document.createElement('button');
-    tab.className='day-tab'
-      +(i===activeCalDay?' active':'')
-      +(i===today?' today-tab':'')
-      +(skipped?' skipped-tab':'');
-    tab.style.setProperty('color', i===activeCalDay?'#fff':color);
-    tab.style.setProperty('border-color', i===activeCalDay?'transparent':color);
-    if(i===activeCalDay) tab.style.background=color;
-    const badge=skipped?'⏭':pct===100?'✓':pct>0?pct+'%':'';
-    const sub=badge||w.title.split(' ').slice(0,2).join(' ');
-    tab.innerHTML=`<span class="tab-label">${CAL_LABELS[i]}</span><span class="tab-sub">${sub}</span>`;
-    tab.onclick=()=>{activeCalDay=i;viewMode='day';render();};
+    tab.className='day-tab'+(isActive?' active':'');
+    tab.style.setProperty('color',isActive?'#fff':color);
+    tab.style.setProperty('border-color',isActive?'transparent':color);
+    if(isActive) tab.style.background=color;
+    tab.innerHTML=`<span class="tab-label">${w.emoji}</span><span class="tab-sub">${badge||w.title.split(' ')[1]}</span>`;
+    tab.onclick=()=>selectWorkout(w.key);
     tabs.appendChild(tab);
-  }
+  });
   const ov=document.createElement('button');
   ov.className='day-tab'+(viewMode==='overview'?' active':'');
   ov.style.color=viewMode==='overview'?'#fff':'#3498db';
@@ -688,73 +742,95 @@ function renderTabs(){
 function renderContent(){
   const el=document.getElementById('content');
   if(viewMode==='overview'){renderOverview(el);return;}
-  const calIdx=activeCalDay;
-  const today=getRawToday();
-  if(isCalSkipped(calIdx)){renderSkippedDay(el,calIdx);return;}
-  const w=workoutForCal(calIdx);
-  if(w.type==='rest'){renderRest(el);return;}
-  renderDay(el,w,calIdx,calIdx===today);
+  if(!activeWorkoutKey){renderPicker(el);return;}
+  const w=PLAN.find(p=>p.key===activeWorkoutKey);
+  if(!w||w.type==='rest'){renderPicker(el);return;}
+  renderDay(el,w);
 }
 
-function renderRest(el){
-  el.innerHTML=`<div class="rest-view"><div class="rest-icon">🛌</div><h2>Ruhetag</h2><p>Heute ist Pause.<br>Erholung ist Teil des Trainings!</p><br><p style="color:#aaa;font-size:12px">Optional: 20–30 min leichtes Cardio</p></div>`;
-}
-
-function renderSkippedDay(el,calIdx){
-  const w=workoutForCal(calIdx);
-  const color=TYPE_COLORS[w.type];
-  el.innerHTML=`
-    <div class="skipped-view">
-      <div class="skip-icon">⏭</div>
-      <h3>${CAL_LABELS[calIdx]} — Ausgelassen</h3>
-      <p>Dieser Tag wurde übersprungen.<br>Der Plan wurde um einen Tag verschoben.</p>
-      <span class="workout-name" style="background:${color}">${w.title} — ${w.subtitle}</span>
+function renderPicker(el){
+  const rec=getRecommendation();
+  const today=getTodayStr();
+  const workouts=PLAN.filter(p=>p.type!=='rest');
+  const recPlan=PLAN.find(p=>p.key===rec.key);
+  const recColor=TYPE_COLORS[recPlan?.type]||'#3498db';
+  let html=`
+    <div class="rec-card" onclick="selectWorkout('${rec.key}')" style="border-color:${recColor}">
+      <div class="rec-icon">💡</div>
+      <div class="rec-body">
+        <div class="rec-title" style="color:${recColor}">${recPlan?.emoji} ${recPlan?.title}</div>
+        <div class="rec-reason">${rec.reason}</div>
+      </div>
+      <div class="rec-arrow" style="color:${recColor}">›</div>
     </div>
-    <button class="modal-btn success" style="margin-top:8px" onclick="undoSkipDay(${calIdx})">↩ Diesen Tag wiederherstellen</button>`;
+    <div class="picker-heading">Alle Einheiten</div>`;
+  workouts.forEach(w=>{
+    const isRec=w.key===rec.key;
+    const color=TYPE_COLORS[w.type];
+    const lastDate=getLastDoneDate(w.key);
+    const ds=daysSince(lastDate);
+    const todayDone=localStorage.getItem('tp_done_'+today)===w.key;
+    const {done,total}=getWorkoutProgress(w.key);
+    const pct=total>0?Math.round(done/total*100):0;
+    let badgeText,badgeColor;
+    if(todayDone){badgeText=pct===100?'✓ Fertig':pct+'%';badgeColor=pct===100?'#27ae60':'#e67e22';}
+    else if(lastDate){badgeText=ds===0?'heute':ds===1?'gestern':`vor ${ds}d`;badgeColor=ds>6?'#e74c3c':color;}
+    else{badgeText='noch nie';badgeColor='#aaa';}
+    html+=`
+    <div class="picker-card${isRec?' recommended':''}" onclick="selectWorkout('${w.key}')" style="${isRec?`border-color:${color};background:${color}0d`:''}">
+      <div class="picker-dot" style="background:${color}22">${w.emoji}</div>
+      <div class="picker-info">
+        <div class="picker-name" style="${isRec?`color:${color}`:''}}">${w.title}</div>
+        <div class="picker-sub">${w.subtitle}</div>
+      </div>
+      <span class="picker-badge" style="color:${badgeColor}">${badgeText}</span>
+      <span class="picker-arr">›</span>
+    </div>`;
+  });
+  el.innerHTML=html;
 }
 
 function renderOverview(el){
-  const today=getRawToday();
+  const today=getTodayStr();
   el.innerHTML='<div class="week-overview active" id="wo"></div>';
   const ov=document.getElementById('wo');
-  for(let i=0;i<7;i++){
-    const w=workoutForCal(i);
-    const skipped=isCalSkipped(i);
-    const {done,total}=getDayProgress(i);
+  PLAN.filter(p=>p.type!=='rest').forEach(w=>{
+    const {done,total}=getWorkoutProgress(w.key);
     const pct=total>0?Math.round(done/total*100):-1;
-    const bc=skipped?'#999':pct===100?'#1e8449':pct>0?'#e67e22':'#bbb';
-    const bb=skipped?'#f5f5f5':pct===100?'#e8f8f0':pct>0?'#fff3e0':'#f4f5f7';
-    const bt=skipped?'⏭ Skip':pct===100?'✓ Fertig':pct>0?pct+'%':'–';
+    const lastDate=getLastDoneDate(w.key);
+    const ds=daysSince(lastDate);
+    const todayDone=localStorage.getItem('tp_done_'+today)===w.key;
+    const bc=pct===100?'#1e8449':pct>0?'#e67e22':'#bbb';
+    const bb=pct===100?'#e8f8f0':pct>0?'#fff3e0':'#f4f5f7';
+    const bt=todayDone?(pct===100?'✓ Heute':pct+'%'):lastDate?(ds===0?'heute':ds===1?'gestern':`vor ${ds}d`):'–';
     const card=document.createElement('div');
-    card.className='week-card'+(skipped?' skipped-card':'');
-    card.onclick=()=>{activeCalDay=i;viewMode='day';render();};
+    card.className='week-card';
+    card.onclick=()=>selectWorkout(w.key);
     card.innerHTML=`
-      <div class="week-card-dot" style="background:${TYPE_COLORS[w.type]}22">${skipped?'⏭':w.emoji}</div>
+      <div class="week-card-dot" style="background:${TYPE_COLORS[w.type]}22">${w.emoji}</div>
       <div class="week-card-info">
-        <h3 style="color:${skipped?'#999':TYPE_COLORS[w.type]}">${CAL_LABELS[i]} – ${w.title}</h3>
-        <p>${w.subtitle}${i===today?' · <strong>Heute</strong>':''}</p>
+        <h3 style="color:${TYPE_COLORS[w.type]}">${w.title}</h3>
+        <p>${w.subtitle} · ${w.exercises.length} Übungen</p>
       </div>
       <span class="week-card-badge" style="color:${bc};background:${bb}">${bt}</span>`;
     ov.appendChild(card);
-  }
+  });
 }
 
-function renderDay(el,w,calIdx,isToday){
-  // Starte Session-Timer sobald Training geöffnet wird
-  if(isToday) maybeStartSession(w.key);
-
-  const {done,total}=getDayProgress(calIdx);
+function renderDay(el,w){
+  maybeStartSession(w.key);
+  const {done,total}=getWorkoutProgress(w.key);
   const pct=total>0?Math.round(done/total*100):0;
   const color=TYPE_COLORS[w.type];
   const C=2*Math.PI*20;
-  const kcal=done===total&&total>0?getKcal(getTodayStr()):0;
+  const kcal=done===total&&total>0?calcKcal(w.type,w.key):0;
   const bw=getBodyWeight();
-
   el.innerHTML=`
     ${!bw?`<div class="bw-hint"><span>⚖️ Gewicht eingeben für Kalorien-Schätzung</span><button onclick="promptBodyWeight()">Eingeben</button></div>`:''}
     <div class="day-header" style="background:${color}">
       <div class="day-header-left">
-        <h2>${CAL_LABELS[calIdx]} — ${w.title}</h2>
+        <button onclick="goBackToPicker()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:6px">‹ Zurück</button>
+        <h2>${w.title}</h2>
         <p>${w.subtitle} · ${w.exercises.length} Übungen · ${total} Sätze</p>
         ${kcal>0?`<div class="kcal-badge">🔥 ~${kcal} kcal verbrannt</div>`:''}
       </div>
@@ -768,10 +844,6 @@ function renderDay(el,w,calIdx,isToday){
         <div class="pct">${pct}%</div>
       </div>
     </div>
-    <div class="skip-day-bar">
-      <span>⏭ ${isToday?'Heute':'Diesen Tag'} auslassen?</span>
-      <button class="skip-day-btn" onclick="skipDay(${calIdx})">Tag überspringen</button>
-    </div>
     <div id="timerBar" class="rest-timer-bar">
       <div style="flex:1">
         <div class="timer-display" id="timerDisplay">0:00</div>
@@ -780,7 +852,7 @@ function renderDay(el,w,calIdx,isToday){
       </div>
       <button class="timer-stop" onclick="stopTimer()">Stop</button>
     </div>
-    ${w.type!=='rest'?`<div class="warmup-card wu-open" id="warmupCard">
+    <div class="warmup-card wu-open" id="warmupCard">
       <div class="warmup-hdr" onclick="document.getElementById('warmupCard').classList.toggle('wu-open')">
         <div class="warmup-icon">🏃</div>
         <div class="warmup-title">Aufwärmen (10–15 Min.)</div>
@@ -788,11 +860,10 @@ function renderDay(el,w,calIdx,isToday){
         <div class="warmup-chev">▼</div>
       </div>
       <div class="warmup-body"></div>
-    </div>`:''}
+    </div>
     <div id="exerciseList"></div>`;
-
   if(timerInterval){document.getElementById('timerBar').classList.add('active');updateTimerDisplay();}
-  if(w.type!=='rest') renderWarmupCard(w.key);
+  renderWarmupCard(w.key);
   renderExercises(w,color);
 }
 
@@ -856,7 +927,7 @@ function renderExercises(w,color){
             onchange="saveSet('${w.key}','${ex.id}',${s},'kg',this.value);maybeSaveHist('${w.key}','${ex.id}',${s})">
           <input class="set-input" type="number" inputmode="numeric" placeholder="–" value="${loadSet(w.key,ex.id,s,'reps')}" min="0"
             onchange="saveSet('${w.key}','${ex.id}',${s},'reps',this.value);maybeSaveHist('${w.key}','${ex.id}',${s})">
-          <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}" onclick="toggleSetDone('${w.key}','${ex.id}',${s},${ex.rest},${activeCalDay})">${done?'✓':''}</button>`;
+          <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}" onclick="toggleSetDone('${w.key}','${ex.id}',${s},${ex.rest})">${done?'✓':''}</button>`;
         sd.appendChild(row);
       }
       if(ex.notes){const n=document.createElement('div');n.className='notes-text';n.textContent='💡 '+ex.notes;sd.appendChild(n);}
@@ -888,7 +959,7 @@ function maybeSaveHist(dk,ei,si){
   }
 }
 
-function toggleSetDone(dk,ei,si,restSecs,calIdx){
+function toggleSetDone(dk,ei,si,restSecs){
   const was=isDone(dk,ei,si);
   saveSet(dk,ei,si,'done',was?'0':'1');
 
@@ -904,14 +975,14 @@ function toggleSetDone(dk,ei,si,restSecs,calIdx){
   if(btn){btn.classList.toggle('done',!was);btn.textContent=was?'':'✓';}
   if(row)row.classList.toggle('done',!was);
   if(!was&&restSecs>0)startTimer(restSecs);
-  updateProgress(calIdx);
+  updateProgress();
   renderTabs();updateFab();
-  const {done,total}=getDayProgress(calIdx);
+  const {done,total}=getWorkoutProgress(dk);
   if(done===total&&total>0){
-    const wDone=workoutForCal(calIdx);
-    saveSessionDone(wDone.key);
+    const w=PLAN.find(p=>p.key===dk);
+    saveSessionDone(dk);
     // Kalorien berechnen und speichern
-    const kcal=calcKcal(wDone.type, wDone.key);
+    const kcal=calcKcal(w?.type||'push', dk);
     if(kcal>0){
       localStorage.setItem('tp_kcal_'+getTodayStr(), kcal);
       showToast('🎉 Fertig! 🔥 ~'+kcal+' kcal verbrannt');
@@ -929,38 +1000,19 @@ function toggleExSkip(dk,ei){
   const was=isExSkipped(dk,ei);
   setExSkipped(dk,ei,!was);
   showToast(was?'↩ Übung wiederhergestellt':'⏭ Übung übersprungen');
-  const w=workoutForCal(activeCalDay);
-  renderExercises(w,TYPE_COLORS[w.type]);
-  updateProgress(activeCalDay);renderTabs();updateFab();
+  const w=PLAN.find(p=>p.key===activeWorkoutKey);
+  if(w) renderExercises(w,TYPE_COLORS[w.type]);
+  updateProgress();renderTabs();updateFab();
 }
 
-function updateProgress(calIdx){
-  if(calIdx!==activeCalDay)return;
-  const {done,total}=getDayProgress(calIdx);
+function updateProgress(){
+  if(!activeWorkoutKey) return;
+  const {done,total}=getWorkoutProgress(activeWorkoutKey);
   const pct=total>0?Math.round(done/total*100):0;
   const C=2*Math.PI*20;
   const p=document.querySelector('.pct'),c=document.querySelector('.progress-ring circle:last-child');
   if(p)p.textContent=pct+'%';
   if(c)c.setAttribute('stroke-dashoffset',C*(1-pct/100));
-}
-
-// ─── DAY SKIP ────────────────────────────────────────────────
-function skipDay(calIdx){
-  setCalSkipped(calIdx,true);
-  planOffset=(planOffset+1)%7;
-  localStorage.setItem('tp_planOffset',planOffset);
-  activeCalDay=(calIdx+1)%7;
-  showToast('⏭ '+CAL_LABELS[calIdx]+' ausgelassen → Plan verschoben');
-  render();
-}
-
-function undoSkipDay(calIdx){
-  setCalSkipped(calIdx,false);
-  planOffset=Math.max(0,planOffset-1);
-  localStorage.setItem('tp_planOffset',planOffset);
-  activeCalDay=calIdx;
-  showToast('↩ '+CAL_LABELS[calIdx]+' wiederhergestellt');
-  render();
 }
 
 // ─── TIMER ───────────────────────────────────────────────────
@@ -983,10 +1035,9 @@ function updateTimerDisplay(){
 // ─── FAB ─────────────────────────────────────────────────────
 function updateFab(){
   const fab=document.getElementById('fab');
-  const w=workoutForCal(activeCalDay);
-  if(viewMode==='overview'||w.type==='rest'||isCalSkipped(activeCalDay)){fab.style.display='none';return;}
+  if(!activeWorkoutKey||viewMode==='overview'){fab.style.display='none';return;}
   fab.style.display='flex';
-  const{done,total}=getDayProgress(activeCalDay);
+  const{done,total}=getWorkoutProgress(activeWorkoutKey);
   fab.style.background=done===total&&total>0?'#27ae60':'#3498db';
 }
 function fabAction(){showToast('Tippe ✓ bei jedem Satz!');}
@@ -996,39 +1047,35 @@ function showOverview(){viewMode='overview';render();}
 
 function showOptions(){
   document.getElementById('modalTitle').textContent='⚙️ Optionen';
-  const skippedDays=Array.from({length:7},(_,i)=>i).filter(i=>isCalSkipped(i));
   const bw=getBodyWeight();
   document.getElementById('modalBody').innerHTML=`
     <button class="modal-btn primary" onclick="showReport()">📊 Trainingsreport anzeigen</button>
     <button class="modal-btn neutral" onclick="promptBodyWeight()">⚖️ Körpergewicht: ${bw?bw+' kg':'nicht gesetzt'}</button>
-    ${skippedDays.length>0?`<button class="modal-btn warning" onclick="resetAllSkips()">↩ Alle Tages-Skips rückgängig (${skippedDays.length} Tag${skippedDays.length>1?'e':''})</button>`:''}
-    <button class="modal-btn danger" onclick="confirmReset()">🗑 Heutigen Tag zurücksetzen</button>
+    ${activeWorkoutKey?`<button class="modal-btn danger" onclick="confirmReset()">🗑 Heutiges Training zurücksetzen</button>`:''}
     <button class="modal-btn danger" onclick="confirmResetAll()">⚠️ Alle Daten löschen</button>
     <button class="modal-btn cancel" onclick="closeModal()">Abbrechen</button>`;
   document.getElementById('modalOverlay').classList.add('open');
 }
 
-function resetAllSkips(){
-  for(let i=0;i<7;i++)setCalSkipped(i,false);
-  planOffset=0;localStorage.setItem('tp_planOffset','0');
-  closeModal();showToast('↩ Alle Verschiebungen zurückgesetzt');render();
-}
-
 function confirmReset(){
   closeModal();
-  const w=workoutForCal(activeCalDay);
+  const key=activeWorkoutKey; if(!key) return;
+  const w=PLAN.find(p=>p.key===key); if(!w) return;
   w.exercises.forEach(ex=>{
     for(let s=0;s<ex.sets;s++)['kg','reps','done'].forEach(f=>localStorage.removeItem(sk(w.key,ex.id,s,f)));
     localStorage.removeItem(SK+w.key+'_'+ex.id+'_skip');
   });
-  setCalSkipped(activeCalDay,false);
-  openEx.clear();render();showToast('Tag zurückgesetzt.');
+  openEx.clear();render();showToast('Training zurückgesetzt.');
 }
 
 function confirmResetAll(){
   closeModal();
-  Object.keys(localStorage).filter(k=>k.startsWith(SK)||k==='tp_planOffset'||k==='tp_bodyweight'||k.startsWith('tp_done_')||k.startsWith('tp_hist_')||k.startsWith('tp_kcal_')||k.startsWith('tp_sess_')||k.startsWith('tp_wu_')).forEach(k=>localStorage.removeItem(k));
-  planOffset=0;openEx.clear();render();showToast('Alle Daten gelöscht.');
+  Object.keys(localStorage).filter(k=>
+    k.startsWith(SK)||k.startsWith('tp_done_')||k.startsWith('tp_hist_')||
+    k.startsWith('tp_kcal_')||k.startsWith('tp_sess_')||k.startsWith('tp_wu_')||
+    k==='tp_bodyweight'
+  ).forEach(k=>localStorage.removeItem(k));
+  activeWorkoutKey=null;openEx.clear();render();showToast('Alle Daten gelöscht.');
 }
 
 function closeModal(e){
@@ -1302,7 +1349,8 @@ function _renderProgChart(){
 
 // ─── INIT ────────────────────────────────────────────────────
 document.getElementById('topbarDate').textContent=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-activeCalDay=getRawToday();
+const todayEntry=localStorage.getItem('tp_done_'+getTodayStr());
+if(todayEntry&&PLAN.some(p=>p.key===todayEntry)) activeWorkoutKey=todayEntry;
 render();
 </script>
 </body>
