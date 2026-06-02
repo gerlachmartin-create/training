@@ -259,6 +259,16 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- Timer-Bar: wird dynamisch in die jeweilige Übungskarte verschoben -->
+<div id="timerBar" class="rest-timer-bar">
+  <div style="flex:1">
+    <div class="timer-display" id="timerDisplay">0:00</div>
+    <div class="timer-label">⏱ Pause läuft…</div>
+    <div class="timer-progress"><div class="timer-progress-fill" id="timerFill" style="width:100%"></div></div>
+  </div>
+  <button class="timer-stop" onclick="stopTimer()">Stop</button>
+</div>
+
 <!-- REPORT FULL-SCREEN OVERLAY -->
 <div class="report-overlay" id="reportOverlay">
   <div class="report-topbar">
@@ -304,7 +314,7 @@ const PLAN = [
       // ── Unten: Maschinen ──
       {id:'lA1', name:'Beinpresse (E01)',                 sets:4,reps:'10–12',rest:90, notes:'letztes steigern', floorDown:true},
       {id:'lA3', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'oben 1 Sek. halten'},
-      {id:'lA4', name:'Einbein (E24)',                    sets:3,reps:'12/Bein',rest:75},
+      {id:'lA4', name:'Beinpresse einbeinig (E01)',         sets:3,reps:'10/Bein',rest:75, notes:'ein Bein mittig auf Plattform, anderes zur Seite'},
       {id:'lA7', name:'Rückseite Beine (E05)',            sets:3,reps:'12–15',rest:60, notes:'Ferse Richtung Gesäß'},
       {id:'lA5', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
       {id:'lA8', name:'Adduktion (E02)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
@@ -343,7 +353,7 @@ const PLAN = [
       // ── Unten: Maschinen ──
       {id:'lB1', name:'Beinpresse (E01)',                 sets:4,reps:'12–15',rest:90, notes:'Füße höher = Hamstring', floorDown:true},
       {id:'lB2', name:'Rückseite Beine (E05)',            sets:4,reps:'12–15',rest:75, notes:'letztes steigern'},
-      {id:'lB7', name:'Einbein (E24)',                    sets:3,reps:'12/Bein',rest:75, notes:'Gesäß aktivieren'},
+      {id:'lB7', name:'Beinpresse einbeinig (E01)',         sets:3,reps:'10/Bein',rest:75, notes:'Gesäß aktivieren, ein Bein mittig auf Plattform'},
       {id:'lB8', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'Quadrizeps-Balance'},
       {id:'lB3', name:'Adduktion (E02)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
       {id:'lB4', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
@@ -434,7 +444,7 @@ const EX_INFO = {
     video:'https://www.youtube.com/results?search_query=Beinstrecker+Maschine+Leg+Extension+Technik+richtige+Ausführung'
   },
   'lA4': {
-    desc:'Einbein-Übung an der Maschine (E24). Ein Bein belastet, das andere minimal. Knie des belasteten Beins in Richtung Zehe drücken. Gleichmäßige Kraft auf beiden Seiten entwickeln – Ungleichgewichte ausgleichen.',
+    desc:'Beinpresse (E01) einbeinig: Ein Fuß mittig auf der Plattform, das andere Bein zur Seite. Gleiches Gewicht wie beidbeining – aber langsamer und kontrollierter. Knie in Richtung Zehe drücken, Rücken flach am Polster. Ungleichgewichte zwischen links und rechts ausgleichen.',
     video:'https://www.youtube.com/results?search_query=Einbeinige+Beinpresse+Legpress+Technik+richtige+Ausführung'
   },
   'lA5': {
@@ -545,7 +555,7 @@ const EX_INFO = {
     video:'https://www.youtube.com/results?search_query=Kniebeugen+Langhantel+Technik+richtige+Ausführung+Squat'
   },
   'lB7': {
-    desc:'Einbein-Übung an der Maschine (E24). Ein Bein belastet, das andere minimal. Knie des belasteten Beins in Richtung Zehe drücken. Gesäß aktiv anspannen – besonders auf der Hamstring/Gesäß-Seite wirksam.',
+    desc:'Beinpresse (E01) einbeinig: Ein Fuß mittig auf der Plattform, das andere Bein zur Seite. Fokus auf Gesäß – Fuß etwas höher platzieren für mehr Gesäß-Aktivierung. Kontrolliert absenken, am Endpunkt Gesäß aktiv anspannen.',
     video:'https://www.youtube.com/results?search_query=Einbeinige+Beinpresse+Legpress+Technik+richtige+Ausführung'
   },
   'lB8': {
@@ -570,7 +580,7 @@ const SK = 'tp_v3_';
 // ─── STATE ───────────────────────────────────────────────────
 let activeWorkoutKey = null; // null = picker, string = active workout key
 let openEx           = new Set();
-let timerInterval    = null, timerRem = 0, timerTotal = 0;
+let timerInterval    = null, timerRem = 0, timerTotal = 0, timerExId = null;
 let viewMode         = 'day';
 
 // ─── HELPERS ─────────────────────────────────────────────────
@@ -629,7 +639,34 @@ function getWorkoutProgress(workoutKey) {
   return {done,total};
 }
 function selectWorkout(key) {
+  const w=PLAN.find(p=>p.key===key);
+  if(w && w.type!=='rest') {
+    const {done,total}=getWorkoutProgress(key);
+    if(total>0 && done===total) {
+      // Alles abgehakt – fragen ob nochmal
+      activeWorkoutKey=key; viewMode='day'; openEx.clear(); render(); window.scrollTo(0,0);
+      document.getElementById('modalTitle').textContent='🔁 Nochmal trainieren?';
+      document.getElementById('modalBody').innerHTML=`
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">${w.emoji} <strong>${w.title}</strong> ist bereits abgeschlossen. Häkchen zurücksetzen und nochmal starten?</p>
+        <button class="modal-btn success" onclick="resetDoneOnly('${key}')">✓ Ja, nochmal machen</button>
+        <button class="modal-btn neutral" onclick="closeModal()">Nein, so lassen</button>`;
+      document.getElementById('modalOverlay').classList.add('open');
+      return;
+    }
+  }
   activeWorkoutKey=key; viewMode='day'; openEx.clear(); render(); window.scrollTo(0,0);
+}
+
+function resetDoneOnly(key) {
+  closeModal();
+  const w=PLAN.find(p=>p.key===key); if(!w) return;
+  w.exercises.forEach(ex=>{
+    for(let s=0;s<ex.sets;s++) localStorage.removeItem(sk(w.key,ex.id,s,'done'));
+    localStorage.removeItem(SK+w.key+'_'+ex.id+'_skip');
+  });
+  // Heutigen "done"-Eintrag entfernen damit das Workout wieder offen ist
+  localStorage.removeItem('tp_done_'+getTodayStr());
+  openEx.clear(); render(); showToast('Häkchen zurückgesetzt – viel Erfolg! 💪');
 }
 function goBackToPicker() {
   activeWorkoutKey=null; render(); window.scrollTo(0,0);
@@ -642,6 +679,48 @@ function loadSet(dk,ei,si,f){return localStorage.getItem(sk(dk,ei,si,f))||'';}
 function isDone(dk,ei,si){return localStorage.getItem(sk(dk,ei,si,'done'))==='1';}
 function isExSkipped(dk,ei){return localStorage.getItem(SK+dk+'_'+ei+'_skip')==='1';}
 function setExSkipped(dk,ei,v){localStorage.setItem(SK+dk+'_'+ei+'_skip',v?'1':'0');}
+
+// ─── ÜBUNGSNAME → ALLE (dk, eid) PAARE ───────────────────────
+const NAME_TO_IDS = {};
+PLAN.forEach(w => {
+  w.exercises.forEach(ex => {
+    if (!NAME_TO_IDS[ex.name]) NAME_TO_IDS[ex.name] = [];
+    NAME_TO_IDS[ex.name].push({dk: w.key, eid: ex.id});
+  });
+});
+
+// Letzten historischen Wert (kg oder reps) für eine Übung nach Name finden
+function getLastHistByName(exName, si, field) {
+  const pairs = NAME_TO_IDS[exName] || [];
+  if (pairs.length < 2) return ''; // keine Übertragung nötig wenn nur 1 Plan
+  let bestDate = '', bestVal = '';
+  for (const k of Object.keys(localStorage)) {
+    if (!k.startsWith('tp_hist_') || !k.endsWith('_'+field)) continue;
+    // Format: tp_hist_YYYY-MM-DD_dk_eid_si_field
+    const rest = k.slice('tp_hist_'.length); // YYYY-MM-DD_dk_eid_si_field
+    const dateEnd = rest.indexOf('_');
+    const date = rest.slice(0, dateEnd);
+    const remainder = rest.slice(dateEnd+1, rest.length - field.length - 1); // dk_eid_si
+    const lastUnder = remainder.lastIndexOf('_');
+    const setIdx = parseInt(remainder.slice(lastUnder+1));
+    const dkEid = remainder.slice(0, lastUnder); // dk_eid
+    const firstUnder = dkEid.indexOf('_');
+    const dk = dkEid.slice(0, firstUnder);
+    const eid = dkEid.slice(firstUnder+1);
+    if (setIdx !== si) continue;
+    if (!pairs.some(p => p.dk === dk && p.eid === eid)) continue;
+    if (date > bestDate) {
+      bestDate = date;
+      bestVal = localStorage.getItem(k) || '';
+    }
+  }
+  return bestVal;
+}
+
+// Wert laden: aktueller Tag zuerst, sonst letzter historischer Wert
+function loadSetWithFallback(dk, ei, exName, si, field) {
+  return loadSet(dk, ei, si, field) || getLastHistByName(exName, si, field);
+}
 
 // ─── KÖRPERGEWICHT & KALORIEN ─────────────────────────────────
 function getBodyWeight(){ return parseFloat(localStorage.getItem('tp_bodyweight')||'0'); }
@@ -852,14 +931,6 @@ function renderDay(el,w){
         <div class="pct">${pct}%</div>
       </div>
     </div>
-    <div id="timerBar" class="rest-timer-bar">
-      <div style="flex:1">
-        <div class="timer-display" id="timerDisplay">0:00</div>
-        <div class="timer-label">⏱ Pause läuft…</div>
-        <div class="timer-progress"><div class="timer-progress-fill" id="timerFill" style="width:100%"></div></div>
-      </div>
-      <button class="timer-stop" onclick="stopTimer()">Stop</button>
-    </div>
     <div class="warmup-card wu-open" id="warmupCard">
       <div class="warmup-hdr" onclick="document.getElementById('warmupCard').classList.toggle('wu-open')">
         <div class="warmup-icon">🏃</div>
@@ -870,9 +941,9 @@ function renderDay(el,w){
       <div class="warmup-body"></div>
     </div>
     <div id="exerciseList"></div>`;
-  if(timerInterval){document.getElementById('timerBar').classList.add('active');updateTimerDisplay();}
   renderWarmupCard(w.key);
   renderExercises(w,color);
+  placeTimerBar();
 }
 
 function promptBodyWeight(){
@@ -931,7 +1002,7 @@ function renderExercises(w,color){
       const lbl=document.createElement('div');lbl.className='skipped-label';
       lbl.textContent='Übung ausgelassen';card.appendChild(lbl);
     } else {
-      const sd=document.createElement('div');sd.className='ex-sets';
+      const sd=document.createElement('div');sd.className='ex-sets';sd.id='exSets_'+ex.id;
       sd.innerHTML='<div class="sets-header"><span>Satz</span><span>Kg</span><span>Wdh.</span><span>✓</span></div>';
       for(let s=0;s<ex.sets;s++){
         const done=isDone(w.key,ex.id,s);
@@ -939,9 +1010,9 @@ function renderExercises(w,color){
         row.className='set-row'+(done?' done':'');row.id=`row_${ex.id}_${s}`;
         row.innerHTML=`
           <div class="set-nr">${s+1}</div>
-          <input class="set-input" type="number" inputmode="decimal" placeholder="–" value="${loadSet(w.key,ex.id,s,'kg')}" min="0" step="0.5"
+          <input class="set-input" type="number" inputmode="decimal" placeholder="–" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'kg')}" min="0" step="0.5"
             onchange="saveSet('${w.key}','${ex.id}',${s},'kg',this.value);maybeSaveHist('${w.key}','${ex.id}',${s})">
-          <input class="set-input" type="number" inputmode="numeric" placeholder="–" value="${loadSet(w.key,ex.id,s,'reps')}" min="0"
+          <input class="set-input" type="number" inputmode="numeric" placeholder="–" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'reps')}" min="0"
             onchange="saveSet('${w.key}','${ex.id}',${s},'reps',this.value);maybeSaveHist('${w.key}','${ex.id}',${s})">
           <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}" onclick="toggleSetDone('${w.key}','${ex.id}',${s},${ex.rest})">${done?'✓':''}</button>`;
         sd.appendChild(row);
@@ -990,7 +1061,7 @@ function toggleSetDone(dk,ei,si,restSecs){
   const row=document.getElementById(`row_${ei}_${si}`);
   if(btn){btn.classList.toggle('done',!was);btn.textContent=was?'':'✓';}
   if(row)row.classList.toggle('done',!was);
-  if(!was&&restSecs>0)startTimer(restSecs);
+  if(!was&&restSecs>0)startTimer(restSecs,ei);
   updateProgress();
   renderTabs();updateFab();
   const {done,total}=getWorkoutProgress(dk);
@@ -1032,15 +1103,32 @@ function updateProgress(){
 }
 
 // ─── TIMER ───────────────────────────────────────────────────
-function startTimer(s){
-  stopTimer();timerRem=s;timerTotal=s;
-  const b=document.getElementById('timerBar');if(b)b.classList.add('active');
+function startTimer(s, exId){
+  stopTimer();
+  timerRem=s; timerTotal=s; timerExId=exId||null;
+  placeTimerBar();
   updateTimerDisplay();
   timerInterval=setInterval(()=>{timerRem--;updateTimerDisplay();if(timerRem<=0){stopTimer();showToast('⏱ Pause vorbei!');}},1000);
 }
 function stopTimer(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
-  const b=document.getElementById('timerBar');if(b)b.classList.remove('active');
+  timerExId=null;
+  const b=document.getElementById('timerBar');
+  if(b){b.classList.remove('active');document.body.appendChild(b);}
+}
+function placeTimerBar(){
+  const b=document.getElementById('timerBar'); if(!b) return;
+  if(!timerInterval){document.body.appendChild(b);b.classList.remove('active');return;}
+  // Ziel: ex-sets div der laufenden Übung
+  const target = timerExId ? document.querySelector(`#exSets_${timerExId}`) : null;
+  if(target){
+    target.appendChild(b);
+  } else {
+    // Fallback: ans Ende von exerciseList
+    const el=document.getElementById('exerciseList');
+    if(el) el.appendChild(b); else document.body.appendChild(b);
+  }
+  b.classList.add('active');
 }
 function updateTimerDisplay(){
   const d=document.getElementById('timerDisplay'),f=document.getElementById('timerFill');
