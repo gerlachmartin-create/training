@@ -152,6 +152,22 @@
   .picker-badge{font-size:12px;font-weight:700;flex-shrink:0;margin-right:4px;}
   .picker-arr{font-size:18px;color:var(--muted);flex-shrink:0;}
 
+  /* ── AUSWAHL VOR DEM START ── */
+  .sel-info{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.4;}
+  .sel-all-btn{flex-shrink:0;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;}
+  .sel-row{background:#fff;border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow);border:1.5px solid var(--border);display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;transition:all 0.12s;}
+  .sel-row:active{transform:scale(0.99);}
+  .sel-row.on{border-color:#27ae60;background:#f0fff4;}
+  .sel-row.off{opacity:0.55;}
+  .sel-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;color:#fff;}
+  .sel-row.on .sel-check{background:#27ae60;border-color:#27ae60;}
+  .sel-name{font-size:14px;font-weight:600;line-height:1.2;}
+  .sel-row.off .sel-name{text-decoration:line-through;color:var(--muted);}
+  .sel-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+  .sel-start-bar{position:sticky;bottom:0;padding:14px 0 10px;background:linear-gradient(to top,var(--bg) 65%,rgba(244,245,247,0));}
+  .sel-start-btn{width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:800;color:#fff;cursor:pointer;box-shadow:var(--shadow);}
+  .sel-start-btn:active{transform:scale(0.99);}
+
   .week-overview{display:none;}
   .week-overview.active{display:block;}
   .week-card{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;cursor:pointer;border:1px solid var(--border);transition:transform 0.1s;}
@@ -344,6 +360,7 @@ let openEx = new Set();
 let timerInterval = null, timerRem = 0, timerTotal = 0, timerExId = null;
 let viewMode = 'day';
 let _progArrays = {};
+let sessionSelection = new Set(); // Übungen, die heute gemacht werden (Auswahl-Schritt)
 
 // ─── HELPERS ─────────────────────────────────────────────────
 function getTodayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -459,8 +476,40 @@ function selectWorkout(key){
       document.getElementById('modalOverlay').classList.add('open');
       return;
     }
+    // Einheit läuft heute schon → direkt weitermachen (nicht neu auswählen)
+    const startedToday=localStorage.getItem('tp_done_'+getTodayStr())===key;
+    if(startedToday&&done>0){
+      activeWorkoutKey=key;viewMode='day';openEx.clear();render();window.scrollTo(0,0);
+      return;
+    }
+    // Sonst: erst Übungen für heute auswählen
+    openSelection(key);
+    return;
   }
   activeWorkoutKey=key;viewMode='day';openEx.clear();render();window.scrollTo(0,0);
+}
+// Auswahl-Schritt: alle Übungen vorausgewählt, Nutzer wählt ab
+function openSelection(key){
+  const w=PLAN.find(p=>p.key===key);if(!w)return;
+  activeWorkoutKey=key;viewMode='select';
+  sessionSelection=new Set(w.exercises.map(e=>e.id));
+  render();window.scrollTo(0,0);
+}
+function toggleSelectEx(id){
+  if(sessionSelection.has(id)) sessionSelection.delete(id); else sessionSelection.add(id);
+  renderContent();
+}
+function setAllSelection(on){
+  const w=PLAN.find(p=>p.key===activeWorkoutKey);if(!w)return;
+  sessionSelection=on?new Set(w.exercises.map(e=>e.id)):new Set();
+  renderContent();
+}
+function startSelectedWorkout(){
+  const w=PLAN.find(p=>p.key===activeWorkoutKey);if(!w)return;
+  if(!sessionSelection.size){showToast('Mindestens eine Übung wählen.');return;}
+  // Auswahl in Skip-Status übersetzen: nicht gewählt = ausgelassen
+  w.exercises.forEach(ex=>setExSkipped(w.key,ex.id,!sessionSelection.has(ex.id)));
+  viewMode='day';openEx.clear();render();window.scrollTo(0,0);
 }
 function resetDoneOnly(key){
   closeModal();
@@ -470,9 +519,9 @@ function resetDoneOnly(key){
     try{localStorage.removeItem(SK+w.key+'_'+ex.id+'_skip');}catch(e){}
   });
   try{localStorage.removeItem('tp_done_'+getTodayStr());}catch(e){}
-  openEx.clear();render();showToast('Häkchen zurückgesetzt – viel Erfolg! 💪');
+  openEx.clear();openSelection(key);showToast('Neu geplant – wähle deine Übungen! 💪');
 }
-function goBackToPicker(){ activeWorkoutKey=null;render();window.scrollTo(0,0); }
+function goBackToPicker(){ activeWorkoutKey=null;viewMode='day';render();window.scrollTo(0,0); }
 
 // ─── HISTORY ─────────────────────────────────────────────────
 const NAME_TO_IDS={};
@@ -638,10 +687,48 @@ function renderTabs(){
 function renderContent(){
   const el=document.getElementById('content');
   if(viewMode==='overview'){renderOverview(el);return;}
+  if(viewMode==='select'&&activeWorkoutKey){
+    const sw=PLAN.find(p=>p.key===activeWorkoutKey);
+    if(sw&&sw.type!=='rest'){renderSelection(el,sw);return;}
+  }
   if(!activeWorkoutKey){renderPicker(el);return;}
   const w=PLAN.find(p=>p.key===activeWorkoutKey);
   if(!w||w.type==='rest'){renderPicker(el);return;}
   renderDay(el,w);
+}
+
+function renderSelection(el,w){
+  const color=TYPE_COLORS[w.type];
+  const chosen=w.exercises.filter(ex=>sessionSelection.has(ex.id)).length;
+  const allOn=chosen===w.exercises.length;
+  let html=`
+    <div class="day-header" style="background:${color}">
+      <div class="day-header-left">
+        <button onclick="goBackToPicker()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:6px">‹ Zurück</button>
+        <h2>${w.emoji} ${w.title}</h2>
+        <p>Heute planen · ${w.subtitle}</p>
+      </div>
+    </div>
+    <div class="sel-info">
+      <span>Tippe an, welche Übungen du <strong>heute machst</strong>. Abgewählte lässt du heute aus.</span>
+      <button class="sel-all-btn" onclick="setAllSelection(${allOn?'false':'true'})">${allOn?'Alle abwählen':'Alle wählen'}</button>
+    </div>`;
+  w.exercises.forEach(ex=>{
+    const on=sessionSelection.has(ex.id);
+    html+=`
+      <div class="sel-row ${on?'on':'off'}" onclick="toggleSelectEx('${ex.id}')">
+        <div class="sel-check">${on?'✓':''}</div>
+        <div style="flex:1;min-width:0">
+          <div class="sel-name">${ex.name}</div>
+          <div class="sel-meta">${ex.sets} × ${ex.reps}</div>
+        </div>
+      </div>`;
+  });
+  html+=`
+    <div class="sel-start-bar">
+      <button class="sel-start-btn" style="background:${chosen?color:'#bbb'}" onclick="startSelectedWorkout()">▶ Training starten (${chosen} ${chosen===1?'Übung':'Übungen'})</button>
+    </div>`;
+  el.innerHTML=html;
 }
 
 function renderPicker(el){
