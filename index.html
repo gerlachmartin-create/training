@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Trainingsplan Ppl",
+  "schemaVersion": 1,
+  "description": "Interaktive Trainingsplan-App mit Aufwärm-Karte, Studio-Maschinen (B01/E01 etc.), Workout-Picker, Pausentimer, Fortschrittsanzeige und Trainingsreport."
+}
+</script>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
@@ -27,8 +34,6 @@
   .day-tab .tab-sub{font-size:9px;opacity:0.8;}
   .day-tab.active{color:#fff;border-color:transparent;}
   .day-tab:not(.active){background:#fff;}
-  .day-tab.today-tab{box-shadow:0 0 0 2px currentColor;}
-  .day-tab.skipped-tab .tab-label::after{content:' ⏭';font-size:10px;}
 
   .content{padding:12px;padding-bottom:80px;max-width:520px;margin:0 auto;}
 
@@ -39,16 +44,6 @@
   .progress-ring{position:relative;width:52px;height:52px;flex-shrink:0;}
   .progress-ring svg{transform:rotate(-90deg);}
   .progress-ring .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
-
-  .skip-day-bar{background:#fff3cd;border:1px solid #ffc107;border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
-  .skip-day-bar span{font-size:12px;color:#856404;font-weight:600;}
-  .skip-day-btn{background:#856404;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
-
-  .skipped-view{background:#fff;border-radius:var(--radius);padding:20px;margin-bottom:12px;border:2px dashed #ddd;text-align:center;}
-  .skipped-view .skip-icon{font-size:40px;margin-bottom:10px;}
-  .skipped-view h3{font-size:16px;font-weight:700;color:var(--muted);margin-bottom:6px;}
-  .skipped-view p{font-size:12px;color:#aaa;}
-  .skipped-view .workout-name{font-size:13px;font-weight:600;margin-top:8px;padding:4px 12px;border-radius:10px;display:inline-block;color:#fff;}
 
   .superset-divider{display:flex;align-items:center;gap:8px;margin:-4px 0;}
   .superset-divider span{font-size:10px;font-weight:700;color:#fff;background:#27ae60;padding:2px 8px;border-radius:10px;white-space:nowrap;}
@@ -67,15 +62,15 @@
   .ex-card.done-all{border-color:#27ae60;background:#f0fff4;}
   .ex-card.skipped{border-color:#bbb;background:#f8f8f8;opacity:0.7;}
 
-  .ex-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;}
+  .ex-header{display:flex;align-items:center;gap:10px;padding:12px 14px;}
   .ex-nr{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
   .ex-card.skipped .ex-nr{background:#bbb!important;}
-  .ex-info{flex:1;min-width:0;}
+  .ex-info{flex:1;min-width:0;cursor:pointer;}
   .ex-name{font-size:14px;font-weight:600;line-height:1.2;}
   .ex-card.skipped .ex-name{text-decoration:line-through;color:var(--muted);}
   .ex-meta{font-size:11px;color:var(--muted);margin-top:2px;}
   .ex-status{font-size:18px;flex-shrink:0;}
-  .ex-chevron{font-size:12px;color:var(--muted);flex-shrink:0;transition:transform 0.2s;}
+  .ex-chevron{font-size:12px;color:var(--muted);flex-shrink:0;transition:transform 0.2s;cursor:pointer;}
   .ex-card.open .ex-chevron{transform:rotate(180deg);}
 
   .skip-ex-btn{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;border:1px solid;cursor:pointer;flex-shrink:0;white-space:nowrap;}
@@ -97,10 +92,9 @@
   .set-row.done .set-input{background:#f0fff4;border-color:#a8e6c0;color:#1e8449;}
   .notes-text{font-size:11px;color:#e67e22;background:#fef9f0;border-radius:6px;padding:5px 8px;margin-top:4px;}
   .ex-desc{font-size:12px;color:#444;background:#f8f9fa;border-radius:6px;padding:8px 10px;margin-top:6px;line-height:1.5;}
-  .ex-video-btn{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:7px 12px;background:#ff0000;color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;border:none;cursor:pointer;}
-  .ex-video-btn:active{opacity:0.85;}
+  .ex-video-btn{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:7px 12px;background:#ff0000;color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;}
 
-  /* ── WARM-UP ──────────────────────────────────────────────── */
+  /* ── WARM-UP ── */
   .warmup-card{background:#fff;border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);border:2px solid #2980b9;overflow:hidden;}
   .warmup-card.done-wu{border-color:#27ae60;}
   .warmup-hdr{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;}
@@ -113,23 +107,16 @@
   .warmup-card.wu-open .warmup-chev{transform:rotate(180deg);}
   .warmup-body{display:none;padding:0 14px 12px;}
   .warmup-card.wu-open .warmup-body{display:block;}
-  .wu-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #f0f0f0;}
-  .wu-item:last-child{border-bottom:none;}
-  .wu-cb{width:24px;height:24px;border-radius:7px;border:2px solid #2980b9;background:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px;transition:all 0.15s;}
-  .wu-cb.checked{background:#2980b9;border-color:#2980b9;color:#fff;}
-  .wu-item.wu-done .wu-lbl{text-decoration:line-through;color:var(--muted);}
-  .wu-texts{flex:1;}
-  .wu-lbl{font-size:13px;font-weight:600;line-height:1.3;}
-  .wu-note{font-size:11px;color:var(--muted);margin-top:2px;}
 
-  /* ── KCAL BADGE ───────────────────────────────────────────── */
+  /* ── KCAL ── */
   .kcal-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.2);border-radius:8px;padding:3px 8px;font-size:12px;font-weight:700;color:#fff;margin-top:4px;}
   .bw-hint{background:#ebf5fb;border:1px solid #aed6f1;border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
   .bw-hint span{font-size:12px;color:#2980b9;font-weight:600;}
-  .bw-hint button{background:#2980b9;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+  .bw-hint button{background:#2980b9;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;}
   .bw-input-row{display:flex;gap:8px;margin-top:10px;}
   .bw-input{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:16px;text-align:center;}
 
+  /* ── TIMER ── */
   .rest-timer-bar{display:none;background:var(--bg);border-radius:8px;padding:8px 12px;margin-top:8px;align-items:center;gap:10px;}
   .rest-timer-bar.active{display:flex;}
   .timer-display{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;min-width:48px;}
@@ -138,12 +125,7 @@
   .timer-progress{height:4px;background:var(--border);border-radius:2px;margin-top:4px;overflow:hidden;}
   .timer-progress-fill{height:100%;border-radius:2px;background:#3498db;transition:width 1s linear;}
 
-  .rest-view{text-align:center;padding:40px 20px;}
-  .rest-view .rest-icon{font-size:60px;margin-bottom:16px;}
-  .rest-view h2{font-size:20px;font-weight:700;margin-bottom:8px;}
-  .rest-view p{color:var(--muted);font-size:14px;}
-
-  /* ── WORKOUT PICKER ──────────────────────────────────────── */
+  /* ── WORKOUT PICKER ── */
   .rec-card{background:#fff;border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:2px solid #3498db;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform 0.1s;}
   .rec-card:active{transform:scale(0.98);}
   .rec-icon{font-size:28px;flex-shrink:0;}
@@ -166,7 +148,6 @@
   .week-overview.active{display:block;}
   .week-card{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;cursor:pointer;border:1px solid var(--border);transition:transform 0.1s;}
   .week-card:active{transform:scale(0.98);}
-  .week-card.skipped-card{opacity:0.7;border-style:dashed;}
   .week-card-dot{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
   .week-card-info{flex:1;}
   .week-card-info h3{font-size:15px;font-weight:700;}
@@ -191,7 +172,7 @@
   .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#2c3e50;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:400;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  /* ── REPORT OVERLAY ───────────────────────────────────────── */
+  /* ── REPORT ── */
   .report-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;padding-bottom:80px;}
   .report-overlay.open{display:block;}
   .report-topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;z-index:10;box-shadow:var(--shadow);}
@@ -203,31 +184,23 @@
   .stat-box{background:var(--bg);border-radius:10px;padding:14px 10px;text-align:center;}
   .stat-box .stat-val{font-size:30px;font-weight:800;line-height:1;}
   .stat-box .stat-lbl{font-size:11px;color:var(--muted);margin-top:4px;}
-  .week-chart-wrap{display:flex;align-items:flex-end;gap:3px;height:90px;margin-bottom:8px;padding-bottom:4px;}
+  .week-chart-wrap{display:flex;align-items:flex-end;gap:3px;height:90px;margin-bottom:8px;}
   .wk-col{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0;}
   .wk-bars{flex:1;width:100%;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;}
-  .wk-bar{width:100%;border-radius:3px 3px 0 0;min-height:0;transition:height 0.4s;}
-  .wk-lbl{font-size:9px;color:var(--muted);margin-top:3px;text-align:center;white-space:nowrap;}
+  .wk-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;}
+  .wk-lbl{font-size:9px;color:var(--muted);margin-top:3px;text-align:center;}
   .chart-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;}
   .chart-legend span{font-size:11px;}
   .muscle-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-  .muscle-row:last-child{margin-bottom:0;}
   .muscle-label{font-size:12px;font-weight:600;width:55px;flex-shrink:0;}
   .muscle-bar-bg{flex:1;height:14px;background:var(--bg);border-radius:7px;overflow:hidden;}
-  .muscle-bar-fill{height:100%;border-radius:7px;transition:width 0.5s;}
+  .muscle-bar-fill{height:100%;border-radius:7px;}
   .muscle-count{font-size:11px;color:var(--muted);width:32px;text-align:right;flex-shrink:0;}
   .ex-select{width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:#fff;color:var(--text);margin-bottom:12px;}
-  .prog-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-  .prog-sessions{font-size:12px;color:var(--muted);}
-  .prog-delta{font-size:12px;font-weight:700;padding:3px 8px;border-radius:8px;}
-  .prog-delta.up{background:#e8f8f0;color:#1e8449;}
-  .prog-delta.down{background:#fdecea;color:#c0392b;}
-  .prog-delta.flat{background:var(--bg);color:var(--muted);}
-  .prog-table{width:100%;border-collapse:collapse;margin-top:10px;}
+  .prog-table{width:100%;border-collapse:collapse;margin-top:8px;}
   .prog-table th{font-size:10px;font-weight:700;color:var(--muted);text-align:left;padding:4px 6px;border-bottom:1px solid var(--border);text-transform:uppercase;}
   .prog-table td{font-size:13px;padding:7px 6px;border-bottom:1px solid #f0f0f0;}
   .prog-table tr:last-child td{border-bottom:none;}
-  .prog-table td:last-child{font-weight:700;text-align:right;}
   .session-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #f5f5f5;}
   .session-item:last-child{border-bottom:none;}
   .session-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
@@ -259,7 +232,6 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- Timer-Bar: wird dynamisch in die jeweilige Übungskarte verschoben -->
 <div id="timerBar" class="rest-timer-bar">
   <div style="flex:1">
     <div class="timer-display" id="timerDisplay">0:00</div>
@@ -269,7 +241,6 @@
   <button class="timer-stop" onclick="stopTimer()">Stop</button>
 </div>
 
-<!-- REPORT FULL-SCREEN OVERLAY -->
 <div class="report-overlay" id="reportOverlay">
   <div class="report-topbar">
     <h2>📊 Trainingsreport</h2>
@@ -283,20 +254,17 @@
 const PLAN = [
   { key:'pushA', title:'PUSH A', subtitle:'Brust & Trizeps', type:'push', emoji:'🔴',
     exercises:[
-      // ── Unten: Maschinen ──
       {id:'pA1', name:'Brustpresse (Maschine)',           sets:4,reps:'10–12',rest:90, notes:'letztes steigern'},
       {id:'pA2', name:'Butterfly / Pec Deck (A02)',       sets:4,reps:'12–15',rest:75, notes:'Brust am Endpunkt zusammenkneifen'},
       {id:'pA4', name:'Seitheben (Maschine)',             sets:4,reps:'15–20',rest:60, notes:'4 Sek. absenken'},
       {id:'pA7', name:'Butterfly Reverse',                sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
       {id:'pA5', name:'Trizepsmaschine',                  sets:4,reps:'12–15',rest:60, notes:'Ellbogen fixiert'},
-      // ── Oben: Freihanteln & Kabelzug ──
       {id:'pA3', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'2×12,5 kg', floorUp:true},
       {id:'pA6', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60},
       {id:'pA8', name:'Kabel Overhead Extension',        sets:3,reps:'12–15',rest:60, notes:'langer Trizepskopf'},
     ]},
   { key:'pullA', title:'PULL A', subtitle:'Rücken & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
-      // ── Unten: Maschinen ──
       {id:'plA7', name:'Klimmzüge mit Unterstützung (B04)', sets:4,reps:'8–12', rest:90, notes:'volle Streckung unten'},
       {id:'plA1', name:'Latzug (B02)',                    sets:4,reps:'10–12',rest:75, notes:'Schulterblätter zusammenziehen'},
       {id:'plA2', name:'Ruderzugmaschine (B01)',           sets:4,reps:'10–12',rest:75, notes:'letztes steigern'},
@@ -304,17 +272,14 @@ const PLAN = [
       {id:'plA4', name:'Überzugmaschine (B21)',           sets:3,reps:'12–15',rest:60},
       {id:'plA8', name:'Butterfly Reverse',               sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
       {id:'plA5', name:'Bizepsmaschine',                  sets:4,reps:'10–12',rest:60, notes:'letzter Satz: bis Versagen'},
-      // ── Oben: Kabelzug ──
       {id:'plA6', name:'Kabel-Bizeps-Curls',             sets:3,reps:'12–15',rest:60, notes:'volle Kontraktion', floorUp:true},
     ]},
   { key:'legsA', title:'BEINE A', subtitle:'Quadrizeps-Fokus', type:'legs', emoji:'🟣',
     exercises:[
-      // ── Oben: Freihanteln ──
       {id:'lA2', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'2×15 kg, volle Tiefe'},
-      // ── Unten: Maschinen ──
       {id:'lA1', name:'Beinpresse (E01)',                 sets:4,reps:'10–12',rest:90, notes:'letztes steigern', floorDown:true},
       {id:'lA3', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'oben 1 Sek. halten'},
-      {id:'lA4', name:'Beinpresse einbeinig (E01)',         sets:3,reps:'10/Bein',rest:75, notes:'ein Bein mittig auf Plattform, anderes zur Seite'},
+      {id:'lA4', name:'Beinpresse einbeinig (E01)',       sets:3,reps:'10/Bein',rest:75, notes:'ein Bein mittig auf Plattform, anderes zur Seite'},
       {id:'lA7', name:'Rückseite Beine (E05)',            sets:3,reps:'12–15',rest:60, notes:'Ferse Richtung Gesäß'},
       {id:'lA5', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
       {id:'lA8', name:'Adduktion (E02)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
@@ -322,20 +287,17 @@ const PLAN = [
     ]},
   { key:'pushB', title:'PUSH B', subtitle:'Schulter & Trizeps', type:'push', emoji:'🔴',
     exercises:[
-      // ── Unten: Maschinen ──
       {id:'pB7', name:'Butterfly / Pec Deck (A02)',       sets:3,reps:'15–20',rest:60, notes:'höhere Wdh. als Push A'},
       {id:'pB1', name:'Seitheben (Maschine)',             sets:4,reps:'15–20',rest:60, notes:'4 Sek. absenken'},
       {id:'pB2', name:'Butterfly Reverse',                sets:4,reps:'15–20',rest:60, notes:'volle Kontraktion'},
       {id:'pB3', name:'Seitenrunterdrücken (Maschine)',   sets:3,reps:'12–15',rest:60},
       {id:'pB4', name:'Trizepsmaschine',                  sets:4,reps:'12–15',rest:60},
-      // ── Oben: Freihanteln & Kabelzug ──
       {id:'pB6', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'2×12,5 kg', floorUp:true},
       {id:'pB5', name:'Kabel Overhead Extension',        sets:3,reps:'12–15',rest:60, notes:'langer Trizepskopf'},
       {id:'pB8', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60, notes:'Ellbogen am Körper'},
     ]},
   { key:'pullB', title:'PULL B', subtitle:'Kraft & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
-      // ── Unten: Maschinen ──
       {id:'plB1', name:'Klimmzüge mit Unterstützung (B04)',sets:4,reps:'8–10',rest:90, notes:'volle Streckung unten'},
       {id:'plB2', name:'Latzug (B02)',                    sets:4,reps:'10–12',rest:75},
       {id:'plB3', name:'Ruderzugmaschine (B01)',          sets:3,reps:'10–12',rest:75, notes:'letztes steigern'},
@@ -343,17 +305,14 @@ const PLAN = [
       {id:'plB4', name:'Butterfly Reverse',               sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
       {id:'plB8', name:'Seitenrunterdrücken (Maschine)', sets:3,reps:'12–15',rest:60},
       {id:'plB5', name:'Bizepsmaschine',                  sets:4,reps:'10–12',rest:60, notes:'letzter Satz: bis Versagen'},
-      // ── Oben: Kabelzug ──
       {id:'plB6', name:'Kabel-Bizeps-21er',              sets:3,reps:'21',   rest:75, notes:'7 unten / 7 oben / 7 voll', floorUp:true},
     ]},
   { key:'legsB', title:'BEINE B', subtitle:'Hamstrings & Gesäß', type:'legs', emoji:'🟣',
     exercises:[
-      // ── Oben: Freihanteln ──
       {id:'lB6', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'2×15 kg'},
-      // ── Unten: Maschinen ──
       {id:'lB1', name:'Beinpresse (E01)',                 sets:4,reps:'12–15',rest:90, notes:'Füße höher = Hamstring', floorDown:true},
       {id:'lB2', name:'Rückseite Beine (E05)',            sets:4,reps:'12–15',rest:75, notes:'letztes steigern'},
-      {id:'lB7', name:'Beinpresse einbeinig (E01)',         sets:3,reps:'10/Bein',rest:75, notes:'Gesäß aktivieren, ein Bein mittig auf Plattform'},
+      {id:'lB7', name:'Beinpresse einbeinig (E01)',       sets:3,reps:'10/Bein',rest:75, notes:'Gesäß aktivieren'},
       {id:'lB8', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'Quadrizeps-Balance'},
       {id:'lB3', name:'Adduktion (E02)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
       {id:'lB4', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
@@ -362,258 +321,61 @@ const PLAN = [
   { key:'rest', title:'PAUSE', subtitle:'Regeneration', type:'rest', emoji:'💤', exercises:[] }
 ];
 
-// ─── ÜBUNGSBESCHREIBUNGEN & VIDEOS ───────────────────────────
-const EX_INFO = {
-  // PUSH A
-  'pA1': {
-    desc:'Sitz einstellen, damit die Griffe auf mittlerer Brusthöhe sind. Schulterblätter zusammenziehen und in die Rückenlehne drücken. Gleichmäßig nach vorne drücken bis die Arme fast gestreckt sind, dann kontrolliert zurück. Keine Ruckelei.',
-    video:'https://www.youtube.com/results?search_query=Brustpresse+Maschine+Chest+Press+Technik+richtige+Ausführung'
-  },
-  'pA2': {
-    desc:'Aufrecht sitzen, Rücken am Polster. Unterarme auf den Pads, Ellbogen auf Brusthöhe. Arme wie eine Umarmung zusammenführen und Brust oben aktiv zusammenkneifen. Langsam zurück bis zur vollen Dehnung.',
-    video:'https://www.youtube.com/results?search_query=Butterfly+Pec+Deck+Maschine+Brust+Technik+richtige+Ausführung'
-  },
-  'pA3': {
-    desc:'Auf der Bank liegend mit 2×12,5 kg. Hanteln auf Brusthöhe, Ellbogen ca. 75° zum Körper. Nach oben drücken und leicht zur Mitte zusammenführen. Langsam und kontrolliert absenken – mehr Bewegungsfreiheit als Maschine.',
-    video:'https://www.youtube.com/results?search_query=Brustpresse+liegend+Kurzhantel+Flachbank+Technik+richtige+Ausführung'
-  },
-  'pA4': {
-    desc:'Sitz so einstellen, dass die Ellbogen-Pads auf Schulterhöhe sind. Mit den Ellbogen (nicht Händen) nach oben-außen drücken. Sehr langsam (4 Sek.) zurückführen – das erzeugt den stärksten Reiz für die seitliche Schulter.',
-    video:'https://www.youtube.com/results?search_query=Seitheben+Maschine+Schulter+Lateral+Raise+Technik+richtige+Ausführung'
-  },
-  'pA5': {
-    desc:'Sitz korrekt einstellen. Griffe auf Schulterhöhe, Ellbogen ca. 90°. Arme gleichmäßig nach unten strecken bis zur vollen Extension, Trizeps am Endpunkt aktiv anspannen. Kontrolliert zurück.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Maschine+Technik+richtige+Ausführung'
-  },
-  'pA6': {
-    desc:'Kabel von oben, Seil-Aufsatz. Leicht nach vorne lehnen, Ellbogen dicht am Körper fixiert. Nur der Unterarm bewegt sich: Seil nach unten durchdrücken bis zur vollen Streckung, Trizeps am Tiefpunkt aktiv anspannen. Langsam zurück.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Pushdown+Seil+Kabel+Technik+richtige+Ausführung'
-  },
-  'pA7': {
-    desc:'Butterfly-Maschine umgekehrt nutzen: Gesicht zur Maschine. Arme starten vorne und werden nach hinten-außen geführt. Trainiert die hintere Schulter (Rear Delts) und Rhomboiden. Leichtes Gewicht, bewusste Kontraktion.',
-    video:'https://www.youtube.com/results?search_query=Reverse+Butterfly+Pec+Deck+hintere+Schulter+Rear+Delt+Technik'
-  },
-  'pA8': {
-    desc:'Kabel von oben, Seil oder Einzelgriff. Ellbogen zeigen nach vorne, bleiben fixiert. Arm nach oben-vorne strecken – der lange Trizepskopf wird maximal gedehnt. Leichtes Gewicht, langsame Bewegung für maximale Dehnung.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Overhead+Extension+Kabel+langer+Kopf+Technik+richtige+Ausführung'
-  },
-  // PULL A
-  'plA1': {
-    desc:'Schulterbreiter Obergriff. Schulterblätter aktiv nach unten-hinten zusammenziehen bevor du ziehst. Stange zur oberen Brust führen. Am Tiefpunkt vollständig strecken für maximale Dehnung des Lats.',
-    video:'https://www.youtube.com/results?search_query=Latzug+Maschine+Rückenziehstange+Technik+richtige+Ausführung'
-  },
-  'plA2': {
-    desc:'Aufrecht sitzen, Brust am Polster. Griffe zum Bauch ziehen, dabei Schulterblätter aktiv einrollen und zusammenpressen. Am Endpunkt 1 Sekunde halten. Zwischen Wiederholungen Arme vollständig strecken.',
-    video:'https://www.youtube.com/results?search_query=Ruderzugmaschine+Rudermaschine+Technik+richtige+Ausführung'
-  },
-  'plA3': {
-    desc:'Gegenteil von Seitheben: Arme starten seitlich erhoben und werden kontrolliert nach unten-innen gedrückt. Trainiert Latissimus und Teres Major. Arme leicht gebeugt halten, langsam und bewusst ausführen.',
-    video:'https://www.youtube.com/results?search_query=Seitenrunterdrücken+Latissimus+Maschine+Technik+richtige+Ausführung'
-  },
-  'plA4': {
-    desc:'Oberkörper aufrecht, Oberarme auf den Pads. Die Maschine führt die Überzug-Bewegung. Arme von vorne-oben im Bogen nach unten-hinten bewegen. Dehnung am Anfang bewusst spüren, am Tiefpunkt zusammenkneifen.',
-    video:'https://www.youtube.com/results?search_query=Überzugmaschine+Pullover+Maschine+Technik+richtige+Ausführung'
-  },
-  'plA5': {
-    desc:'Oberarme vollständig auf dem Pad abgestützt – kein Schwingen möglich. Konzentriere dich nur auf den Bizeps. Vollständige Streckung unten, volle Kontraktion oben kurz halten. Letzter Satz: bis zur vollständigen Erschöpfung.',
-    video:'https://www.youtube.com/results?search_query=Bizepsmaschine+Bizeps+Curl+Maschine+Technik+richtige+Ausführung'
-  },
-  'plA6': {
-    desc:'Kabel von unten, konstante Spannung über den gesamten Bewegungsradius. Ellbogen fixiert an den Seiten – nur der Unterarm bewegt sich. Oben kurz für Spitzenkontraktion halten. Ideal als Pump-Finisher nach der Bizepsmaschine.',
-    video:'https://www.youtube.com/results?search_query=Kabel+Bizeps+Curls+Technik+richtige+Ausführung'
-  },
-  'plA7': {
-    desc:'Klimmzug-Maschine mit Gewichtsunterstützung (B04). Das Zusatzgewicht reduziert dein Körpergewicht – je mehr Gewicht eingestellt, desto leichter. Breiter Griff für Lat-Fokus. Am Tiefpunkt vollständig strecken, bis Kinn die Stange passiert. Volle Kontrolle beim Absenken.',
-    video:'https://www.youtube.com/results?search_query=Klimmzüge+Maschine+Unterstützung+assisted+pullup+Technik+richtige+Ausführung'
-  },
-  'plA8': {
-    desc:'Butterfly-Maschine umgekehrt nutzen: Gesicht zur Maschine, Arme von vorne nach hinten-außen führen. Trainiert hintere Schulter und Rhomboiden. Leichtes Gewicht, kontrollierte Bewegung – diese kleinen Muskeln reagieren auf Sauberkeit, nicht Gewicht.',
-    video:'https://www.youtube.com/results?search_query=Reverse+Fly+Maschine+hintere+Schulter+Technik+richtige+Ausführung'
-  },
-  // LEGS A
-  'lA1': {
-    desc:'Füße schulterbreit, mittig auf der Plattform. Beim Absenken Knie in Richtung Zehen drücken. Beine am oberen Punkt nicht vollständig durchstrecken – Knie weich lassen. Rücken fest am Polster. Dein Gewicht: ~117 kg.',
-    video:'https://www.youtube.com/results?search_query=Beinpresse+Maschine+Technik+richtige+Ausführung+Leg+Press'
-  },
-  'lA2': {
-    desc:'Stange auf unterem Trapez, Füße schulterbreit. Knie in Richtung Zehen drücken, Brust hoch, Rücken neutral. Volle Tiefe wenn möglich. Tief Luft holen vor dem Abstieg, Core anspannen.',
-    video:'https://www.youtube.com/results?search_query=Kniebeugen+Langhantel+Technik+richtige+Ausführung+Squat'
-  },
-  'lA3': {
-    desc:'Kniegelenk am Drehpunkt der Maschine positionieren. Am oberen Punkt 1 Sekunde halten und Quadrizeps aktiv anspannen. Sehr langsam absenken (4 Sek.) – der Reiz entsteht durch die Zeit unter Spannung.',
-    video:'https://www.youtube.com/results?search_query=Beinstrecker+Maschine+Leg+Extension+Technik+richtige+Ausführung'
-  },
-  'lA4': {
-    desc:'Beinpresse (E01) einbeinig: Ein Fuß mittig auf der Plattform, das andere Bein zur Seite. Gleiches Gewicht wie beidbeining – aber langsamer und kontrollierter. Knie in Richtung Zehe drücken, Rücken flach am Polster. Ungleichgewichte zwischen links und rechts ausgleichen.',
-    video:'https://www.youtube.com/results?search_query=Einbeinige+Beinpresse+Legpress+Technik+richtige+Ausführung'
-  },
-  'lA5': {
-    desc:'Hüft-Abduktionsmaschine (E03). Beine aus der Hüfte nach außen drücken gegen den Widerstand. Am Endpunkt Gesäß aktiv anspannen. Kontrolliert zurück – nicht zurückschnappen lassen.',
-    video:'https://www.youtube.com/results?search_query=Abduktion+Maschine+Hip+Abduction+Technik+richtige+Ausführung'
-  },
-  'lA6': {
-    desc:'Voller Bewegungsradius ist entscheidend: unten komplett dehnen, dann maximal auf Zehenspitzen steigen und 1–2 Sek. oben halten. Langsam und kontrolliert – Waden reagieren besonders gut auf Time under Tension.',
-    video:'https://www.youtube.com/results?search_query=Wadenheben+stehend+Maschine+Calf+Raise+Technik+richtige+Ausführung'
-  },
-  'lA7': {
-    desc:'Beinbeuger-Maschine (E05). Kniegelenk am Drehpunkt positionieren. Ferse Richtung Gesäß ziehen, am oberen Punkt kurz halten. Sehr langsam strecken (4 Sek.) – isoliert Hamstrings optimal. Hüfte bleibt auf der Liege.',
-    video:'https://www.youtube.com/results?search_query=Beinbeuger+Maschine+Hamstring+Curl+Technik+richtige+Ausführung'
-  },
-  'lA8': {
-    desc:'Hüft-Adduktionsmaschine (E02). Beine aus der Seitenposition zusammendrücken. Innere Oberschenkel (Adduktoren) werden trainiert. Kontrolliert zurück – nicht die Knie auseinanderschnappen lassen.',
-    video:'https://www.youtube.com/results?search_query=Adduktion+Maschine+Hip+Adduction+innere+Oberschenkel+Technik+richtige+Ausführung'
-  },
-  // PUSH B
-  'pB1': {
-    desc:'Sitz auf Schulterhöhe einstellen. Ellbogen-Pads nutzen und mit den Ellbogen (nicht Händen) nach oben führen. Sehr langsam (4 Sek.) zurückführen – das erzeugt den stärksten Trainingsreiz für die seitliche Schulter.',
-    video:'https://www.youtube.com/results?search_query=Seitheben+Maschine+Lateral+Raise+Schulter+Technik+richtige+Ausführung'
-  },
-  'pB2': {
-    desc:'Butterfly-Maschine umgekehrt: Gesicht zur Maschine. Arme starten vorne, werden nach hinten-außen geführt (Reverse Fly). Trainiert hintere Schulter (Rear Delts) und Rhomboiden. Leichtes Gewicht, saubere Ausführung.',
-    video:'https://www.youtube.com/results?search_query=Reverse+Butterfly+Pec+Deck+hintere+Schulter+Rear+Delt+Technik'
-  },
-  'pB3': {
-    desc:'Das Gegenteil von Seitheben: Arme seitlich nach unten drücken gegen Widerstand. Trainiert den unteren Teil des M. deltoideus und den Teres minor. Ellbogen leicht gebeugt halten, Bewegung kontrolliert und langsam.',
-    video:'https://www.youtube.com/results?search_query=Seitenrunterdrücken+Schulter+Maschine+Kabel+Technik+richtige+Ausführung'
-  },
-  'pB4': {
-    desc:'Trizepsmaschine: Arme nah am Körper, nur der Unterarm bewegt sich. Beim letzten Satz 2 Sek. unten halten, dann explosiv strecken. Intensiviert den Trizeps-Reiz deutlich.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Maschine+Technik+richtige+Ausführung'
-  },
-  'pB5': {
-    desc:'Kabel von oben, Seil oder einzelner Griff. Ellbogen zeigen nach vorne und bleiben fixiert. Arm nach oben-vorne strecken – der lange Trizepskopf wird maximal gedehnt. Langsam bewegen, leichtes Gewicht für maximale Dehnung.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Overhead+Extension+Kabel+langer+Kopf+Technik+richtige+Ausführung'
-  },
-  'pB6': {
-    desc:'Auf der Bank liegend mit 2×12,5 kg. Heute mit Fokus auf das Brust-Gefühl statt Gewicht. Hanteln auf Brusthöhe, Ellbogen ca. 75° zum Körper. Nach oben drücken, leicht zur Mitte zusammenführen. Langsam absenken.',
-    video:'https://www.youtube.com/results?search_query=Brustpresse+liegend+Kurzhantel+Flachbank+Technik+richtige+Ausführung'
-  },
-  'pB7': {
-    desc:'Gleiche Butterfly-Maschine (A02) wie in Push A, aber heute mit höheren Wiederholungen und etwas weniger Gewicht. Fokus auf das Brust-Gefühl und die Pumpe, nicht auf maximale Last.',
-    video:'https://www.youtube.com/results?search_query=Butterfly+Pec+Deck+Maschine+Brust+Technik+richtige+Ausführung'
-  },
-  'pB8': {
-    desc:'Kabel von oben, Seil-Aufsatz. Leicht nach vorne lehnen, Ellbogen dicht am Körper fixiert. Nur der Unterarm bewegt sich: Seil nach unten durchdrücken bis zur vollen Streckung, Trizeps am Tiefpunkt aktiv anspannen. Zweiter Kabel-Finisher nach Overhead.',
-    video:'https://www.youtube.com/results?search_query=Trizeps+Pushdown+Seil+Kabel+Technik+richtige+Ausführung'
-  },
-  // PULL B
-  'plB1': {
-    desc:'Klimmzug-Maschine mit Gewichtsunterstützung (B04). Das Zusatzgewicht reduziert dein Körpergewicht. Breiter Griff für Lat-Fokus. Am Tiefpunkt vollständig strecken, bis Kinn die Stange passiert. Volle Kontrolle beim Absenken.',
-    video:'https://www.youtube.com/results?search_query=Klimmzüge+Maschine+Unterstützung+assisted+pullup+Technik+richtige+Ausführung'
-  },
-  'plB2': {
-    desc:'Gleiche Maschine wie PULL A. Fokus auf Schulterblätter vollständig zusammenziehen und kurz halten. Bewusste Pause am Tiefpunkt für maximale Latissimus-Dehnung.',
-    video:'https://www.youtube.com/results?search_query=Latzug+Maschine+Technik+richtige+Ausführung'
-  },
-  'plB3': {
-    desc:'Ruderzugmaschine (B01). Heute 3 Sätze. Fokus auf maximale Kontraktion der Schulterblätter am Endpunkt – 2 Sekunden halten. Arme vollständig strecken zwischen Wiederholungen.',
-    video:'https://www.youtube.com/results?search_query=Ruderzugmaschine+Rudern+Technik+richtige+Ausführung'
-  },
-  'plB4': {
-    desc:'Reverse Butterfly auf der Maschine. Hintere Schultermuskulatur (hintere Delts) und Rhomboiden. Arme leicht gebeugt. Nicht reißen – langsame, kontrollierte Bewegung für maximale Wirkung auf die kleine Muskelgruppe.',
-    video:'https://www.youtube.com/results?search_query=Reverse+Fly+Maschine+hintere+Schulter+Technik+richtige+Ausführung'
-  },
-  'plB5': {
-    desc:'Oberarme vollständig auf dem Pad, kein Schwingen möglich. Heute inkl. Max-Satz: letzten Satz bis zur vollständigen Erschöpfung. Kein Schwingen. Konzentration liegt voll auf dem Bizeps.',
-    video:'https://www.youtube.com/results?search_query=Bizepsmaschine+Bizeps+Curl+Maschine+Technik+richtige+Ausführung'
-  },
-  'plB6': {
-    desc:'7 halbe Wdh. unten (0–90°), 7 halbe oben (90°–oben), 7 volle Wdh. = 1 Satz. Enorme metabolische Erschöpfung des Bizeps. Gewicht stark reduzieren! Kurze Pause zwischen den 3 Abschnitten ist ok.',
-    video:'https://www.youtube.com/results?search_query=Bizeps+21er+Kabel+Technik+richtige+Ausführung'
-  },
-  'plB7': {
-    desc:'Überzugmaschine (B21). Oberkörper aufrecht, Oberarme auf den Pads. Die Maschine führt die Überzug-Bewegung. Arme von vorne-oben im Bogen nach unten-hinten bewegen. Dehnung am Anfang bewusst spüren, am Tiefpunkt zusammenkneifen.',
-    video:'https://www.youtube.com/results?search_query=Überzugmaschine+Pullover+Maschine+Technik+richtige+Ausführung'
-  },
-  'plB8': {
-    desc:'Seitenrunterdrücken (Maschine): Gegenteil von Seitheben. Arme starten seitlich erhoben und werden kontrolliert nach unten-innen gedrückt. Trainiert Latissimus und Teres Major. Ellbogen leicht gebeugt, langsam und bewusst ausführen.',
-    video:'https://www.youtube.com/results?search_query=Seitenrunterdrücken+Latissimus+Maschine+Technik+richtige+Ausführung'
-  },
-  // LEGS B
-  'lB1': {
-    desc:'Gleiche Maschine wie BEINE A, Füße etwas weiter oben auf der Plattform platzieren – das betont die Hamstrings stärker. Etwas leichteres Gewicht, dafür mehr Kontrolle in der Absenkphase.',
-    video:'https://www.youtube.com/results?search_query=Beinpresse+Maschine+Hamstrings+Fußposition+Technik+richtige+Ausführung'
-  },
-  'lB2': {
-    desc:'Beinbeuger-Maschine (E05). Kniegelenk am Drehpunkt. Ferse Richtung Gesäß ziehen, am oberen Punkt kurz halten. Sehr langsam strecken (4 Sek.) – isoliert Hamstrings optimal. Hüfte bleibt auf der Liege.',
-    video:'https://www.youtube.com/results?search_query=Beinbeuger+Maschine+Hamstring+Curl+Technik+richtige+Ausführung'
-  },
-  'lB3': {
-    desc:'Hüft-Adduktionsmaschine (E02). Beine aus der Seitenposition zusammendrücken. Innere Oberschenkel (Adduktoren) werden trainiert. Kontrolliert zurück – nicht die Knie auseinanderschnappen lassen.',
-    video:'https://www.youtube.com/results?search_query=Adduktion+Maschine+Hip+Adduction+innere+Oberschenkel+Technik+richtige+Ausführung'
-  },
-  'lB4': {
-    desc:'Hüft-Abduktionsmaschine (E03). Beine nach außen drücken gegen den Widerstand. Am Endpunkt Gesäß aktiv anspannen. Kontrolliert zurück. Außenseite Gesäß und Hüfte werden trainiert.',
-    video:'https://www.youtube.com/results?search_query=Abduktion+Maschine+Hip+Abduction+Gesäß+Technik+richtige+Ausführung'
-  },
-  'lB5': {
-    desc:'Wadenmachine (E07). Voller Bewegungsradius ist entscheidend: unten komplett dehnen, dann maximal hoch und 1–2 Sek. halten. Langsam und kontrolliert – Time under Tension ist bei den Waden besonders wichtig.',
-    video:'https://www.youtube.com/results?search_query=Wadenheben+Maschine+Waden+Calf+Raise+Technik+richtige+Ausführung'
-  },
-  'lB6': {
-    desc:'Stange auf unterem Trapez, Füße schulterbreit. Knie in Richtung Zehen drücken, Brust hoch, Rücken neutral. Volle Tiefe wenn möglich. Tief Luft holen vor dem Abstieg, Core anspannen. Nach den Squats folgt direkt die Beinpresse.',
-    video:'https://www.youtube.com/results?search_query=Kniebeugen+Langhantel+Technik+richtige+Ausführung+Squat'
-  },
-  'lB7': {
-    desc:'Beinpresse (E01) einbeinig: Ein Fuß mittig auf der Plattform, das andere Bein zur Seite. Fokus auf Gesäß – Fuß etwas höher platzieren für mehr Gesäß-Aktivierung. Kontrolliert absenken, am Endpunkt Gesäß aktiv anspannen.',
-    video:'https://www.youtube.com/results?search_query=Einbeinige+Beinpresse+Legpress+Technik+richtige+Ausführung'
-  },
-  'lB8': {
-    desc:'Beinstrecker (E04) als Quadrizeps-Balance nach dem Hamstring-Fokus heute. Kniegelenk am Drehpunkt positionieren. Am oberen Punkt 1 Sekunde halten. Etwas leichteres Gewicht als an Beine A – Fokus auf Gefühl, nicht Last.',
-    video:'https://www.youtube.com/results?search_query=Beinstrecker+Maschine+Leg+Extension+Technik+richtige+Ausführung'
-  }
-};
-
-// ─── AUFWÄRM-DATEN ────────────────────────────────────────────
 const WARMUP_MACHINES = [
-  {id:'bike',    emoji:'🚴', label:'Fahrrad'},
-  {id:'cross',   emoji:'🏃', label:'Crosstrainer'},
-  {id:'rowing',  emoji:'🚣', label:'Rudergerät'},
+  {id:'bike',  emoji:'🚴', label:'Fahrrad'},
+  {id:'cross', emoji:'🏃', label:'Crosstrainer'},
+  {id:'rowing',emoji:'🚣', label:'Rudergerät'},
 ];
 
-const CAL_LABELS = ['Mo','Di','Mi','Do','Fr','Sa','So'];
 const TYPE_COLORS = {push:'#c0392b',pull:'#1e8449',legs:'#7d3c98',rest:'#7f8c8d'};
-// MET-Werte für Krafttraining nach Typ (Metabolic Equivalent of Task)
-const MET = {push:4.5, pull:4.0, legs:5.5, rest:2.0};
+const MET = {push:4.5,pull:4.0,legs:5.5,rest:2.0};
 const SK = 'tp_v3_';
 
 // ─── STATE ───────────────────────────────────────────────────
-let activeWorkoutKey = null; // null = picker, string = active workout key
-let openEx           = new Set();
-let timerInterval    = null, timerRem = 0, timerTotal = 0, timerExId = null;
-let viewMode         = 'day';
+let activeWorkoutKey = null;
+let openEx = new Set();
+let timerInterval = null, timerRem = 0, timerTotal = 0, timerExId = null;
+let viewMode = 'day';
+let _progArrays = {};
 
 // ─── HELPERS ─────────────────────────────────────────────────
-function getTodayStr() {
-  return new Date().toISOString().slice(0,10);
-}
+function getTodayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function sk(dk,ei,si,f){ return SK+dk+'_'+ei+'_s'+si+'_'+f; }
+function saveSet(dk,ei,si,f,v){ try{localStorage.setItem(sk(dk,ei,si,f),v);}catch(e){} }
+function loadSet(dk,ei,si,f){ try{return localStorage.getItem(sk(dk,ei,si,f))||'';}catch(e){return '';} }
+function isDone(dk,ei,si){ try{return localStorage.getItem(sk(dk,ei,si,'done'))==='1';}catch(e){return false;} }
+function isExSkipped(dk,ei){ try{return localStorage.getItem(SK+dk+'_'+ei+'_skip')==='1';}catch(e){return false;} }
+function setExSkipped(dk,ei,v){ try{localStorage.setItem(SK+dk+'_'+ei+'_skip',v?'1':'0');}catch(e){} }
+function getBodyWeight(){ try{return parseFloat(localStorage.getItem('tp_bodyweight')||'0');}catch(e){return 0;} }
+function setBodyWeight(kg){ try{localStorage.setItem('tp_bodyweight',kg);}catch(e){} }
 
 // ─── WORKOUT HISTORY & RECOMMENDATION ────────────────────────
-function getWorkoutLog() {
-  return Object.keys(localStorage)
-    .filter(k=>k.startsWith('tp_done_'))
-    .map(k=>({date:k.replace('tp_done_',''), key:localStorage.getItem(k)}))
-    .filter(e=>PLAN.some(p=>p.key===e.key&&p.type!=='rest'))
-    .sort((a,b)=>b.date.localeCompare(a.date));
+function getWorkoutLog(){
+  try{
+    return Object.keys(localStorage)
+      .filter(k=>k.startsWith('tp_done_'))
+      .map(k=>({date:k.replace('tp_done_',''),key:localStorage.getItem(k)}))
+      .filter(e=>PLAN.some(p=>p.key===e.key&&p.type!=='rest'))
+      .sort((a,b)=>b.date.localeCompare(a.date));
+  }catch(e){return [];}
 }
-function getLastDoneDate(workoutKey) {
+function getLastDoneDate(workoutKey){
   const e=getWorkoutLog().find(e=>e.key===workoutKey);
   return e?e.date:null;
 }
-function daysSince(dateStr) {
+function daysSince(dateStr){
   if(!dateStr) return 999;
   const d=new Date(dateStr+'T12:00:00');
   const t=new Date(getTodayStr()+'T12:00:00');
   return Math.round((t-d)/86400000);
 }
-function getRecommendation() {
+function getRecommendation(){
   const today=getTodayStr();
   const todayKey=localStorage.getItem('tp_done_'+today);
   if(todayKey&&PLAN.some(p=>p.key===todayKey))
-    return {key:todayKey, reason:'Heute bereits gestartet ✓', isActive:true};
-  const workouts=PLAN.filter(p=>p.type!=='rest');
+    return {key:todayKey,reason:'Heute bereits gestartet ✓',isActive:true};
   const log=getWorkoutLog();
-  if(!log.length) return {key:'pushA', reason:'Noch kein Eintrag – starte mit Push A'};
+  if(!log.length) return {key:'pushA',reason:'Noch kein Eintrag – starte mit Push A'};
   const rotation={pushA:'pullA',pullA:'legsA',legsA:'pushB',pushB:'pullB',pullB:'legsB',legsB:'pushA'};
   const last=log[0];
   const nextKey=rotation[last.key];
@@ -622,13 +384,11 @@ function getRecommendation() {
   if(nextKey){
     const nextPlan=PLAN.find(p=>p.key===nextKey);
     const dayLabel=ds===0?'heute':ds===1?'gestern':`vor ${ds} Tagen`;
-    return {key:nextKey, reason:`Nach ${lastPlan?.title} (${dayLabel}) → ${nextPlan?.title}`};
+    return {key:nextKey,reason:`Nach ${lastPlan?.title} (${dayLabel}) → ${nextPlan?.title}`};
   }
-  const sorted=workouts.slice().sort((a,b)=>daysSince(getLastDoneDate(b.key))-daysSince(getLastDoneDate(a.key)));
-  const d=daysSince(getLastDoneDate(sorted[0].key));
-  return {key:sorted[0].key, reason:d<999?`Zuletzt vor ${d} Tag${d===1?'':'en'}`:'Noch nicht gemacht'};
+  return {key:'pushA',reason:'Weiter geht\'s!'};
 }
-function getWorkoutProgress(workoutKey) {
+function getWorkoutProgress(workoutKey){
   const day=PLAN.find(p=>p.key===workoutKey);
   if(!day||!day.exercises.length) return {done:0,total:0};
   let done=0,total=0;
@@ -638,124 +398,141 @@ function getWorkoutProgress(workoutKey) {
   });
   return {done,total};
 }
-function selectWorkout(key) {
+function selectWorkout(key){
   const w=PLAN.find(p=>p.key===key);
-  if(w && w.type!=='rest') {
+  if(w&&w.type!=='rest'){
     const {done,total}=getWorkoutProgress(key);
-    if(total>0 && done===total) {
-      // Alles abgehakt – fragen ob nochmal
-      activeWorkoutKey=key; viewMode='day'; openEx.clear(); render(); window.scrollTo(0,0);
+    if(total>0&&done===total){
+      activeWorkoutKey=key;viewMode='day';openEx.clear();render();window.scrollTo(0,0);
       document.getElementById('modalTitle').textContent='🔁 Nochmal trainieren?';
       document.getElementById('modalBody').innerHTML=`
-        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">${w.emoji} <strong>${w.title}</strong> ist bereits abgeschlossen. Häkchen zurücksetzen und nochmal starten?</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">${w.emoji} <strong>${w.title}</strong> ist bereits abgeschlossen.</p>
         <button class="modal-btn success" onclick="resetDoneOnly('${key}')">✓ Ja, nochmal machen</button>
         <button class="modal-btn neutral" onclick="closeModal()">Nein, so lassen</button>`;
       document.getElementById('modalOverlay').classList.add('open');
       return;
     }
   }
-  activeWorkoutKey=key; viewMode='day'; openEx.clear(); render(); window.scrollTo(0,0);
+  activeWorkoutKey=key;viewMode='day';openEx.clear();render();window.scrollTo(0,0);
 }
-
-function resetDoneOnly(key) {
+function resetDoneOnly(key){
   closeModal();
-  const w=PLAN.find(p=>p.key===key); if(!w) return;
+  const w=PLAN.find(p=>p.key===key);if(!w)return;
   w.exercises.forEach(ex=>{
-    for(let s=0;s<ex.sets;s++) localStorage.removeItem(sk(w.key,ex.id,s,'done'));
-    localStorage.removeItem(SK+w.key+'_'+ex.id+'_skip');
+    for(let s=0;s<ex.sets;s++) try{localStorage.removeItem(sk(w.key,ex.id,s,'done'));}catch(e){}
+    try{localStorage.removeItem(SK+w.key+'_'+ex.id+'_skip');}catch(e){}
   });
-  // Heutigen "done"-Eintrag entfernen damit das Workout wieder offen ist
-  localStorage.removeItem('tp_done_'+getTodayStr());
-  openEx.clear(); render(); showToast('Häkchen zurückgesetzt – viel Erfolg! 💪');
+  try{localStorage.removeItem('tp_done_'+getTodayStr());}catch(e){}
+  openEx.clear();render();showToast('Häkchen zurückgesetzt – viel Erfolg! 💪');
 }
-function goBackToPicker() {
-  activeWorkoutKey=null; render(); window.scrollTo(0,0);
-}
+function goBackToPicker(){ activeWorkoutKey=null;render();window.scrollTo(0,0); }
 
-// ─── EXERCISE DATA ────────────────────────────────────────────
-function sk(dk,ei,si,f){return SK+dk+'_'+ei+'_s'+si+'_'+f;}
-function saveSet(dk,ei,si,f,v){localStorage.setItem(sk(dk,ei,si,f),v);}
-function loadSet(dk,ei,si,f){return localStorage.getItem(sk(dk,ei,si,f))||'';}
-function isDone(dk,ei,si){return localStorage.getItem(sk(dk,ei,si,'done'))==='1';}
-function isExSkipped(dk,ei){return localStorage.getItem(SK+dk+'_'+ei+'_skip')==='1';}
-function setExSkipped(dk,ei,v){localStorage.setItem(SK+dk+'_'+ei+'_skip',v?'1':'0');}
+// ─── HISTORY ─────────────────────────────────────────────────
+const NAME_TO_IDS={};
+PLAN.forEach(w=>w.exercises.forEach(ex=>{
+  if(!NAME_TO_IDS[ex.name]) NAME_TO_IDS[ex.name]=[];
+  NAME_TO_IDS[ex.name].push({dk:w.key,eid:ex.id});
+}));
 
-// ─── ÜBUNGSNAME → ALLE (dk, eid) PAARE ───────────────────────
-const NAME_TO_IDS = {};
-PLAN.forEach(w => {
-  w.exercises.forEach(ex => {
-    if (!NAME_TO_IDS[ex.name]) NAME_TO_IDS[ex.name] = [];
-    NAME_TO_IDS[ex.name].push({dk: w.key, eid: ex.id});
-  });
-});
-
-// Letzten historischen Wert (kg oder reps) für eine Übung nach Name finden
-function getLastHistByName(exName, si, field) {
-  const pairs = NAME_TO_IDS[exName] || [];
-  if (pairs.length < 2) return ''; // keine Übertragung nötig wenn nur 1 Plan
-  let bestDate = '', bestVal = '';
-  for (const k of Object.keys(localStorage)) {
-    if (!k.startsWith('tp_hist_') || !k.endsWith('_'+field)) continue;
-    // Format: tp_hist_YYYY-MM-DD_dk_eid_si_field
-    const rest = k.slice('tp_hist_'.length); // YYYY-MM-DD_dk_eid_si_field
-    const dateEnd = rest.indexOf('_');
-    const date = rest.slice(0, dateEnd);
-    const remainder = rest.slice(dateEnd+1, rest.length - field.length - 1); // dk_eid_si
-    const lastUnder = remainder.lastIndexOf('_');
-    const setIdx = parseInt(remainder.slice(lastUnder+1));
-    const dkEid = remainder.slice(0, lastUnder); // dk_eid
-    const firstUnder = dkEid.indexOf('_');
-    const dk = dkEid.slice(0, firstUnder);
-    const eid = dkEid.slice(firstUnder+1);
-    if (setIdx !== si) continue;
-    if (!pairs.some(p => p.dk === dk && p.eid === eid)) continue;
-    if (date > bestDate) {
-      bestDate = date;
-      bestVal = localStorage.getItem(k) || '';
+function getLastHistByName(exName,si,field){
+  try{
+    const pairs=NAME_TO_IDS[exName]||[];
+    let bestDate='',bestVal='';
+    for(const k of Object.keys(localStorage)){
+      if(!k.startsWith('tp_hist_')||!k.endsWith('_'+field))continue;
+      const rest=k.slice('tp_hist_'.length);
+      const dateEnd=rest.indexOf('_');
+      const date=rest.slice(0,dateEnd);
+      const remainder=rest.slice(dateEnd+1,rest.length-field.length-1);
+      const lastUnder=remainder.lastIndexOf('_');
+      const setIdx=parseInt(remainder.slice(lastUnder+1));
+      const dkEid=remainder.slice(0,lastUnder);
+      const firstUnder=dkEid.indexOf('_');
+      const dk=dkEid.slice(0,firstUnder);
+      const eid=dkEid.slice(firstUnder+1);
+      if(setIdx!==si)continue;
+      if(!pairs.some(p=>p.dk===dk&&p.eid===eid))continue;
+      if(date>bestDate){bestDate=date;bestVal=localStorage.getItem(k)||'';}
     }
-  }
-  return bestVal;
+    return bestVal;
+  }catch(e){return '';}
+}
+function loadSetWithFallback(dk,ei,exName,si,field){
+  return loadSet(dk,ei,si,field)||getLastHistByName(exName,si,field);
+}
+function saveSetToHistory(dk,ei,si,kg,reps){
+  try{
+    const d=getTodayStr();
+    const base='tp_hist_'+d+'_'+dk+'_'+ei+'_'+si;
+    if(kg) localStorage.setItem(base+'_kg',kg);
+    if(reps) localStorage.setItem(base+'_reps',reps);
+  }catch(e){}
+}
+function saveSessionDone(dayKey){
+  try{
+    // Trainingstag immer auf die zuletzt trainierte Einheit setzen,
+    // damit die Datumsanzeige stimmt (auch ohne 100 % abgehakt).
+    localStorage.setItem('tp_done_'+getTodayStr(),dayKey);
+  }catch(e){}
+}
+// Zentral: Sobald es irgendeinen Fortschritt gibt (Satz abgehakt ODER
+// Übung übersprungen), den heutigen Trainingstag festhalten.
+// Nur schreibend – ein einmal registriertes Training wird NICHT mehr
+// automatisch entfernt, damit ein absolvierter Trainingstag nie verloren
+// geht (das war die Ursache für "Training nicht gemerkt / vor X Tagen").
+// Ein bewusstes Zurücksetzen entfernt den Eintrag weiterhin gezielt.
+function syncSessionRecord(dayKey){
+  try{
+    const {done}=getWorkoutProgress(dayKey);
+    if(done>0) localStorage.setItem('tp_done_'+getTodayStr(),dayKey);
+  }catch(e){}
+}
+// Ein einziger, verlässlicher Re-Render nach jeder Interaktion – ersetzt das
+// fehleranfällige Einzel-DOM-Patchen, das dazu führte, dass Änderungen erst
+// nach einem Tab-Wechsel sichtbar wurden.
+function refresh(){
+  try{ renderTabs(); }catch(e){}
+  try{ renderContent(); }catch(e){}
+  try{ updateFab(); }catch(e){}
+  try{ placeTimerBar(); }catch(e){}
 }
 
-// Wert laden: aktueller Tag zuerst, sonst letzter historischer Wert
-function loadSetWithFallback(dk, ei, exName, si, field) {
-  return loadSet(dk, ei, si, field) || getLastHistByName(exName, si, field);
-}
-
-// ─── KÖRPERGEWICHT & KALORIEN ─────────────────────────────────
-function getBodyWeight(){ return parseFloat(localStorage.getItem('tp_bodyweight')||'0'); }
-function setBodyWeight(kg){ localStorage.setItem('tp_bodyweight', kg); }
-
+// ─── CALORIE & SESSION ────────────────────────────────────────
 function maybeStartSession(dayKey){
-  const k='tp_sess_start_'+getTodayStr()+'_'+dayKey;
-  if(!localStorage.getItem(k)) localStorage.setItem(k, Date.now().toString());
+  try{
+    const k='tp_sess_start_'+getTodayStr()+'_'+dayKey;
+    if(!localStorage.getItem(k)) localStorage.setItem(k,Date.now().toString());
+  }catch(e){}
 }
-function calcKcal(type, dayKey){
-  const bw=getBodyWeight(); if(!bw) return 0;
-  const start=localStorage.getItem('tp_sess_start_'+getTodayStr()+'_'+dayKey);
-  if(!start) return 0;
-  const durH=Math.min((Date.now()-parseInt(start))/3600000, 2.5); // max 2.5h
-  return Math.round((MET[type]||4.0)*bw*durH);
+function calcKcal(type,dayKey){
+  try{
+    const bw=getBodyWeight();if(!bw)return 0;
+    const start=localStorage.getItem('tp_sess_start_'+getTodayStr()+'_'+dayKey);
+    if(!start)return 0;
+    const durH=Math.min((Date.now()-parseInt(start))/3600000,2.5);
+    return Math.round((MET[type]||4.0)*bw*durH);
+  }catch(e){return 0;}
 }
-function getKcal(date){ return parseInt(localStorage.getItem('tp_kcal_'+date)||'0'); }
+function getKcal(date){ try{return parseInt(localStorage.getItem('tp_kcal_'+date)||'0');}catch(e){return 0;} }
 
 // ─── AUFWÄRMEN ────────────────────────────────────────────────
-function getWuChoice(dk){ return localStorage.getItem('tp_wu_'+getTodayStr()+'_'+dk)||''; }
+function getWuChoice(dk){ try{return localStorage.getItem('tp_wu_'+getTodayStr()+'_'+dk)||'';}catch(e){return '';} }
 function setWuChoice(dk,id){
-  const cur=getWuChoice(dk);
-  // nochmal tippen = rückgängig
-  localStorage.setItem('tp_wu_'+getTodayStr()+'_'+dk, cur===id?'':id);
+  try{
+    const cur=getWuChoice(dk);
+    localStorage.setItem('tp_wu_'+getTodayStr()+'_'+dk,cur===id?'':id);
+  }catch(e){}
   renderWarmupCard(dk);
 }
 function renderWarmupCard(dk){
-  const card=document.getElementById('warmupCard'); if(!card) return;
+  const card=document.getElementById('warmupCard');if(!card)return;
   const chosen=getWuChoice(dk);
   const done=chosen!=='';
   card.className='warmup-card wu-open'+(done?' done-wu':'');
   const badge=card.querySelector('.warmup-badge');
   if(badge) badge.textContent=done?'✅ Fertig':'ausstehend';
   const body=card.querySelector('.warmup-body');
-  if(!body) return;
+  if(!body)return;
   body.innerHTML=`
     <p style="font-size:12px;color:var(--muted);margin-bottom:10px">10–15 Min. mittlere Intensität · Puls ~120–130</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -765,37 +542,11 @@ function renderWarmupCard(dk){
           <span>${m.label}</span>
         </button>`).join('')}
     </div>
-    ${done?`<p style="font-size:11px;color:#27ae60;margin-top:8px;text-align:center">✓ ${WARMUP_MACHINES.find(m=>m.id===chosen)?.label} erledigt — viel Erfolg beim Training!</p>`:''}`;
-}
-
-// ─── HISTORY TRACKING ────────────────────────────────────────
-function saveSetToHistory(dk, ei, si, kg, reps) {
-  const d = getTodayStr();
-  const base = 'tp_hist_'+d+'_'+dk+'_'+ei+'_'+si;
-  if(kg)  localStorage.setItem(base+'_kg',   kg);
-  if(reps)localStorage.setItem(base+'_reps', reps);
-}
-function saveSessionDone(dayKey) {
-  const d = getTodayStr();
-  const k = 'tp_done_'+d;
-  if(!localStorage.getItem(k)) localStorage.setItem(k, dayKey);
-}
-
-// ─── PROGRESS ────────────────────────────────────────────────
-function getDayProgress(calIdx) {
-  if(isCalSkipped(calIdx)) return {done:1,total:1,skippedDay:true};
-  const day=workoutForCal(calIdx);
-  if(!day.exercises.length) return {done:0,total:0};
-  let done=0,total=0;
-  day.exercises.forEach(ex=>{
-    if(isExSkipped(day.key,ex.id)){done++;total++;return;}
-    for(let s=0;s<ex.sets;s++){total++;if(isDone(day.key,ex.id,s))done++;}
-  });
-  return {done,total};
+    ${done?`<p style="font-size:11px;color:#27ae60;margin-top:8px;text-align:center">✓ ${WARMUP_MACHINES.find(m=>m.id===chosen)?.label} erledigt — viel Erfolg!</p>`:''}`;
 }
 
 // ─── RENDER ──────────────────────────────────────────────────
-function render(){renderTabs();renderContent();updateFab();}
+function render(){ renderTabs();renderContent();updateFab(); }
 
 function renderTabs(){
   const tabs=document.getElementById('dayTabs');
@@ -809,8 +560,8 @@ function renderTabs(){
     const badge=pct===100?'✓':pct>0?pct+'%':ds<999?ds+'d':'';
     const tab=document.createElement('button');
     tab.className='day-tab'+(isActive?' active':'');
-    tab.style.setProperty('color',isActive?'#fff':color);
-    tab.style.setProperty('border-color',isActive?'transparent':color);
+    tab.style.color=isActive?'#fff':color;
+    tab.style.borderColor=isActive?'transparent':color;
     if(isActive) tab.style.background=color;
     tab.innerHTML=`<span class="tab-label">${w.emoji}</span><span class="tab-sub">${badge||w.title.split(' ')[1]}</span>`;
     tab.onclick=()=>selectWorkout(w.key);
@@ -906,6 +657,9 @@ function renderOverview(el){
 
 function renderDay(el,w){
   maybeStartSession(w.key);
+  // Laufende Pausenuhr aus dem Inhalt herausretten, bevor er neu aufgebaut
+  // wird – sonst verschwindet der Timer beim Re-Render.
+  const _tb=document.getElementById('timerBar'); if(_tb) document.body.appendChild(_tb);
   const {done,total}=getWorkoutProgress(w.key);
   const pct=total>0?Math.round(done/total*100):0;
   const color=TYPE_COLORS[w.type];
@@ -949,7 +703,7 @@ function renderDay(el,w){
 function promptBodyWeight(){
   document.getElementById('modalTitle').textContent='⚖️ Körpergewicht';
   document.getElementById('modalBody').innerHTML=`
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Wird einmalig gespeichert und für die Kalorien-Schätzung verwendet.</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Einmalig gespeichert, für Kalorien-Schätzung.</p>
     <div class="bw-input-row">
       <input class="bw-input" type="number" id="bwInput" placeholder="z.B. 75" min="30" max="200" step="0.5" value="${getBodyWeight()||''}">
       <span style="display:flex;align-items:center;font-size:16px;font-weight:700">kg</span>
@@ -1011,18 +765,13 @@ function renderExercises(w,color){
         row.innerHTML=`
           <div class="set-nr">${s+1}</div>
           <input class="set-input" type="number" inputmode="decimal" placeholder="–" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'kg')}" min="0" step="0.5"
-            onchange="saveSet('${w.key}','${ex.id}',${s},'kg',this.value);maybeSaveHist('${w.key}','${ex.id}',${s})">
+            oninput="saveSet('${w.key}','${ex.id}',${s},'kg',this.value)">
           <input class="set-input" type="number" inputmode="numeric" placeholder="–" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'reps')}" min="0"
-            onchange="saveSet('${w.key}','${ex.id}',${s},'reps',this.value);maybeSaveHist('${w.key}','${ex.id}',${s})">
-          <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}" onclick="toggleSetDone('${w.key}','${ex.id}',${s},${ex.rest})">${done?'✓':''}</button>`;
+            oninput="saveSet('${w.key}','${ex.id}',${s},'reps',this.value)">
+          <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}" onclick="toggleSetDone('${w.key}','${ex.id}',${s},${ex.rest||0})">${done?'✓':''}</button>`;
         sd.appendChild(row);
       }
       if(ex.notes){const n=document.createElement('div');n.className='notes-text';n.textContent='💡 '+ex.notes;sd.appendChild(n);}
-      const info=EX_INFO[ex.id];
-      if(info){
-        if(info.desc){const d=document.createElement('div');d.className='ex-desc';d.textContent=info.desc;sd.appendChild(d);}
-        if(info.video){const a=document.createElement('a');a.className='ex-video-btn';a.href=info.video;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML='▶ Video: Richtige Ausführung';sd.appendChild(a);}
-      }
       card.appendChild(sd);
     }
     list.appendChild(card);
@@ -1038,62 +787,63 @@ function toggleEx(id){
   if(c)c.classList.toggle('open',openEx.has(id));
 }
 
-function maybeSaveHist(dk,ei,si){
-  if(isDone(dk,ei,si)){
-    const kg=loadSet(dk,ei,si,'kg');
-    const reps=loadSet(dk,ei,si,'reps');
-    saveSetToHistory(dk,ei,si,kg,reps);
-  }
-}
-
 function toggleSetDone(dk,ei,si,restSecs){
   const was=isDone(dk,ei,si);
   saveSet(dk,ei,si,'done',was?'0':'1');
-
-  // Save to history when marking as done
   if(!was){
     const kg=loadSet(dk,ei,si,'kg');
     const reps=loadSet(dk,ei,si,'reps');
     saveSetToHistory(dk,ei,si,kg,reps);
   }
-
-  const btn=document.getElementById(`doneBtn_${ei}_${si}`);
-  const row=document.getElementById(`row_${ei}_${si}`);
-  if(btn){btn.classList.toggle('done',!was);btn.textContent=was?'':'✓';}
-  if(row)row.classList.toggle('done',!was);
-  if(!was&&restSecs>0)startTimer(restSecs,ei);
-  updateProgress();
-  renderTabs();updateFab();
+  // Trainingstag verlässlich festhalten (bei jedem Abhaken/Zurücknehmen).
+  syncSessionRecord(dk);
   const {done,total}=getWorkoutProgress(dk);
-  if(done===total&&total>0){
+  const justFinished=!was&&done===total&&total>0;
+  if(justFinished){
     const w=PLAN.find(p=>p.key===dk);
-    saveSessionDone(dk);
-    // Kalorien berechnen und speichern
-    const kcal=calcKcal(w?.type||'push', dk);
-    if(kcal>0){
-      localStorage.setItem('tp_kcal_'+getTodayStr(), kcal);
-      showToast('🎉 Fertig! 🔥 ~'+kcal+' kcal verbrannt');
-    } else {
-      showToast('🎉 Training abgeschlossen!');
-    }
-    // Kalorien-Badge im Header aktualisieren
-    const kb=document.querySelector('.kcal-badge');
-    if(kb&&kcal>0) kb.textContent='🔥 ~'+kcal+' kcal verbrannt';
-    else if(kcal>0) render();
+    const kcal=calcKcal(w?.type||'push',dk);
+    if(kcal>0){ try{localStorage.setItem('tp_kcal_'+getTodayStr(),kcal);}catch(e){} }
+  }
+  if(!was&&restSecs>0) startTimer(restSecs,ei);
+  // Sofortige, gezielte Aktualisierung – kein kompletter Neuaufbau.
+  updateSetRowUI(dk,ei,si);
+  updateExCardUI(dk,ei);
+  updateProgress();
+  updateFab();
+  try{ renderTabs(); }catch(e){}
+  if(justFinished){
+    // Beim Abschluss einmal komplett rendern (Kalorien-Badge im Kopf etc.).
+    render();
+    placeTimerBar();
+    const w=PLAN.find(p=>p.key===dk);
+    const kcal=calcKcal(w?.type||'push',dk);
+    if(kcal>0) showToast('🎉 Fertig! 🔥 ~'+kcal+' kcal verbrannt');
+    else showToast('🎉 Training abgeschlossen!');
   }
 }
 
 function toggleExSkip(dk,ei){
   const was=isExSkipped(dk,ei);
   setExSkipped(dk,ei,!was);
+  // Auch reines Überspringen zählt als Trainingstag – sonst wurde eine
+  // Einheit, die nur per Skip abgeschlossen wurde, nie gespeichert.
+  syncSessionRecord(dk);
   showToast(was?'↩ Übung wiederhergestellt':'⏭ Übung übersprungen');
-  const w=PLAN.find(p=>p.key===activeWorkoutKey);
-  if(w) renderExercises(w,TYPE_COLORS[w.type]);
-  updateProgress();renderTabs();updateFab();
+  // Nur die Übungsliste neu aufbauen (Werte kommen aus dem Speicher,
+  // bleiben also erhalten); Timer vorher retten.
+  const w=PLAN.find(p=>p.key===dk);
+  if(w){
+    const tb=document.getElementById('timerBar'); if(tb) document.body.appendChild(tb);
+    renderExercises(w,TYPE_COLORS[w.type]);
+    placeTimerBar();
+  }
+  updateProgress();
+  updateFab();
+  try{ renderTabs(); }catch(e){}
 }
 
 function updateProgress(){
-  if(!activeWorkoutKey) return;
+  if(!activeWorkoutKey)return;
   const {done,total}=getWorkoutProgress(activeWorkoutKey);
   const pct=total>0?Math.round(done/total*100):0;
   const C=2*Math.PI*20;
@@ -1102,13 +852,35 @@ function updateProgress(){
   if(c)c.setAttribute('stroke-dashoffset',C*(1-pct/100));
 }
 
+// ── Gezielte, sofortige UI-Updates (ohne die ganze Seite neu zu bauen) ──
+// Dadurch färbt sich alles unmittelbar grün, Eingabefelder behalten Fokus
+// & Werte, und die laufende Pausenuhr bleibt erhalten.
+function updateSetRowUI(dk,ei,si){
+  const done=isDone(dk,ei,si);
+  const row=document.getElementById('row_'+ei+'_'+si);
+  if(row)row.classList.toggle('done',done);
+  const btn=document.getElementById('doneBtn_'+ei+'_'+si);
+  if(btn){btn.classList.toggle('done',done);btn.textContent=done?'✓':'';}
+}
+function updateExCardUI(dk,ei){
+  const card=document.getElementById('card_'+ei);
+  if(!card)return;
+  const w=PLAN.find(p=>p.key===dk);if(!w)return;
+  const ex=w.exercises.find(e=>e.id===ei);if(!ex)return;
+  const skipped=isExSkipped(dk,ei);
+  const allDone=!skipped&&Array.from({length:ex.sets},(_,s)=>isDone(dk,ei,s)).every(Boolean);
+  card.classList.toggle('done-all',allDone);
+  const st=card.querySelector('.ex-status');
+  if(st)st.textContent=allDone?'✅':skipped?'⏭':'';
+}
+
 // ─── TIMER ───────────────────────────────────────────────────
-function startTimer(s, exId){
+function startTimer(s,exId){
   stopTimer();
-  timerRem=s; timerTotal=s; timerExId=exId||null;
+  timerRem=s;timerTotal=s;timerExId=exId||null;
   placeTimerBar();
   updateTimerDisplay();
-  timerInterval=setInterval(()=>{timerRem--;updateTimerDisplay();if(timerRem<=0){stopTimer();showToast('⏱ Pause vorbei!');}},1000);
+  timerInterval=setInterval(()=>{timerRem--;updateTimerDisplay();if(timerRem<=0){stopTimer();showToast('⏱ Pause vorbei – nächster Satz!');}},1000);
 }
 function stopTimer(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
@@ -1117,17 +889,11 @@ function stopTimer(){
   if(b){b.classList.remove('active');document.body.appendChild(b);}
 }
 function placeTimerBar(){
-  const b=document.getElementById('timerBar'); if(!b) return;
+  const b=document.getElementById('timerBar');if(!b)return;
   if(!timerInterval){document.body.appendChild(b);b.classList.remove('active');return;}
-  // Ziel: ex-sets div der laufenden Übung
-  const target = timerExId ? document.querySelector(`#exSets_${timerExId}`) : null;
-  if(target){
-    target.appendChild(b);
-  } else {
-    // Fallback: ans Ende von exerciseList
-    const el=document.getElementById('exerciseList');
-    if(el) el.appendChild(b); else document.body.appendChild(b);
-  }
+  const target=timerExId?document.querySelector(`#exSets_${timerExId}`):null;
+  if(target){target.appendChild(b);}
+  else{const el=document.getElementById('exerciseList');if(el)el.appendChild(b);else document.body.appendChild(b);}
   b.classList.add('active');
 }
 function updateTimerDisplay(){
@@ -1157,28 +923,35 @@ function showOptions(){
     <button class="modal-btn neutral" onclick="promptBodyWeight()">⚖️ Körpergewicht: ${bw?bw+' kg':'nicht gesetzt'}</button>
     ${activeWorkoutKey?`<button class="modal-btn danger" onclick="confirmReset()">🗑 Heutiges Training zurücksetzen</button>`:''}
     <button class="modal-btn danger" onclick="confirmResetAll()">⚠️ Alle Daten löschen</button>
+    <button class="modal-btn success" onclick="exportData()">📤 Daten exportieren</button>
+    <button class="modal-btn primary" onclick="importData()">📥 Daten importieren</button>
+    <button class="modal-btn neutral" onclick="showDebug()">🔍 Gespeicherte Daten anzeigen</button>
     <button class="modal-btn cancel" onclick="closeModal()">Abbrechen</button>`;
   document.getElementById('modalOverlay').classList.add('open');
 }
 
 function confirmReset(){
   closeModal();
-  const key=activeWorkoutKey; if(!key) return;
-  const w=PLAN.find(p=>p.key===key); if(!w) return;
+  const key=activeWorkoutKey;if(!key)return;
+  const w=PLAN.find(p=>p.key===key);if(!w)return;
   w.exercises.forEach(ex=>{
-    for(let s=0;s<ex.sets;s++)['kg','reps','done'].forEach(f=>localStorage.removeItem(sk(w.key,ex.id,s,f)));
-    localStorage.removeItem(SK+w.key+'_'+ex.id+'_skip');
+    for(let s=0;s<ex.sets;s++) ['kg','reps','done'].forEach(f=>{try{localStorage.removeItem(sk(w.key,ex.id,s,f));}catch(e){}});
+    try{localStorage.removeItem(SK+w.key+'_'+ex.id+'_skip');}catch(e){}
   });
+  // Bewusstes Zurücksetzen entfernt auch den heutigen Trainingseintrag.
+  try{if(localStorage.getItem('tp_done_'+getTodayStr())===w.key)localStorage.removeItem('tp_done_'+getTodayStr());}catch(e){}
   openEx.clear();render();showToast('Training zurückgesetzt.');
 }
 
 function confirmResetAll(){
   closeModal();
-  Object.keys(localStorage).filter(k=>
-    k.startsWith(SK)||k.startsWith('tp_done_')||k.startsWith('tp_hist_')||
-    k.startsWith('tp_kcal_')||k.startsWith('tp_sess_')||k.startsWith('tp_wu_')||
-    k==='tp_bodyweight'
-  ).forEach(k=>localStorage.removeItem(k));
+  try{
+    Object.keys(localStorage).filter(k=>
+      k.startsWith(SK)||k.startsWith('tp_done_')||k.startsWith('tp_hist_')||
+      k.startsWith('tp_kcal_')||k.startsWith('tp_sess_')||k.startsWith('tp_wu_')||
+      k==='tp_bodyweight'
+    ).forEach(k=>localStorage.removeItem(k));
+  }catch(e){}
   activeWorkoutKey=null;openEx.clear();render();showToast('Alle Daten gelöscht.');
 }
 
@@ -1192,269 +965,265 @@ function showToast(msg){
 }
 
 // ─── REPORT ──────────────────────────────────────────────────
-function showReport(){
-  closeModal();
-  renderReport();
-  document.getElementById('reportOverlay').classList.add('open');
-}
-function hideReport(){
-  document.getElementById('reportOverlay').classList.remove('open');
-}
-
-function buildExMap(){
-  const m={};
-  PLAN.forEach(day=>day.exercises.forEach(ex=>{
-    m[day.key+'_'+ex.id]={name:ex.name,type:day.type,title:day.title};
-  }));
-  return m;
-}
+function showReport(){closeModal();renderReport();document.getElementById('reportOverlay').classList.add('open');}
+function hideReport(){document.getElementById('reportOverlay').classList.remove('open');}
 
 function getAllSessions(){
-  return Object.keys(localStorage)
-    .filter(k=>k.startsWith('tp_done_'))
-    .map(k=>{
-      const date=k.replace('tp_done_','');
-      const dayKey=localStorage.getItem(k);
-      const day=PLAN.find(p=>p.key===dayKey);
-      return day?{date,dayKey,type:day.type,title:day.title,emoji:day.emoji}:null;
-    })
-    .filter(Boolean)
-    .sort((a,b)=>a.date.localeCompare(b.date));
+  try{
+    return Object.keys(localStorage)
+      .filter(k=>k.startsWith('tp_done_'))
+      .map(k=>{const date=k.replace('tp_done_','');const dayKey=localStorage.getItem(k);const day=PLAN.find(p=>p.key===dayKey);return day?{date,dayKey,type:day.type,title:day.title,emoji:day.emoji}:null;})
+      .filter(Boolean)
+      .sort((a,b)=>a.date.localeCompare(b.date));
+  }catch(e){return [];}
 }
-
 function getWeekMonday(dateStr){
   const d=new Date(dateStr+'T12:00:00');
-  const mon=new Date(d);
-  mon.setDate(d.getDate()-((d.getDay()+6)%7));
+  const mon=new Date(d);mon.setDate(d.getDate()-((d.getDay()+6)%7));
   return mon.toISOString().slice(0,10);
 }
-
 function calcStreak(sessions){
   if(!sessions.length)return 0;
   const dates=new Set(sessions.map(s=>s.date));
   let streak=0,d=new Date();
-  while(true){
-    const str=d.toISOString().slice(0,10);
-    if(dates.has(str)){streak++;d.setDate(d.getDate()-1);}
-    else break;
-  }
+  while(true){const str=d.toISOString().slice(0,10);if(dates.has(str)){streak++;d.setDate(d.getDate()-1);}else break;}
   return streak;
 }
 
 function renderReport(){
-  const exMap=buildExMap();
   const sessions=getAllSessions();
   const el=document.getElementById('reportContent');
-
-  // Build weekly buckets (last 8 weeks)
   const now=new Date();
   const weeks={};
   for(let w=7;w>=0;w--){
     const d=new Date(now);d.setDate(now.getDate()-w*7);
     const wk=getWeekMonday(d.toISOString().slice(0,10));
-    if(!weeks[wk]) weeks[wk]={push:0,pull:0,legs:0,total:0};
+    if(!weeks[wk])weeks[wk]={push:0,pull:0,legs:0,total:0};
   }
-  sessions.forEach(s=>{
-    const wk=getWeekMonday(s.date);
-    if(weeks[wk]){weeks[wk][s.type]=weeks[wk][s.type]||0+1;weeks[wk][s.type]++;weeks[wk].total++;}
-  });
-
+  sessions.forEach(s=>{const wk=getWeekMonday(s.date);if(weeks[wk]){weeks[wk][s.type]=(weeks[wk][s.type]||0)+1;weeks[wk].total++;}});
   const weekKeys=Object.keys(weeks).sort();
-  const maxSess=Math.max(6,...weekKeys.map(wk=>weeks[wk].total));
+  const maxSess=Math.max(1,...weekKeys.map(wk=>weeks[wk].total));
   const thisWeek=getWeekMonday(getTodayStr());
   const sessThisWeek=sessions.filter(s=>getWeekMonday(s.date)===thisWeek).length;
   const totalSessions=sessions.length;
   const streakDays=calcStreak(sessions);
   const avgPerWeek=totalSessions>0?Math.round(totalSessions/Math.max(1,weekKeys.length)*10)/10:0;
   const totalKcal=sessions.reduce((s,sess)=>s+getKcal(sess.date),0);
-
-  // Type distribution
   const typeCnt={push:0,pull:0,legs:0};
   sessions.forEach(s=>{if(typeCnt[s.type]!==undefined)typeCnt[s.type]++;});
   const totalTyped=typeCnt.push+typeCnt.pull+typeCnt.legs;
 
-  // Exercise progression from history
+  // Exercise progression
   const progData={};
-  Object.keys(localStorage).forEach(k=>{
-    if(!k.startsWith('tp_hist_')||!k.endsWith('_kg'))return;
-    const parts=k.split('_');
-    // tp_hist_YYYY-MM-DD_dk_eid_si_kg → indices: 0=tp,1=hist,2=date,3=dk,4=eid,5=si,6=kg
-    if(parts.length<7)return;
-    const date=parts[2],dk=parts[3],eid=parts[4];
-    const exKey=dk+'_'+eid;
-    const kg=parseFloat(localStorage.getItem(k));
-    if(isNaN(kg)||kg<=0)return;
-    if(!progData[exKey]) progData[exKey]={};
-    if(!progData[exKey][date]||kg>progData[exKey][date]) progData[exKey][date]=kg;
-  });
-  const progArrays={};
+  try{
+    Object.keys(localStorage).forEach(k=>{
+      if(!k.startsWith('tp_hist_')||!k.endsWith('_kg'))return;
+      const parts=k.split('_');if(parts.length<7)return;
+      const date=parts[2],dk=parts[3],eid=parts[4];
+      const exKey=dk+'_'+eid;
+      const kg=parseFloat(localStorage.getItem(k));
+      if(isNaN(kg)||kg<=0)return;
+      if(!progData[exKey])progData[exKey]={};
+      if(!progData[exKey][date]||kg>progData[exKey][date])progData[exKey][date]=kg;
+    });
+  }catch(e){}
+  _progArrays={};
   Object.keys(progData).forEach(exKey=>{
-    progArrays[exKey]=Object.entries(progData[exKey])
-      .map(([date,kg])=>({date,kg}))
-      .sort((a,b)=>a.date.localeCompare(b.date));
+    _progArrays[exKey]=Object.entries(progData[exKey]).map(([date,kg])=>({date,kg})).sort((a,b)=>a.date.localeCompare(b.date));
   });
-  const progKeys=Object.keys(progArrays).filter(k=>progArrays[k].length>0);
+  const progKeys=Object.keys(_progArrays).filter(k=>_progArrays[k].length>0);
 
-  // ── HTML BUILD ──
   let html='';
 
   // Summary
   html+=`<div class="report-section">
     <h3>Zusammenfassung</h3>
     <div class="stat-grid">
-      <div class="stat-box"><div class="stat-val" style="color:#3498db">${totalSessions}</div><div class="stat-lbl">Sessions gesamt</div></div>
-      <div class="stat-box"><div class="stat-val" style="color:#27ae60">${sessThisWeek}</div><div class="stat-lbl">Diese Woche</div></div>
-      <div class="stat-box"><div class="stat-val" style="color:#e67e22">${streakDays}</div><div class="stat-lbl">Tage in Folge 🔥</div></div>
-      <div class="stat-box"><div class="stat-val" style="color:#9b59b6">${avgPerWeek}</div><div class="stat-lbl">Ø Sessions/Woche</div></div>
-      ${totalKcal>0?`<div class="stat-box" style="grid-column:1/-1"><div class="stat-val" style="color:#e74c3c">${totalKcal.toLocaleString('de-DE')}</div><div class="stat-lbl">kcal verbrannt gesamt 🔥</div></div>`:''}
+      <div class="stat-box"><div class="stat-val">${totalSessions}</div><div class="stat-lbl">Einheiten gesamt</div></div>
+      <div class="stat-box"><div class="stat-val">${sessThisWeek}</div><div class="stat-lbl">Diese Woche</div></div>
+      <div class="stat-box"><div class="stat-val">${streakDays}</div><div class="stat-lbl">Tage Streak 🔥</div></div>
+      <div class="stat-box"><div class="stat-val">${avgPerWeek}</div><div class="stat-lbl">⌀ pro Woche</div></div>
     </div>
+    ${totalKcal>0?`<div style="text-align:center;margin-top:10px;font-size:13px;color:var(--muted)">🔥 Geschätzte Kalorien: <strong>${totalKcal.toLocaleString('de-DE')} kcal</strong></div>`:''}
   </div>`;
 
-  // Weekly frequency chart
+  // Weekly chart
   html+=`<div class="report-section">
-    <h3>Trainingsfrequenz (letzte 8 Wochen)</h3>
+    <h3>Aktivität (letzte 8 Wochen)</h3>
     <div class="week-chart-wrap">`;
   weekKeys.forEach(wk=>{
-    const w=weeks[wk];
-    const d=new Date(wk+'T12:00:00');
-    const lbl=d.toLocaleDateString('de-DE',{day:'numeric',month:'numeric'});
-    const hPush=Math.round(w.push/maxSess*70);
-    const hPull=Math.round(w.pull/maxSess*70);
-    const hLegs=Math.round(w.legs/maxSess*70);
-    const isNow=wk===thisWeek;
-    html+=`<div class="wk-col" title="${w.total} Sessions">
-      <div class="wk-bars" style="height:70px">
-        ${w.legs?`<div class="wk-bar" style="height:${hLegs}px;background:#7d3c98"></div>`:''}
-        ${w.pull?`<div class="wk-bar" style="height:${hPull}px;background:#1e8449"></div>`:''}
-        ${w.push?`<div class="wk-bar" style="height:${hPush}px;background:#c0392b"></div>`:''}
-        ${!w.total?`<div style="height:4px;width:100%;background:#eee;border-radius:2px;margin-top:auto"></div>`:''}
+    const wd=weeks[wk];
+    const isThis=wk===thisWeek;
+    const mon=new Date(wk+'T12:00:00');
+    const lbl=mon.toLocaleDateString('de-DE',{day:'numeric',month:'numeric'});
+    const pH=Math.round((wd.push/maxSess)*70);
+    const puH=Math.round((wd.pull/maxSess)*70);
+    const lH=Math.round((wd.legs/maxSess)*70);
+    html+=`<div class="wk-col">
+      <div class="wk-bars">
+        ${lH>0?`<div class="wk-bar" style="background:var(--legs);height:${lH}px"></div>`:''}
+        ${puH>0?`<div class="wk-bar" style="background:var(--pull);height:${puH}px"></div>`:''}
+        ${pH>0?`<div class="wk-bar" style="background:var(--push);height:${pH}px"></div>`:''}
+        ${wd.total===0?`<div class="wk-bar" style="background:#eee;height:4px"></div>`:''}
       </div>
-      <div class="wk-lbl" style="${isNow?'font-weight:700;color:var(--text)':''}">${lbl}</div>
+      <div class="wk-lbl" style="${isThis?'font-weight:800;color:var(--text)':''}">${lbl}</div>
     </div>`;
   });
   html+=`</div>
     <div class="chart-legend">
-      <span style="color:#c0392b">● Push</span>
-      <span style="color:#1e8449">● Pull</span>
-      <span style="color:#7d3c98">● Beine</span>
+      <span style="color:var(--push)">🔴 Push: ${typeCnt.push}</span>
+      <span style="color:var(--pull)">🟢 Pull: ${typeCnt.pull}</span>
+      <span style="color:var(--legs)">🟣 Beine: ${typeCnt.legs}</span>
     </div>
   </div>`;
 
-  // Muscle distribution
-  html+=`<div class="report-section"><h3>Muskelgruppen-Verteilung</h3>`;
-  if(!totalTyped){
-    html+=`<div class="no-data-hint"><div class="nd-icon">🏋️</div><p>Nach deiner ersten abgeschlossenen Session erscheint hier deine Muskelgruppen-Verteilung.</p></div>`;
-  } else {
-    [{key:'push',label:'Push 🔴',color:'#c0392b'},{key:'pull',label:'Pull 🟢',color:'#1e8449'},{key:'legs',label:'Beine 🟣',color:'#7d3c98'}].forEach(({key,label,color})=>{
-      const pct=Math.round(typeCnt[key]/totalTyped*100);
+  // Distribution
+  if(totalTyped>0){
+    html+=`<div class="report-section"><h3>Trainingsverteilung</h3>`;
+    [{label:'Push',cnt:typeCnt.push,color:'var(--push)'},{label:'Pull',cnt:typeCnt.pull,color:'var(--pull)'},{label:'Beine',cnt:typeCnt.legs,color:'var(--legs)'}].forEach(t=>{
+      const pct=Math.round(t.cnt/totalTyped*100);
       html+=`<div class="muscle-row">
-        <div class="muscle-label">${label}</div>
-        <div class="muscle-bar-bg"><div class="muscle-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-        <div class="muscle-count">${typeCnt[key]}x</div>
+        <div class="muscle-label">${t.label}</div>
+        <div class="muscle-bar-bg"><div class="muscle-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="muscle-count">${t.cnt}x</div>
       </div>`;
     });
+    html+=`</div>`;
   }
-  html+='</div>';
 
-  // Exercise progression
-  html+=`<div class="report-section"><h3>Übungsprogression (Gewicht in kg)</h3>`;
-  if(!progKeys.length){
-    html+=`<div class="no-data-hint"><div class="nd-icon">📈</div><p>Gib bei den Sätzen dein Gewicht ein und markiere sie als erledigt — dann siehst du hier deine Fortschritte über Zeit.</p></div>`;
-  } else {
-    html+=`<select class="ex-select" id="exProgSel" onchange="_renderProgChart()">`;
-    progKeys.forEach(k=>{
-      const ex=exMap[k];
-      html+=`<option value="${k}">${ex?ex.name:k}</option>`;
-    });
-    html+=`</select><div id="progChart"></div>`;
+  // Progression
+  if(progKeys.length>0){
+    const exNames={};
+    PLAN.forEach(w=>w.exercises.forEach(ex=>{exNames[w.key+'_'+ex.id]=ex.name;}));
+    html+=`<div class="report-section">
+      <h3>Gewichtsprogression</h3>
+      <select class="ex-select" id="progSelect" onchange="updateProgChart(this.value)">
+        ${progKeys.map(k=>`<option value="${k}">${exNames[k]||k}</option>`).join('')}
+      </select>
+      <div id="progChart"></div>
+    </div>`;
   }
-  html+='</div>';
 
-  // Session history
-  html+=`<div class="report-section"><h3>Session-Verlauf</h3>`;
-  if(!sessions.length){
-    html+=`<div class="no-data-hint"><div class="nd-icon">📅</div><p>Schließe dein erstes Training ab — danach siehst du hier deinen gesamten Verlauf.</p></div>`;
+  // Recent sessions
+  const recent=sessions.slice(-15).reverse();
+  html+=`<div class="report-section"><h3>Letzte Einheiten</h3>`;
+  if(!recent.length){
+    html+=`<div class="no-data-hint"><div class="nd-icon">📭</div><p>Noch keine abgeschlossenen Einheiten.<br>Starte dein erstes Training!</p></div>`;
   } else {
-    [...sessions].reverse().slice(0,30).forEach(s=>{
-      const color=TYPE_COLORS[s.type];
-      const dObj=new Date(s.date+'T12:00:00');
-      const dStr=dObj.toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-      const sessKcal=getKcal(s.date);
+    recent.forEach(s=>{
+      const d=new Date(s.date+'T12:00:00');
+      const dateStr=d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'});
       html+=`<div class="session-item">
-        <div class="session-dot" style="background:${color}22;color:${color}">${s.emoji}</div>
+        <div class="session-dot" style="background:${TYPE_COLORS[s.type]}22">${s.emoji}</div>
         <div class="session-info">
-          <div class="si-name" style="color:${color}">${s.title}</div>
-          <div class="si-date">${dStr}${sessKcal>0?' · 🔥 ~'+sessKcal+' kcal':''}</div>
+          <div class="si-name" style="color:${TYPE_COLORS[s.type]}">${s.title}</div>
+          <div class="si-date">${dateStr}</div>
         </div>
       </div>`;
     });
-    if(sessions.length>30) html+=`<div style="text-align:center;padding:8px;font-size:12px;color:var(--muted)">+ ${sessions.length-30} weitere Sessions</div>`;
   }
-  html+='</div>';
-
+  html+=`</div>`;
   el.innerHTML=html;
-
-  // Store for chart updates
-  window._rProg=progArrays;
-  window._rExMap=exMap;
-  if(progKeys.length) _renderProgChart();
+  if(progKeys.length>0) updateProgChart(progKeys[0]);
 }
 
-function _renderProgChart(){
-  const sel=document.getElementById('exProgSel');
-  const container=document.getElementById('progChart');
-  if(!sel||!container)return;
-  const exKey=sel.value;
-  const data=(window._rProg||{})[exKey]||[];
-  if(!data.length){container.innerHTML='<div class="no-data-hint"><p>Noch keine Daten für diese Übung.</p></div>';return;}
-
-  const maxKg=Math.max(...data.map(d=>d.kg));
-  const minKg=Math.min(...data.map(d=>d.kg));
-  const range=maxKg-minKg||1;
-  const W=300,H=80,PAD=22;
-
-  const pts=data.map((d,i)=>({
-    x:PAD+(data.length>1?i/(data.length-1):0.5)*(W-PAD*2),
-    y:H-PAD-((d.kg-minKg)/range)*(H-PAD*2),
-    d
-  }));
-  const pathD=pts.map((p,i)=>(i===0?`M${p.x},${p.y}`:`L${p.x},${p.y}`)).join(' ');
-  const areaD=pathD+` L${pts[pts.length-1].x},${H-PAD} L${pts[0].x},${H-PAD} Z`;
-
-  const delta=data[data.length-1].kg-data[0].kg;
-  const deltaStr=delta>0?`+${delta.toFixed(1)} kg`:delta<0?`${delta.toFixed(1)} kg`:'±0 kg';
-  const deltaClass=delta>0?'up':delta<0?'down':'flat';
-
-  const tableRows=data.slice(-6).reverse().map(d=>{
-    const dObj=new Date(d.date+'T12:00:00');
-    const dStr=dObj.toLocaleDateString('de-DE',{day:'numeric',month:'short'});
-    return `<tr><td>${dStr}</td><td>${d.kg} kg</td></tr>`;
-  }).join('');
-
-  container.innerHTML=`
-    <div class="prog-header">
-      <span class="prog-sessions">${data.length} Einheit${data.length>1?'en':''} aufgezeichnet</span>
-      <span class="prog-delta ${deltaClass}">${deltaStr} gesamt</span>
-    </div>
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block;overflow:visible">
-      <line x1="${PAD}" y1="${PAD}" x2="${W-PAD}" y2="${PAD}" stroke="#f0f0f0" stroke-width="1"/>
-      <line x1="${PAD}" y1="${H-PAD}" x2="${W-PAD}" y2="${H-PAD}" stroke="#f0f0f0" stroke-width="1"/>
-      <text x="${PAD-2}" y="${PAD+3}" font-size="9" fill="#aaa" text-anchor="end">${maxKg}</text>
-      <text x="${PAD-2}" y="${H-PAD+3}" font-size="9" fill="#aaa" text-anchor="end">${minKg}</text>
-      <path d="${areaD}" fill="#3498db18"/>
-      <path d="${pathD}" fill="none" stroke="#3498db" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      ${pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#3498db" stroke="#fff" stroke-width="1.5"/>`).join('')}
-    </svg>
-    <table class="prog-table">
-      <tr><th>Datum</th><th>Max. Gewicht</th></tr>
-      ${tableRows}
-    </table>`;
+function updateProgChart(exKey){
+  const el=document.getElementById('progChart');if(!el)return;
+  const arr=_progArrays[exKey];
+  if(!arr||!arr.length){el.innerHTML='<div class="no-data-hint"><p>Noch keine Daten</p></div>';return;}
+  const recent=arr.slice(-10);
+  el.innerHTML=`<table class="prog-table">
+    <tr><th>Datum</th><th>Max kg</th></tr>
+    ${recent.map(e=>{const d=new Date(e.date+'T12:00:00');return `<tr><td>${d.toLocaleDateString('de-DE',{day:'numeric',month:'numeric'})}</td><td>${e.kg} kg</td></tr>`;}).join('')}
+  </table>`;
 }
+
+// ─── DEBUG ───────────────────────────────────────────────────
+function exportData(){
+  closeModal();
+  try{
+    const data={};
+    Object.keys(localStorage).filter(k=>k.startsWith('tp_')).forEach(k=>{data[k]=localStorage.getItem(k);});
+    const json=JSON.stringify(data);
+    document.getElementById('modalTitle').textContent='📤 Daten exportieren';
+    document.getElementById('modalBody').innerHTML=`
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Diesen Text kopieren und auf dem anderen Gerät importieren:</p>
+      <textarea id="exportText" style="width:100%;height:120px;font-size:10px;font-family:monospace;border:1px solid var(--border);border-radius:8px;padding:8px;resize:none" readonly>${json}</textarea>
+      <button class="modal-btn primary" style="margin-top:8px" onclick="navigator.clipboard.writeText(document.getElementById('exportText').value).then(()=>showToast('✓ Kopiert!'))">📋 Kopieren</button>
+      <button class="modal-btn cancel" onclick="closeModal()">Schließen</button>`;
+    document.getElementById('modalOverlay').classList.add('open');
+    setTimeout(()=>{const t=document.getElementById('exportText');if(t){t.focus();t.select();}},100);
+  }catch(e){showToast('Fehler: '+e.message);}
+}
+
+function importData(){
+  closeModal();
+  document.getElementById('modalTitle').textContent='📥 Daten importieren';
+  document.getElementById('modalBody').innerHTML=`
+    <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Exportierten Text hier einfügen:</p>
+    <textarea id="importText" style="width:100%;height:120px;font-size:10px;font-family:monospace;border:1.5px solid #3498db;border-radius:8px;padding:8px;resize:none" placeholder="Hier den kopierten Text einfügen…"></textarea>
+    <button class="modal-btn success" style="margin-top:8px" onclick="doImport()">✓ Importieren</button>
+    <button class="modal-btn cancel" onclick="closeModal()">Abbrechen</button>`;
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(()=>{const t=document.getElementById('importText');if(t)t.focus();},100);
+}
+
+function doImport(){
+  try{
+    const txt=document.getElementById('importText')?.value?.trim();
+    if(!txt){showToast('Kein Text eingegeben.');return;}
+    const data=JSON.parse(txt);
+    let count=0;
+    Object.entries(data).forEach(([k,v])=>{if(k.startsWith('tp_')){localStorage.setItem(k,v);count++;}});
+    closeModal();
+    render();
+    showToast('✅ '+count+' Einträge importiert!');
+  }catch(e){showToast('Fehler beim Import: '+e.message);}
+}
+
+function showDebug(){
+  closeModal();
+  try{
+    const keys=Object.keys(localStorage).filter(k=>k.startsWith('tp_')).sort();
+    if(!keys.length){
+      document.getElementById('modalTitle').textContent='🔍 Gespeicherte Daten';
+      document.getElementById('modalBody').innerHTML='<p style="color:var(--muted);font-size:13px">Keine tp_-Daten gefunden.</p><button class="modal-btn cancel" onclick="closeModal()">Schließen</button>';
+      document.getElementById('modalOverlay').classList.add('open');
+      return;
+    }
+    const sample=keys.slice(0,40);
+    document.getElementById('modalTitle').textContent='🔍 Gespeicherte Daten ('+keys.length+' Einträge)';
+    document.getElementById('modalBody').innerHTML=`
+      <div style="font-size:10px;font-family:monospace;background:#f4f5f7;padding:10px;border-radius:8px;max-height:300px;overflow-y:auto;margin-bottom:10px">
+        ${sample.map(k=>`<div><b>${k}</b> = ${localStorage.getItem(k)}</div>`).join('')}
+        ${keys.length>40?`<div style="color:#999">… und ${keys.length-40} weitere</div>`:''}
+      </div>
+      <button class="modal-btn cancel" onclick="closeModal()">Schließen</button>`;
+    document.getElementById('modalOverlay').classList.add('open');
+  }catch(e){showToast('Fehler: '+e.message);}
+}
+
+// ─── MIGRATION v2 → v3 ───────────────────────────────────────
+(function migrateV2(){
+  try{
+    if(localStorage.getItem('tp_migrated_v2v3')==='1') return;
+    let count=0;
+    Object.keys(localStorage).forEach(k=>{
+      if(k.startsWith('tp_v2_')){
+        const newKey='tp_v3_'+k.slice('tp_v2_'.length);
+        if(!localStorage.getItem(newKey)){
+          localStorage.setItem(newKey,localStorage.getItem(k));
+          count++;
+        }
+      }
+    });
+    localStorage.setItem('tp_migrated_v2v3','1');
+    if(count>0) console.log('Migration: '+count+' Einträge von v2 → v3 kopiert.');
+  }catch(e){}
+})();
 
 // ─── INIT ────────────────────────────────────────────────────
 document.getElementById('topbarDate').textContent=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-const todayEntry=localStorage.getItem('tp_done_'+getTodayStr());
-if(todayEntry&&PLAN.some(p=>p.key===todayEntry)) activeWorkoutKey=todayEntry;
 render();
 </script>
 </body>
