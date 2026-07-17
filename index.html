@@ -91,6 +91,11 @@
   .set-row.done .set-nr{background:#e8f8f0;color:#27ae60;}
   .set-row.done .set-input{background:#f0fff4;border-color:#a8e6c0;color:#1e8449;}
   .notes-text{font-size:11px;color:#e67e22;background:#fef9f0;border-radius:6px;padding:5px 8px;margin-top:4px;}
+  .usernote-wrap{margin-top:8px;}
+  .usernote-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+  .usernote-input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;line-height:1.4;resize:vertical;min-height:38px;color:var(--text);background:#fff;}
+  .usernote-input:focus{outline:none;border-color:#3498db;}
+  .usernote-input::placeholder{color:#bbb;}
   .ex-desc{font-size:12px;color:#444;background:#f8f9fa;border-radius:6px;padding:8px 10px;margin-top:6px;line-height:1.5;}
   .ex-video-btn{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:7px 12px;background:#ff0000;color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;}
 
@@ -115,6 +120,9 @@
   .bw-hint button{background:#2980b9;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;}
   .bw-input-row{display:flex;gap:8px;margin-top:10px;}
   .bw-input{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:16px;text-align:center;}
+  .backup-hint{background:#fff8e1;border:1px solid #ffe082;border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .backup-hint span{font-size:12px;color:#a06a00;font-weight:600;}
+  .backup-hint button{background:#f39c12;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
 
   /* ── TIMER ── */
   .rest-timer-bar{display:none;background:var(--bg);border-radius:8px;padding:8px 12px;margin-top:8px;align-items:center;gap:10px;}
@@ -226,7 +234,6 @@
 </div>
 <div class="day-tabs" id="dayTabs"></div>
 <div class="content" id="content"></div>
-<button class="fab" id="fab" onclick="fabAction()" style="background:#3498db;color:#fff;">✓</button>
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal"><h3 id="modalTitle"></h3><div id="modalBody"></div></div>
 </div>
@@ -348,6 +355,45 @@ function isExSkipped(dk,ei){ try{return localStorage.getItem(SK+dk+'_'+ei+'_skip
 function setExSkipped(dk,ei,v){ try{localStorage.setItem(SK+dk+'_'+ei+'_skip',v?'1':'0');}catch(e){} }
 function getBodyWeight(){ try{return parseFloat(localStorage.getItem('tp_bodyweight')||'0');}catch(e){return 0;} }
 function setBodyWeight(kg){ try{localStorage.setItem('tp_bodyweight',kg);}catch(e){} }
+// Eigene, dauerhafte Notiz pro Übung (bleibt über alle Trainings erhalten).
+function getUserNote(dk,ei){ try{return localStorage.getItem('tp_note_'+dk+'_'+ei)||'';}catch(e){return '';} }
+function saveUserNote(dk,ei,v){ try{ if(v&&v.trim()) localStorage.setItem('tp_note_'+dk+'_'+ei,v); else localStorage.removeItem('tp_note_'+dk+'_'+ei); }catch(e){} }
+
+// ─── BACKUP ──────────────────────────────────────────────────
+const BACKUP_REMIND_DAYS=14;
+function getLastBackup(){ try{return localStorage.getItem('tp_last_backup')||'';}catch(e){return '';} }
+function markBackupDone(){ try{localStorage.setItem('tp_last_backup',getTodayStr());}catch(e){} }
+function daysSinceBackup(){ const d=getLastBackup(); return d?daysSince(d):999; }
+function buildBackupJSON(){
+  const data={};
+  Object.keys(localStorage).filter(k=>k.startsWith('tp_')).forEach(k=>{data[k]=localStorage.getItem(k);});
+  return JSON.stringify(data);
+}
+function backupReminderHTML(){
+  const ds=daysSinceBackup();
+  if(ds<BACKUP_REMIND_DAYS) return '';
+  const txt=getLastBackup()?`Letztes Backup vor ${ds} Tagen`:'Noch kein Backup erstellt';
+  return `<div class="backup-hint"><span>💾 ${txt} — sichere deine Daten</span><button onclick="exportData()">Sichern</button></div>`;
+}
+function downloadBackup(){
+  try{
+    const blob=new Blob([buildBackupJSON()],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download='trainingsplan-backup-'+getTodayStr()+'.json';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    markBackupDone();
+    showToast('💾 Backup als Datei gespeichert');
+  }catch(e){showToast('Fehler: '+e.message);}
+}
+function copyBackup(){
+  try{
+    const t=document.getElementById('exportText');
+    navigator.clipboard.writeText(t.value).then(()=>{markBackupDone();showToast('✓ Kopiert & als Backup vermerkt');})
+      .catch(()=>{t.focus();t.select();markBackupDone();showToast('Bitte manuell kopieren');});
+  }catch(e){showToast('Fehler: '+e.message);}
+}
 
 // ─── WORKOUT HISTORY & RECOMMENDATION ────────────────────────
 function getWorkoutLog(){
@@ -592,7 +638,7 @@ function renderPicker(el){
   const workouts=PLAN.filter(p=>p.type!=='rest');
   const recPlan=PLAN.find(p=>p.key===rec.key);
   const recColor=TYPE_COLORS[recPlan?.type]||'#3498db';
-  let html=`
+  let html=backupReminderHTML()+`
     <div class="rec-card" onclick="selectWorkout('${rec.key}')" style="border-color:${recColor}">
       <div class="rec-icon">💡</div>
       <div class="rec-body">
@@ -667,6 +713,7 @@ function renderDay(el,w){
   const kcal=done===total&&total>0?calcKcal(w.type,w.key):0;
   const bw=getBodyWeight();
   el.innerHTML=`
+    ${backupReminderHTML()}
     ${!bw?`<div class="bw-hint"><span>⚖️ Gewicht eingeben für Kalorien-Schätzung</span><button onclick="promptBodyWeight()">Eingeben</button></div>`:''}
     <div class="day-header" style="background:${color}">
       <div class="day-header-left">
@@ -742,10 +789,11 @@ function renderExercises(w,color){
     card.className='ex-card'+(ex.superset?' superset':'')+(allDone?' done-all':'')+(skipped?' skipped':'')+(openEx.has(ex.id)?' open':'');
     card.id='card_'+ex.id;
     const nc=skipped?'#bbb':ex.superset?'#27ae60':color;
+    const hasNote=getUserNote(w.key,ex.id)!=='';
     card.innerHTML=`<div class="ex-header">
       <div class="ex-nr" style="background:${nc}">${idx+1}</div>
       <div class="ex-info" onclick="toggleEx('${ex.id}')">
-        <div class="ex-name">${ex.name}</div>
+        <div class="ex-name">${ex.name}${hasNote?' <span title="Notiz vorhanden">📝</span>':''}</div>
         <div class="ex-meta">${ex.sets} × ${ex.reps}${ex.rest?' · '+fmtRest(ex.rest)+' Pause':''}</div>
       </div>
       <div class="ex-status">${allDone?'✅':skipped?'⏭':''}</div>
@@ -772,6 +820,14 @@ function renderExercises(w,color){
         sd.appendChild(row);
       }
       if(ex.notes){const n=document.createElement('div');n.className='notes-text';n.textContent='💡 '+ex.notes;sd.appendChild(n);}
+      // Eigenes Notizfeld pro Übung
+      const nw=document.createElement('div');nw.className='usernote-wrap';
+      const nl=document.createElement('div');nl.className='usernote-label';nl.textContent='📝 Eigene Notiz';
+      const ta=document.createElement('textarea');ta.className='usernote-input';
+      ta.placeholder='z. B. Sitzposition 4, Griff eng, letztes Mal schwer …';
+      ta.value=getUserNote(w.key,ex.id);
+      ta.setAttribute('oninput',`saveUserNote('${w.key}','${ex.id}',this.value)`);
+      nw.appendChild(nl);nw.appendChild(ta);sd.appendChild(nw);
       card.appendChild(sd);
     }
     list.appendChild(card);
@@ -903,14 +959,16 @@ function updateTimerDisplay(){
 }
 
 // ─── FAB ─────────────────────────────────────────────────────
+// FAB-Button wurde entfernt – Funktion bleibt als sicherer No-Op erhalten,
+// damit bestehende Aufrufe nicht ins Leere laufen.
 function updateFab(){
   const fab=document.getElementById('fab');
+  if(!fab)return;
   if(!activeWorkoutKey||viewMode==='overview'){fab.style.display='none';return;}
   fab.style.display='flex';
   const{done,total}=getWorkoutProgress(activeWorkoutKey);
   fab.style.background=done===total&&total>0?'#27ae60':'#3498db';
 }
-function fabAction(){showToast('Tippe ✓ bei jedem Satz!');}
 
 // ─── OPTIONS ─────────────────────────────────────────────────
 function showOverview(){viewMode='overview';render();}
@@ -923,8 +981,8 @@ function showOptions(){
     <button class="modal-btn neutral" onclick="promptBodyWeight()">⚖️ Körpergewicht: ${bw?bw+' kg':'nicht gesetzt'}</button>
     ${activeWorkoutKey?`<button class="modal-btn danger" onclick="confirmReset()">🗑 Heutiges Training zurücksetzen</button>`:''}
     <button class="modal-btn danger" onclick="confirmResetAll()">⚠️ Alle Daten löschen</button>
-    <button class="modal-btn success" onclick="exportData()">📤 Daten exportieren</button>
-    <button class="modal-btn primary" onclick="importData()">📥 Daten importieren</button>
+    <button class="modal-btn success" onclick="exportData()">💾 Daten sichern${getLastBackup()?` · zuletzt vor ${daysSinceBackup()}d`:' · noch nie'}</button>
+    <button class="modal-btn primary" onclick="importData()">📥 Daten wiederherstellen</button>
     <button class="modal-btn neutral" onclick="showDebug()">🔍 Gespeicherte Daten anzeigen</button>
     <button class="modal-btn cancel" onclick="closeModal()">Abbrechen</button>`;
   document.getElementById('modalOverlay').classList.add('open');
@@ -949,7 +1007,7 @@ function confirmResetAll(){
     Object.keys(localStorage).filter(k=>
       k.startsWith(SK)||k.startsWith('tp_done_')||k.startsWith('tp_hist_')||
       k.startsWith('tp_kcal_')||k.startsWith('tp_sess_')||k.startsWith('tp_wu_')||
-      k==='tp_bodyweight'
+      k.startsWith('tp_note_')||k==='tp_bodyweight'
     ).forEach(k=>localStorage.removeItem(k));
   }catch(e){}
   activeWorkoutKey=null;openEx.clear();render();showToast('Alle Daten gelöscht.');
@@ -1142,43 +1200,51 @@ function updateProgChart(exKey){
 function exportData(){
   closeModal();
   try{
-    const data={};
-    Object.keys(localStorage).filter(k=>k.startsWith('tp_')).forEach(k=>{data[k]=localStorage.getItem(k);});
-    const json=JSON.stringify(data);
-    document.getElementById('modalTitle').textContent='📤 Daten exportieren';
+    const json=buildBackupJSON();
+    document.getElementById('modalTitle').textContent='💾 Daten sichern';
     document.getElementById('modalBody').innerHTML=`
-      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Diesen Text kopieren und auf dem anderen Gerät importieren:</p>
-      <textarea id="exportText" style="width:100%;height:120px;font-size:10px;font-family:monospace;border:1px solid var(--border);border-radius:8px;padding:8px;resize:none" readonly>${json}</textarea>
-      <button class="modal-btn primary" style="margin-top:8px" onclick="navigator.clipboard.writeText(document.getElementById('exportText').value).then(()=>showToast('✓ Kopiert!'))">📋 Kopieren</button>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Am besten als Datei speichern – sie landet in „Dateien"/iCloud, außerhalb des App-Speichers.</p>
+      <button class="modal-btn success" onclick="downloadBackup()">💾 Als Datei speichern</button>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0;text-align:center">oder Text kopieren (z. B. in eine Notiz):</p>
+      <textarea id="exportText" style="width:100%;height:90px;font-size:10px;font-family:monospace;border:1px solid var(--border);border-radius:8px;padding:8px;resize:none" readonly>${json}</textarea>
+      <button class="modal-btn primary" style="margin-top:8px" onclick="copyBackup()">📋 Text kopieren</button>
       <button class="modal-btn cancel" onclick="closeModal()">Schließen</button>`;
     document.getElementById('modalOverlay').classList.add('open');
-    setTimeout(()=>{const t=document.getElementById('exportText');if(t){t.focus();t.select();}},100);
   }catch(e){showToast('Fehler: '+e.message);}
 }
 
 function importData(){
   closeModal();
-  document.getElementById('modalTitle').textContent='📥 Daten importieren';
+  document.getElementById('modalTitle').textContent='📥 Daten wiederherstellen';
   document.getElementById('modalBody').innerHTML=`
-    <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Exportierten Text hier einfügen:</p>
-    <textarea id="importText" style="width:100%;height:120px;font-size:10px;font-family:monospace;border:1.5px solid #3498db;border-radius:8px;padding:8px;resize:none" placeholder="Hier den kopierten Text einfügen…"></textarea>
-    <button class="modal-btn success" style="margin-top:8px" onclick="doImport()">✓ Importieren</button>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Backup-Datei wählen:</p>
+    <input type="file" id="importFile" accept="application/json,.json,.txt" onchange="importFromFile(this)" style="width:100%;font-size:13px;margin-bottom:12px">
+    <p style="font-size:11px;color:var(--muted);margin:8px 0;text-align:center">oder kopierten Text einfügen:</p>
+    <textarea id="importText" style="width:100%;height:90px;font-size:10px;font-family:monospace;border:1.5px solid #3498db;border-radius:8px;padding:8px;resize:none" placeholder="Hier den kopierten Text einfügen…"></textarea>
+    <button class="modal-btn success" style="margin-top:8px" onclick="doImport()">✓ Aus Text wiederherstellen</button>
     <button class="modal-btn cancel" onclick="closeModal()">Abbrechen</button>`;
   document.getElementById('modalOverlay').classList.add('open');
-  setTimeout(()=>{const t=document.getElementById('importText');if(t)t.focus();},100);
 }
 
-function doImport(){
+function applyImport(txt){
   try{
-    const txt=document.getElementById('importText')?.value?.trim();
-    if(!txt){showToast('Kein Text eingegeben.');return;}
+    if(!txt||!txt.trim()){showToast('Kein Text / keine Datei.');return;}
     const data=JSON.parse(txt);
     let count=0;
     Object.entries(data).forEach(([k,v])=>{if(k.startsWith('tp_')){localStorage.setItem(k,v);count++;}});
     closeModal();
     render();
-    showToast('✅ '+count+' Einträge importiert!');
+    showToast('✅ '+count+' Einträge wiederhergestellt!');
   }catch(e){showToast('Fehler beim Import: '+e.message);}
+}
+function doImport(){ applyImport(document.getElementById('importText')?.value?.trim()); }
+function importFromFile(input){
+  const f=input.files&&input.files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>applyImport(String(r.result||''));
+  r.onerror=()=>showToast('Datei konnte nicht gelesen werden.');
+  r.readAsText(f);
 }
 
 function showDebug(){
