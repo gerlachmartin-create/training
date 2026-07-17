@@ -384,14 +384,15 @@ function downloadBackup(){
     document.body.appendChild(a);a.click();document.body.removeChild(a);
     setTimeout(()=>URL.revokeObjectURL(url),1000);
     markBackupDone();
+    closeModal();render();
     showToast('💾 Backup als Datei gespeichert');
   }catch(e){showToast('Fehler: '+e.message);}
 }
 function copyBackup(){
   try{
     const t=document.getElementById('exportText');
-    navigator.clipboard.writeText(t.value).then(()=>{markBackupDone();showToast('✓ Kopiert & als Backup vermerkt');})
-      .catch(()=>{t.focus();t.select();markBackupDone();showToast('Bitte manuell kopieren');});
+    navigator.clipboard.writeText(t.value).then(()=>{markBackupDone();closeModal();render();showToast('✓ Kopiert & als Backup vermerkt');})
+      .catch(()=>{t.focus();t.select();markBackupDone();showToast('Bitte manuell kopieren, dann schließen');});
   }catch(e){showToast('Fehler: '+e.message);}
 }
 
