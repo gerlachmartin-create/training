@@ -85,6 +85,9 @@
   .set-nr{width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);margin:0 auto;}
   .set-input{border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:14px;font-weight:600;text-align:center;width:100%;color:var(--text);background:#fff;-webkit-appearance:none;}
   .set-input:focus{outline:none;border-color:#3498db;}
+  .set-noload{text-align:center;color:#d0d0d0;font-size:14px;font-weight:700;}
+  .vac-bar{background:#e8f8f5;border:1px solid #a3e4d7;border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#0e6655;}
+  .vac-bar button{background:#16a085;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
   .set-input::placeholder{color:#ccc;font-weight:400;}
   .set-done-btn{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s;margin:0 auto;}
   .set-done-btn.done{background:#27ae60;border-color:#27ae60;}
@@ -341,6 +344,36 @@ const PLAN = [
       {id:'lB4', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
       {id:'lB5', name:'Waden (E07)',                      sets:4,reps:'15–20',rest:45, notes:'vollen Bewegungsradius nutzen'},
     ]},
+  // ── URLAUBSMODUS · 15 Min. taeglich, ohne Geraete (Hotelzimmer, Stuhl/Handtuch) ──
+  { key:'urlPush', title:'URLAUB PUSH', subtitle:'15 Min · Brust, Schulter, Trizeps', type:'push', emoji:'🔴', vac:true,
+    exercises:[
+      {id:'uP1', name:'Liegestütze',                 sets:3,reps:'8–15', rest:45, load:'level', notes:'Level 1 = Hände auf Stuhl/Bettkante · 2 = Boden · 3 = Füße auf Stuhl. 3 Sek. absenken.'},
+      {id:'uP2', name:'Pike Push-ups',               sets:3,reps:'6–12', rest:45, load:'level', notes:'Umgedrehtes V, Hüfte hoch, Kopf Richtung Boden — ersetzt Schulterdrücken. Level 3 = Füße erhöht.'},
+      {id:'uP3', name:'Stuhl-Dips',                  sets:3,reps:'8–15', rest:45, load:'level', notes:'Hände auf Stuhlkante, Gesäß davor. Level 2 = Knie gebeugt · 3 = Beine gestreckt.'},
+      {id:'uP4', name:'Enge Liegestütze',            sets:3,reps:'6–12', rest:45, load:'level', notes:'Hände schulterbreit, Ellbogen am Körper. Letzter Satz bis Muskelversagen.'},
+    ]},
+  { key:'urlPull', title:'URLAUB PULL', subtitle:'15 Min · Rücken & Bizeps', type:'pull', emoji:'🟢', vac:true,
+    exercises:[
+      {id:'uL1', name:'Tisch-Rudern',                sets:3,reps:'8–12', rest:60, load:'level', notes:'Unter stabilen Tisch legen, Kante greifen, Brust zur Kante ziehen. Level 2 = Knie gebeugt · 3 = Beine gestreckt. Wichtigste Rückenübung.'},
+      {id:'uL2', name:'Handtuch-Rudern (Türgriff)',  sets:3,reps:'10–15',rest:45, load:'level', notes:'Handtuch um beide Türgriffe, Füße nah an die Tür, zurücklehnen und ranziehen. Je weiter die Füße vor, desto schwerer.'},
+      {id:'uL3', name:'Reverse Snow Angels',         sets:3,reps:'12–15',rest:45, load:'none',  notes:'Bäuchlings, Arme knapp über dem Boden von der Hüfte über den Kopf und zurück. Hintere Schulter, oben 1 Sek. halten.'},
+      {id:'uL4', name:'Handtuch-Curls (ein Arm bremst)', sets:3,reps:'8–10/Arm',rest:45, load:'none', notes:'Handtuch mit einer Hand curlen, mit der anderen dagegenhalten. 3 Sek. hoch, 3 Sek. runter.'},
+    ]},
+  { key:'urlLegs', title:'URLAUB BEINE', subtitle:'15 Min · Beine & Gesäß', type:'legs', emoji:'🟣', vac:true,
+    exercises:[
+      {id:'uB1', name:'Bulgarian Split Squats',      sets:3,reps:'8–12/Bein',rest:60, load:'level', notes:'Hinterer Fuß auf Stuhl/Bettkante, vorderes Knie über dem Fuß. Härteste Beinübung ohne Gewicht — ersetzt E01.'},
+      {id:'uB2', name:'Handtuch-Beincurls',          sets:3,reps:'8–12', rest:45, load:'none',  notes:'Rücklings, Fersen auf Handtuch (glatter Boden), Hüfte hoch halten, Fersen wegschieben und ranziehen — ersetzt E05.'},
+      {id:'uB3', name:'Hip Thrusts einbeinig',       sets:3,reps:'10–15/Bein',rest:45, load:'none', notes:'Schultern auf Bettkante, ein Bein gestreckt, Hüfte hochdrücken, oben 1 Sek. halten.'},
+      {id:'uB4', name:'Wadenheben einbeinig',        sets:3,reps:'15–20/Bein',rest:30, load:'none', notes:'Auf Türschwelle oder Stufe, Ferse tief absenken, oben kurz halten.'},
+    ]},
+  { key:'urlMob', title:'URLAUB MOBI', subtitle:'15 Min · Mobilität & Regeneration', type:'mob', emoji:'🧘', vac:true,
+    exercises:[
+      {id:'uM1', name:'Hüftbeuger-Dehnung',          sets:2,reps:'45 Sek./Seite',rest:15, load:'none', notes:'Ausfallschritt, hinteres Knie am Boden, Gesäß anspannen und Becken aufrichten. Gegen langes Sitzen.'},
+      {id:'uM2', name:'90/90 Hüftrotation',          sets:2,reps:'10 Wechsel',rest:15, load:'none', notes:'Im Sitzen beide Knie kontrolliert von einer Seite zur anderen kippen.'},
+      {id:'uM3', name:'Katze-Kuh + Brustrotation',   sets:2,reps:'10',   rest:15, load:'none', notes:'Vierfüßler: erst Katze-Kuh, dann Hand an den Hinterkopf und Ellbogen zur Decke öffnen.'},
+      {id:'uM4', name:'Schulterkreisen mit Handtuch',sets:2,reps:'10',   rest:15, load:'none', notes:'Handtuch weit greifen, gestreckte Arme über den Kopf nach hinten führen. Bei Enge weiter greifen.'},
+      {id:'uM5', name:'Brustöffner an der Türkante', sets:2,reps:'30 Sek./Seite',rest:15, load:'none', notes:'Unterarm an den Türrahmen, Oberkörper langsam wegdrehen.'},
+    ]},
   { key:'rest', title:'PAUSE', subtitle:'Regeneration', type:'rest', emoji:'💤', exercises:[] }
 ];
 
@@ -350,8 +383,8 @@ const WARMUP_MACHINES = [
   {id:'rowing',emoji:'🚣', label:'Rudergerät'},
 ];
 
-const TYPE_COLORS = {push:'#c0392b',pull:'#1e8449',legs:'#7d3c98',rest:'#7f8c8d'};
-const MET = {push:4.5,pull:4.0,legs:5.5,rest:2.0};
+const TYPE_COLORS = {push:'#c0392b',pull:'#1e8449',legs:'#7d3c98',mob:'#16a085',rest:'#7f8c8d'};
+const MET = {push:4.5,pull:4.0,legs:5.5,mob:2.5,rest:2.0};
 const SK = 'tp_v3_';
 
 // ─── STATE ───────────────────────────────────────────────────
@@ -433,14 +466,33 @@ function daysSince(dateStr){
   const t=new Date(getTodayStr()+'T12:00:00');
   return Math.round((t-d)/86400000);
 }
+// ─── URLAUBSMODUS ────────────────────────────────────────────
+function isVacation(){ try{return localStorage.getItem('tp_vacation')==='1';}catch(e){return false;} }
+function setVacation(on){ try{localStorage.setItem('tp_vacation',on?'1':'0');}catch(e){} }
+// Sichtbare Einheiten je nach Modus (Urlaub oder Studio)
+function activePlan(){ const v=isVacation(); return PLAN.filter(p=>p.type!=='rest'&&(!!p.vac===v)); }
+function toggleVacation(){
+  const on=!isVacation();
+  setVacation(on);
+  closeModal();
+  activeWorkoutKey=null;viewMode='day';openEx.clear();
+  render();window.scrollTo(0,0);
+  showToast(on?'🏖️ Urlaubsmodus an — 15 Min. ohne Geräte':'🏋️ Zurück zum Studio-Plan');
+}
+
 function getRecommendation(){
   const today=getTodayStr();
+  const vac=isVacation();
+  const inMode=k=>{const p=PLAN.find(x=>x.key===k);return p&&p.type!=='rest'&&!!p.vac===vac;};
   const todayKey=localStorage.getItem('tp_done_'+today);
-  if(todayKey&&PLAN.some(p=>p.key===todayKey))
+  if(todayKey&&inMode(todayKey))
     return {key:todayKey,reason:'Heute bereits gestartet ✓',isActive:true};
-  const log=getWorkoutLog();
-  if(!log.length) return {key:'pushA',reason:'Noch kein Eintrag – starte mit Push A'};
-  const rotation={pushA:'pullA',pullA:'legsA',legsA:'pushB',pushB:'pullB',pullB:'legsB',legsB:'pushA'};
+  const log=getWorkoutLog().filter(e=>inMode(e.key));
+  const firstKey=vac?'urlPush':'pushA';
+  if(!log.length) return {key:firstKey,reason:vac?'Urlaubsstart – los geht es mit Push':'Noch kein Eintrag – starte mit Push A'};
+  const rotation=vac
+    ? {urlPush:'urlPull',urlPull:'urlLegs',urlLegs:'urlMob',urlMob:'urlPush'}
+    : {pushA:'pullA',pullA:'legsA',legsA:'pushB',pushB:'pullB',pullB:'legsB',legsB:'pushA'};
   const last=log[0];
   const nextKey=rotation[last.key];
   const lastPlan=PLAN.find(p=>p.key===last.key);
@@ -450,7 +502,7 @@ function getRecommendation(){
     const dayLabel=ds===0?'heute':ds===1?'gestern':`vor ${ds} Tagen`;
     return {key:nextKey,reason:`Nach ${lastPlan?.title} (${dayLabel}) → ${nextPlan?.title}`};
   }
-  return {key:'pushA',reason:'Weiter geht\'s!'};
+  return {key:firstKey,reason:'Weiter geht\'s!'};
 }
 function getWorkoutProgress(workoutKey){
   const day=PLAN.find(p=>p.key===workoutKey);
@@ -640,6 +692,13 @@ function renderWarmupCard(dk){
   if(badge) badge.textContent=done?'✅ Fertig':'ausstehend';
   const body=card.querySelector('.warmup-body');
   if(!body)return;
+  const wk=PLAN.find(p=>p.key===dk);
+  if(wk&&wk.vac){
+    body.innerHTML=`
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">2 Min. locker, ohne Springen: 20× Armkreisen vor/zurück · 15× Hüftkreisen · 10× Katze-Kuh · 20 Sek. auf der Stelle gehen.</p>
+    <button onclick="setWuChoice('${dk}','mob')" style="width:100%;padding:10px;border-radius:10px;border:2px solid ${chosen==='mob'?'#16a085':'var(--border)'};background:${chosen==='mob'?'#e8f8f5':'#fff'};color:${chosen==='mob'?'#16a085':'var(--text)'};font-size:13px;font-weight:700;cursor:pointer">${chosen==='mob'?'✓ Aufgewärmt':'Aufwärmen erledigt'}</button>`;
+    return;
+  }
   body.innerHTML=`
     <p style="font-size:12px;color:var(--muted);margin-bottom:10px">10–15 Min. mittlere Intensität · Puls ~120–130</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -658,7 +717,7 @@ function render(){ renderTabs();renderContent();updateFab(); }
 function renderTabs(){
   const tabs=document.getElementById('dayTabs');
   tabs.innerHTML='';
-  PLAN.filter(p=>p.type!=='rest').forEach(w=>{
+  activePlan().forEach(w=>{
     const isActive=activeWorkoutKey===w.key&&viewMode!=='overview';
     const color=TYPE_COLORS[w.type];
     const {done,total}=getWorkoutProgress(w.key);
@@ -734,10 +793,13 @@ function renderSelection(el,w){
 function renderPicker(el){
   const rec=getRecommendation();
   const today=getTodayStr();
-  const workouts=PLAN.filter(p=>p.type!=='rest');
+  const workouts=activePlan();
   const recPlan=PLAN.find(p=>p.key===rec.key);
   const recColor=TYPE_COLORS[recPlan?.type]||'#3498db';
-  let html=backupReminderHTML()+`
+  const vacBar=isVacation()
+    ? `<div class="vac-bar"><span>🏖️ <strong>Urlaubsmodus</strong> · 15 Min. täglich, ohne Geräte. Reihenfolge Push → Pull → Beine → Mobi.</span><button onclick="toggleVacation()">Beenden</button></div>`
+    : '';
+  let html=backupReminderHTML()+vacBar+`
     <div class="rec-card" onclick="selectWorkout('${rec.key}')" style="border-color:${recColor}">
       <div class="rec-icon">💡</div>
       <div class="rec-body">
@@ -777,7 +839,7 @@ function renderOverview(el){
   const today=getTodayStr();
   el.innerHTML='<div class="week-overview active" id="wo"></div>';
   const ov=document.getElementById('wo');
-  PLAN.filter(p=>p.type!=='rest').forEach(w=>{
+  activePlan().forEach(w=>{
     const {done,total}=getWorkoutProgress(w.key);
     const pct=total>0?Math.round(done/total*100):-1;
     const lastDate=getLastDoneDate(w.key);
@@ -834,8 +896,8 @@ function renderDay(el,w){
     ${done===total&&total>0?aiCardHTML(w.key):''}
     <div class="warmup-card wu-open" id="warmupCard">
       <div class="warmup-hdr" onclick="document.getElementById('warmupCard').classList.toggle('wu-open')">
-        <div class="warmup-icon">🏃</div>
-        <div class="warmup-title">Aufwärmen (10–15 Min.)</div>
+        <div class="warmup-icon">${w.vac?'🤸':'🏃'}</div>
+        <div class="warmup-title">${w.vac?'Aufwärmen (2 Min.)':'Aufwärmen (10–15 Min.)'}</div>
         <div class="warmup-badge">ausstehend</div>
         <div class="warmup-chev">▼</div>
       </div>
@@ -905,15 +967,20 @@ function renderExercises(w,color){
       lbl.textContent='Übung ausgelassen';card.appendChild(lbl);
     } else {
       const sd=document.createElement('div');sd.className='ex-sets';sd.id='exSets_'+ex.id;
-      sd.innerHTML='<div class="sets-header"><span>Satz</span><span>Kg</span><span>Wdh.</span><span>✓</span></div>';
+      const loadMode=ex.load||'kg';
+      const loadLabel=loadMode==='level'?'Level':loadMode==='none'?'–':'Kg';
+      sd.innerHTML='<div class="sets-header"><span>Satz</span><span>'+loadLabel+'</span><span>Wdh.</span><span>✓</span></div>';
       for(let s=0;s<ex.sets;s++){
         const done=isDone(w.key,ex.id,s);
         const row=document.createElement('div');
         row.className='set-row'+(done?' done':'');row.id=`row_${ex.id}_${s}`;
+        const loadCell = loadMode==='none'
+          ? '<div class="set-noload">·</div>'
+          : `<input class="set-input" type="number" inputmode="${loadMode==='level'?'numeric':'decimal'}" placeholder="${loadMode==='level'?'Lv':'–'}" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'kg')}" min="0" step="${loadMode==='level'?'1':'0.5'}"
+            oninput="saveSet('${w.key}','${ex.id}',${s},'kg',this.value)">`;
         row.innerHTML=`
           <div class="set-nr">${s+1}</div>
-          <input class="set-input" type="number" inputmode="decimal" placeholder="–" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'kg')}" min="0" step="0.5"
-            oninput="saveSet('${w.key}','${ex.id}',${s},'kg',this.value)">
+          ${loadCell}
           <input class="set-input" type="number" inputmode="numeric" placeholder="–" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'reps')}" min="0"
             oninput="saveSet('${w.key}','${ex.id}',${s},'reps',this.value)">
           <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}" onclick="toggleSetDone('${w.key}','${ex.id}',${s},${ex.rest||0})">${done?'✓':''}</button>`;
@@ -1080,6 +1147,7 @@ function showOptions(){
   document.getElementById('modalBody').innerHTML=`
     <button class="modal-btn primary" onclick="showReport()">📊 Trainingsreport anzeigen</button>
     <button class="modal-btn neutral" onclick="promptBodyWeight()">⚖️ Körpergewicht: ${bw?bw+' kg':'nicht gesetzt'}</button>
+    <button class="modal-btn ${isVacation()?'success':'neutral'}" onclick="toggleVacation()">🏖️ Urlaubsmodus: ${isVacation()?'AN – zurück zum Studio':'aus – einschalten'}</button>
     ${activeWorkoutKey?`<button class="modal-btn danger" onclick="confirmReset()">🗑 Heutiges Training zurücksetzen</button>`:''}
     <button class="modal-btn danger" onclick="confirmResetAll()">⚠️ Alle Daten löschen</button>
     <button class="modal-btn success" onclick="exportData()">💾 Daten sichern${getLastBackup()?` · zuletzt vor ${daysSinceBackup()}d`:' · noch nie'}</button>
@@ -1363,12 +1431,16 @@ function buildAssessment(dk){
   });
   const lines=[];
   lines.push(`${w.emoji} ${w.title} geschafft — ${sum.uebungen.length} Übungen, ${setsCount} Sätze${sum.dauerMin?` in ${sum.dauerMin} Min`:''}.`);
-  if(volume>0) lines.push(`🏋️ Gesamtvolumen: ${Math.round(volume).toLocaleString('de-DE')} kg bewegt.`);
-  if(improved.length){
+  if(w.vac){
+    let totalReps=0;
+    sum.uebungen.forEach(e=>e.saetze.forEach(sa=>{const r=parseFloat(sa.reps);if(!isNaN(r))totalReps+=r;}));
+    if(totalReps>0) lines.push(`🤸 ${totalReps} Wiederholungen mit dem eigenen Körpergewicht.`);
+  } else if(volume>0) lines.push(`🏋️ Gesamtvolumen: ${Math.round(volume).toLocaleString('de-DE')} kg bewegt.`);
+  if(improved.length&&!w.vac){
     const top=improved.sort((a,b)=>b.diff-a.diff).slice(0,3).map(i=>`${i.name}: ${i.kg} kg (+${i.diff})`).join(' · ');
     lines.push(`💪 Mehr als letztes Mal — ${top}.`);
   } else {
-    lines.push(`Gewichte gehalten — Konstanz ist die halbe Miete.`);
+    lines.push(w.vac?`Muskeln gehalten — genau darum geht es im Urlaub.`:`Gewichte gehalten — Konstanz ist die halbe Miete.`);
   }
   const streak=calcStreak(getAllSessions());
   if(streak>1) lines.push(`🔥 ${streak} Tage Streak — dranbleiben!`);
