@@ -88,11 +88,18 @@
   .set-noload{text-align:center;color:#d0d0d0;font-size:14px;font-weight:700;}
   .vac-bar{background:#e8f8f5;border:1px solid #a3e4d7;border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#0e6655;}
   .vac-bar button{background:#16a085;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
-  .set-input::placeholder{color:#ccc;font-weight:400;}
+  .set-input::placeholder{color:#a4abb3;font-weight:400;}
   .set-done-btn{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s;margin:0 auto;}
   .set-done-btn.done{background:#27ae60;border-color:#27ae60;}
   .set-row.done .set-nr{background:#e8f8f0;color:#27ae60;}
   .set-row.done .set-input{background:#f0fff4;border-color:#a8e6c0;color:#1e8449;}
+  .sug-chip{display:inline-block;font-weight:700;color:#2471a3;}
+  .sug-chip.up{color:#1e8449;}
+  .last-text{font-size:11px;color:var(--muted);margin:2px 0 4px;}
+  .sug-text{font-size:11px;color:#2471a3;background:#eef5fb;border-radius:6px;padding:5px 8px;margin-bottom:8px;line-height:1.4;}
+  .sug-text.up{color:#1e8449;background:#e8f8f0;font-weight:700;}
+  .plan-info{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:12px;line-height:1.5;color:var(--text);}
+  .plan-info b{font-weight:700;}
   .notes-text{font-size:11px;color:#e67e22;background:#fef9f0;border-radius:6px;padding:5px 8px;margin-top:4px;}
   .usernote-wrap{margin-top:8px;}
   .usernote-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
@@ -278,71 +285,66 @@
 <script>
 // ─── PLAN DATA ───────────────────────────────────────────────
 const PLAN = [
-  { key:'pushA', title:'PUSH A', subtitle:'Brust & Trizeps', type:'push', emoji:'🔴',
+  // ── v4 (Okt 2026): 5×/Woche, 7 Übungen, gleiches Gewicht pro Satz (doppelte Progression) ──
+  { key:'pushA', title:'PUSH A', subtitle:'Brust-Fokus', type:'push', emoji:'🔴',
     exercises:[
-      {id:'pA1', name:'Brustpresse (Maschine)',           sets:4,reps:'10–12',rest:90, notes:'letztes steigern'},
-      {id:'pA2', name:'Butterfly / Pec Deck (A02)',       sets:4,reps:'12–15',rest:75, notes:'Brust am Endpunkt zusammenkneifen'},
-      {id:'pA4', name:'Seitheben (Maschine)',             sets:4,reps:'15–20',rest:60, notes:'4 Sek. absenken'},
-      {id:'pA7', name:'Butterfly Reverse',                sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
-      {id:'pA5', name:'Trizepsmaschine',                  sets:4,reps:'12–15',rest:60, notes:'Ellbogen fixiert'},
-      {id:'pA3', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'2×12,5 kg', floorUp:true},
-      {id:'pA6', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60},
-      {id:'pA8', name:'Kabel Overhead Extension',        sets:3,reps:'12–15',rest:60, notes:'langer Trizepskopf'},
+      {id:'pa1', name:'Brustpresse (Maschine)',           sets:4,reps:'8–12', rest:90, notes:'alle Sätze gleiches Gewicht'},
+      {id:'pa2', name:'Butterfly / Pec Deck (A02)',       sets:3,reps:'10–15',rest:75, notes:'Brust am Endpunkt zusammenkneifen'},
+      {id:'pa3', name:'Seitheben (Maschine)',             sets:3,reps:'12–15',rest:60, notes:'3–4 Sek. absenken'},
+      {id:'pa4', name:'Butterfly Reverse',                sets:3,reps:'12–15',rest:60, notes:'hintere Schulter'},
+      {id:'pa5', name:'Trizepsmaschine',                  sets:3,reps:'10–12',rest:60, notes:'Ellbogen fixiert'},
+      {id:'pa6', name:'Brustpresse liegend (KH)',         sets:3,reps:'10–12',rest:75, notes:'Gewicht = pro Hantel', floorUp:true},
+      {id:'pa7', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60, notes:'Ellbogen am Körper'},
     ]},
   { key:'pullA', title:'PULL A', subtitle:'Rücken & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
-      {id:'plA7', name:'Klimmzüge mit Unterstützung (B04)', sets:4,reps:'8–12', rest:90, notes:'volle Streckung unten'},
-      {id:'plA1', name:'Latzug (B02)',                    sets:4,reps:'10–12',rest:75, notes:'Schulterblätter zusammenziehen'},
-      {id:'plA2', name:'Ruderzugmaschine (B01)',           sets:4,reps:'10–12',rest:75, notes:'letztes steigern'},
-      {id:'plA3', name:'Seitenrunterdrücken (Maschine)',  sets:4,reps:'12–15',rest:60},
-      {id:'plA4', name:'Überzugmaschine (B21)',           sets:3,reps:'12–15',rest:60},
-      {id:'plA8', name:'Butterfly Reverse',               sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
-      {id:'plA5', name:'Bizepsmaschine',                  sets:4,reps:'10–12',rest:60, notes:'letzter Satz: bis Versagen'},
-      {id:'plA6', name:'Kabel-Bizeps-Curls',             sets:3,reps:'12–15',rest:60, notes:'volle Kontraktion', floorUp:true},
+      {id:'qa1', name:'Klimmzüge (B04 / Stange)',         sets:4,reps:'8–12', rest:90, load:'level', notes:'Level 1 = Gerät normal · 2 = Gerät, 4 Sek. absenken + oben halten · 3 = freie Stange (oder Negative: hochspringen, 4–5 Sek. absenken)'},
+      {id:'qa2', name:'Ruderzugmaschine (B01)',           sets:4,reps:'8–12', rest:75, notes:'Schulterblätter zusammenziehen'},
+      {id:'qa3', name:'Latzug (B02)',                     sets:3,reps:'8–12', rest:75},
+      {id:'qa4', name:'Seitenrunterdrücken (Maschine)',  sets:3,reps:'10–12',rest:60},
+      {id:'qa5', name:'Überzugmaschine (B21)',            sets:3,reps:'10–15',rest:60},
+      {id:'qa6', name:'Bizepsmaschine',                   sets:3,reps:'8–12', rest:60, notes:'kontrolliert absenken'},
+      {id:'qa7', name:'Kabel-Bizeps-Curls',              sets:3,reps:'10–15',rest:60, notes:'volle Kontraktion', floorUp:true},
     ]},
-  { key:'legsA', title:'BEINE A', subtitle:'Quadrizeps-Fokus', type:'legs', emoji:'🟣',
+  { key:'legsA', title:'BEINE A', subtitle:'Schwer · Kreuzheben & Beinpresse', type:'legs', emoji:'🟣',
     exercises:[
-      {id:'lA2', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'2×15 kg, volle Tiefe'},
-      {id:'lA1', name:'Beinpresse (E01)',                 sets:4,reps:'10–12',rest:90, notes:'letztes steigern', floorDown:true},
-      {id:'lA3', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'oben 1 Sek. halten'},
-      {id:'lA4', name:'Beinpresse einbeinig (E01)',       sets:3,reps:'10/Bein',rest:75, notes:'ein Bein mittig auf Plattform, anderes zur Seite'},
-      {id:'lA7', name:'Rückseite Beine (E05)',            sets:3,reps:'12–15',rest:60, notes:'Ferse Richtung Gesäß'},
-      {id:'lA5', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
-      {id:'lA8', name:'Adduktion (E02)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
-      {id:'lA6', name:'Wadenmaschine',                    sets:4,reps:'15–20',rest:45, notes:'vollen Bewegungsradius nutzen'},
+      {id:'la1', name:'Rumänisches Kreuzheben (Langhantel)', sets:3,reps:'10–12',rest:90, notes:'Vorher 1 Aufwärmsatz mit leerer Stange (10 Wdh.). Knie leicht gebeugt, Rücken gerade, Hüfte nach hinten, Stange nah am Bein bis knapp unter die Knie. Gewicht = gesamt inkl. Stange.', startUp:true},
+      {id:'la2', name:'Beinpresse (E01)',                 sets:4,reps:'8–12', rest:90, notes:'nach dem Kreuzheben evtl. etwas weniger als sonst – normal', floorDown:true},
+      {id:'la3', name:'Beinstrecker (E04)',               sets:3,reps:'12–15',rest:60, notes:'oben 1 Sek. halten'},
+      {id:'la4', name:'Rückseite Beine (E05)',            sets:3,reps:'10–15',rest:60, notes:'Ferse Richtung Gesäß'},
+      {id:'la5', name:'Abduktion (E03)',                  sets:3,reps:'15–20',rest:60},
+      {id:'la6', name:'Adduktion (E02)',                  sets:3,reps:'15–20',rest:60},
+      {id:'la7', name:'Waden (E07)',                      sets:4,reps:'12–15',rest:45, notes:'vollen Bewegungsradius nutzen'},
     ]},
-  { key:'pushB', title:'PUSH B', subtitle:'Schulter & Trizeps', type:'push', emoji:'🔴',
+  { key:'pushB', title:'PUSH B', subtitle:'Schulter-Fokus', type:'push', emoji:'🔴',
     exercises:[
-      {id:'pB7', name:'Butterfly / Pec Deck (A02)',       sets:3,reps:'15–20',rest:60, notes:'höhere Wdh. als Push A'},
-      {id:'pB1', name:'Seitheben (Maschine)',             sets:4,reps:'15–20',rest:60, notes:'4 Sek. absenken'},
-      {id:'pB2', name:'Butterfly Reverse',                sets:4,reps:'15–20',rest:60, notes:'volle Kontraktion'},
-      {id:'pB3', name:'Seitenrunterdrücken (Maschine)',   sets:3,reps:'12–15',rest:60},
-      {id:'pB4', name:'Trizepsmaschine',                  sets:4,reps:'12–15',rest:60},
-      {id:'pB6', name:'Brustpresse liegend (KH)',         sets:3,reps:'12–15',rest:75, notes:'2×12,5 kg', floorUp:true},
-      {id:'pB5', name:'Kabel Overhead Extension',        sets:3,reps:'12–15',rest:60, notes:'langer Trizepskopf'},
-      {id:'pB8', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60, notes:'Ellbogen am Körper'},
+      {id:'pb1', name:'Seitheben (Maschine)',             sets:4,reps:'12–15',rest:60, notes:'3–4 Sek. absenken'},
+      {id:'pb2', name:'Brustpresse (Maschine)',           sets:3,reps:'10–12',rest:90},
+      {id:'pb3', name:'Butterfly / Pec Deck (A02)',       sets:3,reps:'12–15',rest:60},
+      {id:'pb4', name:'Butterfly Reverse',                sets:3,reps:'12–15',rest:60, notes:'hintere Schulter'},
+      {id:'pb5', name:'Trizepsmaschine',                  sets:3,reps:'12–15',rest:60},
+      {id:'pb6', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60, notes:'Ellbogen am Körper', floorUp:true},
+      {id:'pb7', name:'Kabel-Kickbacks (einarmig)',      sets:3,reps:'12–15',rest:45, notes:'pro Arm · leicht vorgebeugt, Oberarm eng am Körper, Arm nach hinten strecken (langer Trizepskopf)'},
     ]},
-  { key:'pullB', title:'PULL B', subtitle:'Kraft & Bizeps', type:'pull', emoji:'🟢',
+  { key:'pullB', title:'PULL B', subtitle:'Rücken & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
-      {id:'plB1', name:'Klimmzüge mit Unterstützung (B04)',sets:4,reps:'8–10',rest:90, notes:'volle Streckung unten'},
-      {id:'plB2', name:'Latzug (B02)',                    sets:4,reps:'10–12',rest:75},
-      {id:'plB3', name:'Ruderzugmaschine (B01)',          sets:3,reps:'10–12',rest:75, notes:'letztes steigern'},
-      {id:'plB7', name:'Überzugmaschine (B21)',          sets:3,reps:'12–15',rest:60},
-      {id:'plB4', name:'Butterfly Reverse',               sets:3,reps:'15–20',rest:60, notes:'hintere Schulter'},
-      {id:'plB8', name:'Seitenrunterdrücken (Maschine)', sets:3,reps:'12–15',rest:60},
-      {id:'plB5', name:'Bizepsmaschine',                  sets:4,reps:'10–12',rest:60, notes:'letzter Satz: bis Versagen'},
-      {id:'plB6', name:'Kabel-Bizeps-21er',              sets:3,reps:'21',   rest:75, notes:'7 unten / 7 oben / 7 voll', floorUp:true},
+      {id:'qb1', name:'Latzug (B02)',                     sets:4,reps:'8–12', rest:75, notes:'Schulterblätter zusammenziehen'},
+      {id:'qb2', name:'Ruderzugmaschine (B01)',           sets:3,reps:'10–12',rest:75},
+      {id:'qb3', name:'Seitenrunterdrücken (Maschine)',  sets:3,reps:'10–12',rest:60},
+      {id:'qb4', name:'Überzugmaschine (B21)',            sets:3,reps:'10–15',rest:60},
+      {id:'qb5', name:'Butterfly Reverse',                sets:3,reps:'12–15',rest:60, notes:'hintere Schulter'},
+      {id:'qb6', name:'Bizepsmaschine',                   sets:3,reps:'10–12',rest:60},
+      {id:'qb7', name:'Kabel-Bizeps-21er',               sets:2,reps:'21',   rest:75, notes:'7 unten / 7 oben / 7 voll', floorUp:true},
     ]},
-  { key:'legsB', title:'BEINE B', subtitle:'Hamstrings & Gesäß', type:'legs', emoji:'🟣',
+  { key:'legsB', title:'BEINE B', subtitle:'Radfreundlich · Maschinen', type:'legs', emoji:'🟣',
     exercises:[
-      {id:'lB6', name:'Kniebeugen (Langhantel)',          sets:3,reps:'10–12',rest:90, notes:'2×15 kg'},
-      {id:'lB1', name:'Beinpresse (E01)',                 sets:4,reps:'12–15',rest:90, notes:'Füße höher = Hamstring', floorDown:true},
-      {id:'lB2', name:'Rückseite Beine (E05)',            sets:4,reps:'12–15',rest:75, notes:'letztes steigern'},
-      {id:'lB7', name:'Beinpresse einbeinig (E01)',       sets:3,reps:'10/Bein',rest:75, notes:'Gesäß aktivieren'},
-      {id:'lB8', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60, notes:'Quadrizeps-Balance'},
-      {id:'lB3', name:'Adduktion (E02)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
-      {id:'lB4', name:'Abduktion (E03)',                  sets:4,reps:'15–20',rest:60, notes:'letztes steigern'},
-      {id:'lB5', name:'Waden (E07)',                      sets:4,reps:'15–20',rest:45, notes:'vollen Bewegungsradius nutzen'},
+      {id:'lb1', name:'Beinpresse (E01)',                 sets:3,reps:'12–15',rest:75, notes:'leichter als Beine A'},
+      {id:'lb2', name:'Beinpresse einbeinig (E01)',       sets:3,reps:'10/Bein',rest:75, notes:'ein Bein mittig auf Plattform, anderes zur Seite'},
+      {id:'lb3', name:'Rückseite Beine (E05)',            sets:4,reps:'10–12',rest:60},
+      {id:'lb4', name:'Beinstrecker (E04)',               sets:3,reps:'15–20',rest:60},
+      {id:'lb5', name:'Adduktion (E02)',                  sets:3,reps:'15–20',rest:60},
+      {id:'lb6', name:'Abduktion (E03)',                  sets:3,reps:'15–20',rest:60},
+      {id:'lb7', name:'Waden (E07)',                      sets:4,reps:'15–20',rest:45, notes:'vollen Bewegungsradius nutzen'},
     ]},
   // ── URLAUBSMODUS · 15 Min. taeglich, ohne Geraete (Hotelzimmer, Stuhl/Handtuch) ──
   { key:'urlPush', title:'URLAUB PUSH', subtitle:'15 Min · Brust, Schulter, Trizeps', type:'push', emoji:'🔴', vac:true,
@@ -377,6 +379,60 @@ const PLAN = [
   { key:'rest', title:'PAUSE', subtitle:'Regeneration', type:'rest', emoji:'💤', exercises:[] }
 ];
 
+// Alte v3-Übungen: nur für die Zuordnung der bisherigen Historie (Vorschläge, Report)
+const LEGACY_EX = [
+  ['pushA','pA1','Brustpresse (Maschine)'],
+  ['pushA','pA2','Butterfly / Pec Deck (A02)'],
+  ['pushA','pA4','Seitheben (Maschine)'],
+  ['pushA','pA7','Butterfly Reverse'],
+  ['pushA','pA5','Trizepsmaschine'],
+  ['pushA','pA3','Brustpresse liegend (KH)'],
+  ['pushA','pA6','Kabel Trizeps-Pushdown (Seil)'],
+  ['pushA','pA8','Kabel Overhead Extension'],
+  ['pullA','plA7','Klimmzüge mit Unterstützung (B04)'],
+  ['pullA','plA1','Latzug (B02)'],
+  ['pullA','plA2','Ruderzugmaschine (B01)'],
+  ['pullA','plA3','Seitenrunterdrücken (Maschine)'],
+  ['pullA','plA4','Überzugmaschine (B21)'],
+  ['pullA','plA8','Butterfly Reverse'],
+  ['pullA','plA5','Bizepsmaschine'],
+  ['pullA','plA6','Kabel-Bizeps-Curls'],
+  ['legsA','lA2','Kniebeugen (Langhantel)'],
+  ['legsA','lA1','Beinpresse (E01)'],
+  ['legsA','lA3','Beinstrecker (E04)'],
+  ['legsA','lA4','Beinpresse einbeinig (E01)'],
+  ['legsA','lA7','Rückseite Beine (E05)'],
+  ['legsA','lA5','Abduktion (E03)'],
+  ['legsA','lA8','Adduktion (E02)'],
+  ['legsA','lA6','Wadenmaschine'],
+  ['pushB','pB7','Butterfly / Pec Deck (A02)'],
+  ['pushB','pB1','Seitheben (Maschine)'],
+  ['pushB','pB2','Butterfly Reverse'],
+  ['pushB','pB3','Seitenrunterdrücken (Maschine)'],
+  ['pushB','pB4','Trizepsmaschine'],
+  ['pushB','pB6','Brustpresse liegend (KH)'],
+  ['pushB','pB5','Kabel Overhead Extension'],
+  ['pushB','pB8','Kabel Trizeps-Pushdown (Seil)'],
+  ['pullB','plB1','Klimmzüge mit Unterstützung (B04)'],
+  ['pullB','plB2','Latzug (B02)'],
+  ['pullB','plB3','Ruderzugmaschine (B01)'],
+  ['pullB','plB7','Überzugmaschine (B21)'],
+  ['pullB','plB4','Butterfly Reverse'],
+  ['pullB','plB8','Seitenrunterdrücken (Maschine)'],
+  ['pullB','plB5','Bizepsmaschine'],
+  ['pullB','plB6','Kabel-Bizeps-21er'],
+  ['legsB','lB6','Kniebeugen (Langhantel)'],
+  ['legsB','lB1','Beinpresse (E01)'],
+  ['legsB','lB2','Rückseite Beine (E05)'],
+  ['legsB','lB7','Beinpresse einbeinig (E01)'],
+  ['legsB','lB8','Beinstrecker (E04)'],
+  ['legsB','lB3','Adduktion (E02)'],
+  ['legsB','lB4','Abduktion (E03)'],
+  ['legsB','lB5','Waden (E07)']
+];
+// Gleiche Maschine, anderer Name in v3
+const NAME_ALIASES = {'Wadenmaschine':'Waden (E07)'};
+
 const WARMUP_MACHINES = [
   {id:'bike',  emoji:'🚴', label:'Fahrrad'},
   {id:'cross', emoji:'🏃', label:'Crosstrainer'},
@@ -385,7 +441,7 @@ const WARMUP_MACHINES = [
 
 const TYPE_COLORS = {push:'#c0392b',pull:'#1e8449',legs:'#7d3c98',mob:'#16a085',rest:'#7f8c8d'};
 const MET = {push:4.5,pull:4.0,legs:5.5,mob:2.5,rest:2.0};
-const SK = 'tp_v3_';
+const SK = 'tp_v4_';
 
 // ─── STATE ───────────────────────────────────────────────────
 let activeWorkoutKey = null;
@@ -490,13 +546,33 @@ function getRecommendation(){
   const log=getWorkoutLog().filter(e=>inMode(e.key));
   const firstKey=vac?'urlPush':'pushA';
   if(!log.length) return {key:firstKey,reason:vac?'Urlaubsstart – los geht es mit Push':'Noch kein Eintrag – starte mit Push A'};
-  const rotation=vac
-    ? {urlPush:'urlPull',urlPull:'urlLegs',urlLegs:'urlMob',urlMob:'urlPush'}
-    : {pushA:'pullA',pullA:'legsA',legsA:'pushB',pushB:'pullB',pullB:'legsB',legsB:'pushA'};
   const last=log[0];
-  const nextKey=rotation[last.key];
   const lastPlan=PLAN.find(p=>p.key===last.key);
   const ds=daysSince(last.date);
+  if(!vac){
+    // Studio: strikt Push → Pull → Beine, A/B im Wechsel.
+    // Wurde ein Typ in den letzten 3 Einheiten ausgelassen (z. B. Beine wegen Radtag), ist er als Nächstes dran.
+    const typeOf=k=>PLAN.find(p=>p.key===k)?.type;
+    const order=['push','pull','legs'];
+    const label={push:'Push',pull:'Pull',legs:'Beine'};
+    let nextType=order[(order.indexOf(typeOf(last.key))+1)%3];
+    const recent=new Set(log.slice(0,3).map(e=>typeOf(e.key)));
+    const missing=order.filter(t=>!recent.has(t));
+    let overdue=false;
+    if(missing.length&&!missing.includes(nextType)){nextType=missing[0];overdue=true;}
+    const lastOfType=log.find(e=>typeOf(e.key)===nextType);
+    const variant=lastOfType&&lastOfType.key.endsWith('A')?'B':'A';
+    const nk=nextType+variant;
+    const np=PLAN.find(p=>p.key===nk);
+    if(overdue){
+      const n=log.findIndex(e=>typeOf(e.key)===nextType);
+      return {key:nk,reason:`${label[nextType]} ${nextType==='legs'?'sind':'ist'} überfällig${n>0?` – zuletzt vor ${n} Einheiten`:''} → ${np?.title}`};
+    }
+    const dl=ds===0?'heute':ds===1?'gestern':`vor ${ds} Tagen`;
+    return {key:nk,reason:`Nach ${lastPlan?.title} (${dl}) → ${np?.title}`};
+  }
+  const rotation={urlPush:'urlPull',urlPull:'urlLegs',urlLegs:'urlMob',urlMob:'urlPush'};
+  const nextKey=rotation[last.key];
   if(nextKey){
     const nextPlan=PLAN.find(p=>p.key===nextKey);
     const dayLabel=ds===0?'heute':ds===1?'gestern':`vor ${ds} Tagen`;
@@ -517,6 +593,8 @@ function getWorkoutProgress(workoutKey){
 function selectWorkout(key){
   const w=PLAN.find(p=>p.key===key);
   if(w&&w.type!=='rest'){
+    // Neuer Trainingstag für diese Einheit → Werte & Haken der letzten Einheit leeren
+    if(getSessDate(key)!==getTodayStr()) clearSessionState(key);
     const {done,total}=getWorkoutProgress(key);
     if(total>0&&done===total){
       activeWorkoutKey=key;viewMode='day';openEx.clear();render();window.scrollTo(0,0);
@@ -561,6 +639,7 @@ function startSelectedWorkout(){
   if(!sessionSelection.size){showToast('Mindestens eine Übung wählen.');return;}
   // Auswahl in Skip-Status übersetzen: nicht gewählt = ausgelassen
   w.exercises.forEach(ex=>setExSkipped(w.key,ex.id,!sessionSelection.has(ex.id)));
+  setSessDate(w.key);
   viewMode='day';openEx.clear();render();window.scrollTo(0,0);
 }
 function resetDoneOnly(key){
@@ -576,37 +655,120 @@ function resetDoneOnly(key){
 function goBackToPicker(){ activeWorkoutKey=null;viewMode='day';render();window.scrollTo(0,0); }
 
 // ─── HISTORY ─────────────────────────────────────────────────
-const NAME_TO_IDS={};
-PLAN.forEach(w=>w.exercises.forEach(ex=>{
-  if(!NAME_TO_IDS[ex.name]) NAME_TO_IDS[ex.name]=[];
-  NAME_TO_IDS[ex.name].push({dk:w.key,eid:ex.id});
-}));
+// Zuordnung (Einheit, Übungs-ID) → Übungsname – aktueller Plan + alte v3-IDs,
+// damit die bisherige Historie für Vorschläge und Report weiter zählt.
+const PAIR_NAME={};
+function canonName(n){ return NAME_ALIASES[n]||n; }
+LEGACY_EX.forEach(([dk,eid,name])=>{PAIR_NAME[dk+'|'+eid]=canonName(name);});
+PLAN.forEach(w=>w.exercises.forEach(ex=>{PAIR_NAME[w.key+'|'+ex.id]=canonName(ex.name);}));
+function pairName(dk,eid){ return PAIR_NAME[dk+'|'+eid]||''; }
 
-function getLastHistByName(exName,si,field){
+// Historie einmal einlesen und cachen: name → date → setIdx → {kg,reps}
+let _histCache=null;
+function invalidateHist(){ _histCache=null; }
+function histIndex(){
+  if(_histCache) return _histCache;
+  const idx={};
   try{
-    const pairs=NAME_TO_IDS[exName]||[];
-    let bestDate='',bestVal='';
-    for(const k of Object.keys(localStorage)){
-      if(!k.startsWith('tp_hist_')||!k.endsWith('_'+field))continue;
-      const rest=k.slice('tp_hist_'.length);
-      const dateEnd=rest.indexOf('_');
-      const date=rest.slice(0,dateEnd);
-      const remainder=rest.slice(dateEnd+1,rest.length-field.length-1);
-      const lastUnder=remainder.lastIndexOf('_');
-      const setIdx=parseInt(remainder.slice(lastUnder+1));
-      const dkEid=remainder.slice(0,lastUnder);
-      const firstUnder=dkEid.indexOf('_');
-      const dk=dkEid.slice(0,firstUnder);
-      const eid=dkEid.slice(firstUnder+1);
-      if(setIdx!==si)continue;
-      if(!pairs.some(p=>p.dk===dk&&p.eid===eid))continue;
-      if(date>bestDate){bestDate=date;bestVal=localStorage.getItem(k)||'';}
-    }
-    return bestVal;
-  }catch(e){return '';}
+    Object.keys(localStorage).forEach(k=>{
+      if(!k.startsWith('tp_hist_'))return;
+      const parts=k.split('_'); if(parts.length!==7)return;
+      const date=parts[2],dk=parts[3],eid=parts[4],si=parseInt(parts[5]),f=parts[6];
+      if(f!=='kg'&&f!=='reps')return;
+      const name=pairName(dk,eid); if(!name||isNaN(si))return;
+      const v=parseFloat(localStorage.getItem(k)); if(isNaN(v))return;
+      ((idx[name]=idx[name]||{})[date]=idx[name][date]||{});
+      (idx[name][date][si]=idx[name][date][si]||{})[f]=v;
+    });
+  }catch(e){}
+  _histCache=idx; return idx;
 }
-function loadSetWithFallback(dk,ei,exName,si,field){
-  return loadSet(dk,ei,si,field)||getLastHistByName(exName,si,field);
+// Letzte Einheit VOR heute für eine Übung: {date, sets:[{kg,reps}]}
+function lastSessionOf(name){
+  const byDate=histIndex()[canonName(name)]; if(!byDate) return null;
+  const today=getTodayStr();
+  const dates=Object.keys(byDate).filter(d=>d<today).sort();
+  if(!dates.length) return null;
+  const d=dates[dates.length-1];
+  const sets=Object.keys(byDate[d]).map(Number).sort((a,b)=>a-b).map(i=>byDate[d][i]);
+  return {date:d,sets};
+}
+function parseRepRange(r){
+  const m=String(r||'').match(/(\d+)\s*[–-]\s*(\d+)/);
+  if(m) return {lo:+m[1],hi:+m[2]};
+  const n=String(r||'').match(/(\d+)/);
+  return n?{lo:+n[1],hi:+n[1]}:null;
+}
+// Gewichtsstufe aus der Historie ableiten (z. B. Beinpresse 8 kg, Seitenrunterdrücken 4 kg)
+function stepFor(name,kg){
+  const byDate=histIndex()[canonName(name)]||{};
+  const datesPer={};
+  Object.entries(byDate).forEach(([d,sets])=>Object.values(sets).forEach(s=>{if(s.kg>0)(datesPer[s.kg]=datesPer[s.kg]||new Set()).add(d);}));
+  let vals=Object.keys(datesPer).map(Number).filter(v=>datesPer[v].size>=2);
+  if(vals.length<2) vals=Object.keys(datesPer).map(Number);
+  vals.sort((a,b)=>a-b);
+  const cnt={};
+  for(let i=1;i<vals.length;i++){const d=Math.round((vals[i]-vals[i-1])*10)/10;if(d>=2&&d<=10)cnt[d]=(cnt[d]||0)+1;}
+  const ds=Object.keys(cnt).map(Number).sort((a,b)=>(cnt[b]-cnt[a])||(a-b));
+  return ds.length?ds[0]:(kg<25?2.5:5);
+}
+// Vorschlag für heute (doppelte Progression):
+// Zielgewicht = schwerstes Gewicht, mit dem letztes Mal das untere Ende der Spanne geschafft wurde.
+// Haben ALLE Sätze mit diesem Gewicht das obere Ende erreicht → eine Stufe steigern.
+function getSuggestion(ex){
+  const load=ex.load||'kg';
+  const last=lastSessionOf(ex.name);
+  if(!last) return null;
+  if(load!=='kg') return {last,target:null,up:false};
+  const range=parseRepRange(ex.reps);
+  const withKg=last.sets.filter(s=>s.kg>0);
+  if(!withKg.length) return {last,target:null,up:false};
+  let target;
+  if(range){
+    const ok=withKg.filter(s=>(s.reps||0)>=range.lo);
+    target=ok.length?Math.max(...ok.map(s=>s.kg)):Math.min(...withKg.map(s=>s.kg));
+  } else target=Math.max(...withKg.map(s=>s.kg));
+  let up=false;
+  if(range&&withKg.length>=2&&withKg.every(s=>s.kg===target&&(s.reps||0)>=range.hi)){
+    target=Math.round((target+stepFor(ex.name,target))*10)/10; up=true;
+  }
+  return {last,target,up,range};
+}
+// Platzhalter (grau) für ein Satzfeld: Gewicht = Ziel, Wdh. = letztes Mal (bzw. unteres Ende nach Steigerung)
+function placeholderFor(ex,si){
+  const sug=getSuggestion(ex);
+  const load=ex.load||'kg';
+  let kg='',reps='';
+  if(sug){
+    const ls=sug.last.sets[si]||sug.last.sets[sug.last.sets.length-1]||{};
+    if(load==='kg'&&sug.target!=null) kg=String(sug.target);
+    if(load==='level'&&ls.kg>0) kg=String(ls.kg);
+    // Wdh.-Vorschlag nur übernehmen, wenn letztes Mal mit demselben Gewicht – sonst unteres Ende der Spanne
+    if(load==='kg'&&sug.range&&(sug.up||ls.kg!==sug.target)) reps=String(sug.range.lo);
+    else if(ls.reps>0) reps=String(ls.reps);
+  }
+  return {kg,reps};
+}
+function fmtKg(v){ return Number(v).toLocaleString('de-DE',{maximumFractionDigits:1}); }
+function fmtShortDate(d){ const x=new Date(d+'T12:00:00'); return x.toLocaleDateString('de-DE',{day:'numeric',month:'numeric'}); }
+function lastSetsText(ex,sug){
+  if(!sug) return '';
+  const load=ex.load||'kg';
+  return sug.last.sets.map(s=>{
+    const r=s.reps>0?s.reps:'?';
+    if(load==='none') return r;
+    if(load==='level') return (s.kg>0?'Lv'+s.kg:'')+'×'+r;
+    return (s.kg>0?s.kg:'?')+'×'+r;
+  }).join(' · ');
+}
+// Neue Einheit an einem neuen Tag → Eingaben/Haken der letzten Einheit leeren,
+// damit nur echte Werte von heute im Protokoll landen.
+function getSessDate(dk){ try{return localStorage.getItem(SK+dk+'_sessdate')||'';}catch(e){return '';} }
+function setSessDate(dk){ try{localStorage.setItem(SK+dk+'_sessdate',getTodayStr());}catch(e){} }
+function clearSessionState(dk){
+  try{
+    Object.keys(localStorage).filter(k=>k.startsWith(SK+dk+'_')).forEach(k=>localStorage.removeItem(k));
+  }catch(e){}
 }
 function saveSetToHistory(dk,ei,si,kg,reps){
   try{
@@ -615,6 +777,7 @@ function saveSetToHistory(dk,ei,si,kg,reps){
     if(kg) localStorage.setItem(base+'_kg',kg);
     if(reps) localStorage.setItem(base+'_reps',reps);
   }catch(e){}
+  invalidateHist();
 }
 function saveSessionDone(dayKey){
   try{
@@ -837,7 +1000,11 @@ function renderPicker(el){
 
 function renderOverview(el){
   const today=getTodayStr();
-  el.innerHTML='<div class="week-overview active" id="wo"></div>';
+  el.innerHTML=(isVacation()?'':`<div class="plan-info">
+      <b>Plan v4</b> · 5× pro Woche · Reihenfolge <b>Push → Pull → Beine</b>, A/B im Wechsel. Beine nicht auslassen – an Radtagen tauschen und nachholen (die Empfehlung erinnert dich).<br>
+      <b>Steigern:</b> alle Sätze mit gleichem Gewicht. Schaffst du in allen Sätzen das obere Ende der Spanne, zeigt die App beim nächsten Mal ⬆️ mit dem neuen Gewicht.<br>
+      <b>Graue Werte</b> = Vorschlag. Echte Werte eintragen; beim Abhaken eines leeren Feldes wird der Vorschlag übernommen.
+    </div>`)+'<div class="week-overview active" id="wo"></div>';
   const ov=document.getElementById('wo');
   activePlan().forEach(w=>{
     const {done,total}=getWorkoutProgress(w.key);
@@ -937,6 +1104,10 @@ function renderExercises(w,color){
       const d=document.createElement('div');d.className='superset-divider';
       d.innerHTML='<span>SUPERSATZ</span>';list.appendChild(d);
     }
+    if(ex.startUp){
+      const d=document.createElement('div');d.className='floor-divider floor-up';
+      d.innerHTML='<span>▲ Start oben — Langhantel</span>';list.appendChild(d);
+    }
     if(ex.floorUp){
       const d=document.createElement('div');d.className='floor-divider floor-up';
       d.innerHTML='<span>▲ Wechsel nach oben — Freihanteln &amp; Kabelzug</span>';list.appendChild(d);
@@ -952,11 +1123,15 @@ function renderExercises(w,color){
     card.id='card_'+ex.id;
     const nc=skipped?'#bbb':ex.superset?'#27ae60':color;
     const hasNote=getUserNote(w.key,ex.id)!=='';
+    const sug=getSuggestion(ex);
+    const chip=sug&&sug.target!=null
+      ? (sug.up?`<span class="sug-chip up">⬆️ ${fmtKg(sug.target)} kg</span>`:`<span class="sug-chip">🎯 ${fmtKg(sug.target)} kg</span>`)
+      : '';
     card.innerHTML=`<div class="ex-header">
       <div class="ex-nr" style="background:${nc}">${idx+1}</div>
       <div class="ex-info" onclick="toggleEx('${ex.id}')">
         <div class="ex-name">${ex.name}${hasNote?' <span title="Notiz vorhanden">📝</span>':''}</div>
-        <div class="ex-meta">${ex.sets} × ${ex.reps}${ex.rest?' · '+fmtRest(ex.rest)+' Pause':''}</div>
+        <div class="ex-meta">${ex.sets} × ${ex.reps}${ex.rest?' · '+fmtRest(ex.rest)+' Pause':''}${chip?' · '+chip:''}</div>
       </div>
       <div class="ex-status">${allDone?'✅':skipped?'⏭':''}</div>
       <button class="skip-ex-btn ${skipped?'active':'inactive'}" onclick="toggleExSkip('${w.key}','${ex.id}')">${skipped?'↩ Zurück':'⏭ Skip'}</button>
@@ -969,19 +1144,26 @@ function renderExercises(w,color){
       const sd=document.createElement('div');sd.className='ex-sets';sd.id='exSets_'+ex.id;
       const loadMode=ex.load||'kg';
       const loadLabel=loadMode==='level'?'Level':loadMode==='none'?'–':'Kg';
-      sd.innerHTML='<div class="sets-header"><span>Satz</span><span>'+loadLabel+'</span><span>Wdh.</span><span>✓</span></div>';
+      let lastHtml='';
+      if(sug){
+        lastHtml+=`<div class="last-text">Letztes Mal (${fmtShortDate(sug.last.date)}): ${lastSetsText(ex,sug)}</div>`;
+        if(sug.up) lastHtml+=`<div class="sug-text up">⬆️ Alle Sätze am oberen Ende geschafft – heute ${fmtKg(sug.target)} kg in allen Sätzen.</div>`;
+        else if(sug.target!=null) lastHtml+=`<div class="sug-text">🎯 Heute ${fmtKg(sug.target)} kg in allen Sätzen · Ziel ${ex.reps} Wdh. Oberes Ende in allen Sätzen → nächstes Mal steigern.</div>`;
+      }
+      sd.innerHTML=lastHtml+'<div class="sets-header"><span>Satz</span><span>'+loadLabel+'</span><span>Wdh.</span><span>✓</span></div>';
       for(let s=0;s<ex.sets;s++){
         const done=isDone(w.key,ex.id,s);
+        const ph=placeholderFor(ex,s);
         const row=document.createElement('div');
         row.className='set-row'+(done?' done':'');row.id=`row_${ex.id}_${s}`;
         const loadCell = loadMode==='none'
           ? '<div class="set-noload">·</div>'
-          : `<input class="set-input" type="number" inputmode="${loadMode==='level'?'numeric':'decimal'}" placeholder="${loadMode==='level'?'Lv':'–'}" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'kg')}" min="0" step="${loadMode==='level'?'1':'0.5'}"
+          : `<input class="set-input" id="kg_${ex.id}_${s}" type="number" inputmode="${loadMode==='level'?'numeric':'decimal'}" placeholder="${ph.kg||(loadMode==='level'?'Lv':'–')}" value="${loadSet(w.key,ex.id,s,'kg')}" min="0" step="${loadMode==='level'?'1':'0.5'}"
             oninput="saveSet('${w.key}','${ex.id}',${s},'kg',this.value)">`;
         row.innerHTML=`
           <div class="set-nr">${s+1}</div>
           ${loadCell}
-          <input class="set-input" type="number" inputmode="numeric" placeholder="–" value="${loadSetWithFallback(w.key,ex.id,ex.name,s,'reps')}" min="0"
+          <input class="set-input" id="reps_${ex.id}_${s}" type="number" inputmode="numeric" placeholder="${ph.reps||'–'}" value="${loadSet(w.key,ex.id,s,'reps')}" min="0"
             oninput="saveSet('${w.key}','${ex.id}',${s},'reps',this.value)">
           <button class="set-done-btn${done?' done':''}" id="doneBtn_${ex.id}_${s}" onclick="toggleSetDone('${w.key}','${ex.id}',${s},${ex.rest||0})">${done?'✓':''}</button>`;
         sd.appendChild(row);
@@ -1014,6 +1196,20 @@ function toggleSetDone(dk,ei,si,restSecs){
   const was=isDone(dk,ei,si);
   saveSet(dk,ei,si,'done',was?'0':'1');
   if(!was){
+    // Leere Felder beim Abhaken: grauen Vorschlag übernehmen und sichtbar eintragen.
+    const wex=PLAN.find(p=>p.key===dk)?.exercises.find(e=>e.id===ei);
+    if(wex){
+      const ph=placeholderFor(wex,si);
+      const load=wex.load||'kg';
+      if(load!=='none'&&!loadSet(dk,ei,si,'kg')&&ph.kg){
+        saveSet(dk,ei,si,'kg',ph.kg);
+        const i=document.getElementById('kg_'+ei+'_'+si); if(i) i.value=ph.kg;
+      }
+      if(!loadSet(dk,ei,si,'reps')&&ph.reps){
+        saveSet(dk,ei,si,'reps',ph.reps);
+        const i=document.getElementById('reps_'+ei+'_'+si); if(i) i.value=ph.reps;
+      }
+    }
     const kg=loadSet(dk,ei,si,'kg');
     const reps=loadSet(dk,ei,si,'reps');
     saveSetToHistory(dk,ei,si,kg,reps);
@@ -1174,11 +1370,12 @@ function confirmResetAll(){
   closeModal();
   try{
     Object.keys(localStorage).filter(k=>
-      k.startsWith(SK)||k.startsWith('tp_done_')||k.startsWith('tp_hist_')||
+      k.startsWith(SK)||k.startsWith('tp_v3_')||k.startsWith('tp_done_')||k.startsWith('tp_hist_')||
       k.startsWith('tp_kcal_')||k.startsWith('tp_sess_')||k.startsWith('tp_wu_')||
       k.startsWith('tp_note_')||k.startsWith('tp_dur')||k==='tp_bodyweight'
     ).forEach(k=>localStorage.removeItem(k));
   }catch(e){}
+  invalidateHist();
   activeWorkoutKey=null;openEx.clear();render();showToast('Alle Daten gelöscht.');
 }
 
@@ -1250,7 +1447,7 @@ function renderReport(){
       if(!k.startsWith('tp_hist_')||!k.endsWith('_kg'))return;
       const parts=k.split('_');if(parts.length<7)return;
       const date=parts[2],dk=parts[3],eid=parts[4];
-      const exKey=dk+'_'+eid;
+      const exKey=pairName(dk,eid)||(dk+'_'+eid);
       const kg=parseFloat(localStorage.getItem(k));
       if(isNaN(kg)||kg<=0)return;
       if(!progData[exKey])progData[exKey]={};
@@ -1261,7 +1458,10 @@ function renderReport(){
   Object.keys(progData).forEach(exKey=>{
     _progArrays[exKey]=Object.entries(progData[exKey]).map(([date,kg])=>({date,kg})).sort((a,b)=>a.date.localeCompare(b.date));
   });
-  const progKeys=Object.keys(_progArrays).filter(k=>_progArrays[k].length>0);
+  // Übungen des aktuellen Plans zuerst, dann ehemalige (alphabetisch)
+  const curNames=new Set();PLAN.forEach(w=>{if(!w.vac)w.exercises.forEach(ex=>curNames.add(canonName(ex.name)));});
+  const progKeys=Object.keys(_progArrays).filter(k=>_progArrays[k].length>0)
+    .sort((a,b)=>(curNames.has(b)-curNames.has(a))||a.localeCompare(b,'de'));
 
   let html='';
 
@@ -1325,12 +1525,10 @@ function renderReport(){
 
   // Progression
   if(progKeys.length>0){
-    const exNames={};
-    PLAN.forEach(w=>w.exercises.forEach(ex=>{exNames[w.key+'_'+ex.id]=ex.name;}));
     html+=`<div class="report-section">
       <h3>Gewichtsprogression</h3>
       <select class="ex-select" id="progSelect" onchange="updateProgChart(this.value)">
-        ${progKeys.map(k=>`<option value="${k}">${exNames[k]||k}</option>`).join('')}
+        ${progKeys.map(k=>`<option value="${escHtml(k)}">${escHtml(k)}${curNames.has(k)?'':' (früher)'}</option>`).join('')}
       </select>
       <div id="progChart"></div>
     </div>`;
@@ -1376,19 +1574,10 @@ function escHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt
 function formatAi(t){return '<div style="font-size:14px;line-height:1.55;white-space:pre-wrap;margin-bottom:6px">'+escHtml(t)+'</div>';}
 // Vorheriges (nicht heutiges) Maximalgewicht einer Übung – für Fortschritts-Kontext.
 function prevMaxKg(dk,eid){
-  try{
-    const today=getTodayStr();const byDate={};
-    Object.keys(localStorage).forEach(k=>{
-      if(!k.startsWith('tp_hist_')||!k.endsWith('_kg'))return;
-      const parts=k.split('_'); if(parts.length<7)return;
-      const date=parts[2],kdk=parts[3],keid=parts[4];
-      if(kdk!==dk||keid!==eid||date>=today)return;
-      const v=parseFloat(localStorage.getItem(k));if(isNaN(v))return;
-      if(!byDate[date]||v>byDate[date])byDate[date]=v;
-    });
-    const dates=Object.keys(byDate).sort();
-    return dates.length?byDate[dates[dates.length-1]]:null;
-  }catch(e){return null;}
+  const name=pairName(dk,eid); if(!name) return null;
+  const last=lastSessionOf(name); if(!last) return null;
+  const kgs=last.sets.map(x=>x.kg).filter(v=>v>0);
+  return kgs.length?Math.max(...kgs):null;
 }
 function buildSessionSummary(dk){
   const w=PLAN.find(p=>p.key===dk);if(!w)return null;
@@ -1444,6 +1633,14 @@ function buildAssessment(dk){
   }
   const streak=calcStreak(getAllSessions());
   if(streak>1) lines.push(`🔥 ${streak} Tage Streak — dranbleiben!`);
+  if(!w.vac){
+    const upNext=sum.uebungen.filter(e=>{
+      const r=parseRepRange(e.ziel); if(!r||e.saetze.length<2) return false;
+      const kgs=e.saetze.map(x=>parseFloat(x.kg));
+      return !kgs.some(isNaN)&&kgs.every(v=>v===kgs[0])&&e.saetze.every(x=>parseFloat(x.reps)>=r.hi);
+    }).map(e=>e.name);
+    if(upNext.length) lines.push(`⬆️ Nächstes Mal steigern: ${upNext.join(', ')}.`);
+  }
   if(sum.ausgelassen&&sum.ausgelassen.length) lines.push(`Ausgelassen: ${sum.ausgelassen.join(', ')}.`);
   const close=improved.length
     ? ['Starke Progression — weiter so! 🚀','Neue Bestmarken, top Arbeit! 🎉']
@@ -1496,6 +1693,7 @@ function applyImport(txt){
     const data=JSON.parse(txt);
     let count=0;
     Object.entries(data).forEach(([k,v])=>{if(k.startsWith('tp_')){localStorage.setItem(k,v);count++;}});
+    invalidateHist();
     closeModal();
     render();
     showToast('✅ '+count+' Einträge wiederhergestellt!');
