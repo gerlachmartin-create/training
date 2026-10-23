@@ -294,7 +294,7 @@ const PLAN = [
       {id:'pa4', name:'Butterfly Reverse',                sets:3,reps:'12–15',rest:60, notes:'hintere Schulter'},
       {id:'pa5', name:'Trizepsmaschine',                  sets:3,reps:'10–12',rest:60, notes:'Ellbogen fixiert'},
       {id:'pa6', name:'Brustpresse liegend (KH)',         sets:3,reps:'10–12',rest:75, notes:'Gewicht = pro Hantel', floorUp:true},
-      {id:'pa7', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60, notes:'Ellbogen am Körper'},
+      {id:'pa7', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'15–20',rest:60, notes:'Ellbogen am Körper'},
     ]},
   { key:'pullA', title:'PULL A', subtitle:'Rücken & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
@@ -304,7 +304,7 @@ const PLAN = [
       {id:'qa4', name:'Seitenrunterdrücken (Maschine)',  sets:3,reps:'10–12',rest:60},
       {id:'qa5', name:'Überzugmaschine (B21)',            sets:3,reps:'10–15',rest:60},
       {id:'qa6', name:'Bizepsmaschine',                   sets:3,reps:'8–12', rest:60, notes:'kontrolliert absenken'},
-      {id:'qa7', name:'Kabel-Bizeps-Curls',              sets:3,reps:'10–15',rest:60, notes:'volle Kontraktion', floorUp:true},
+      {id:'qa7', name:'Kabel-Bizeps-Curls',              sets:3,reps:'15–20',rest:60, notes:'volle Kontraktion', floorUp:true},
     ]},
   { key:'legsA', title:'BEINE A', subtitle:'Schwer · Kreuzheben & Beinpresse', type:'legs', emoji:'🟣',
     exercises:[
@@ -323,8 +323,8 @@ const PLAN = [
       {id:'pb3', name:'Butterfly / Pec Deck (A02)',       sets:3,reps:'12–15',rest:60},
       {id:'pb4', name:'Butterfly Reverse',                sets:3,reps:'12–15',rest:60, notes:'hintere Schulter'},
       {id:'pb5', name:'Trizepsmaschine',                  sets:3,reps:'12–15',rest:60},
-      {id:'pb6', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'12–15',rest:60, notes:'Ellbogen am Körper', floorUp:true},
-      {id:'pb7', name:'Kabel-Kickbacks (einarmig)',      sets:3,reps:'12–15',rest:45, notes:'pro Arm · leicht vorgebeugt, Oberarm eng am Körper, Arm nach hinten strecken (langer Trizepskopf)'},
+      {id:'pb6', name:'Kabel Trizeps-Pushdown (Seil)',   sets:3,reps:'15–20',rest:60, notes:'Ellbogen am Körper', floorUp:true},
+      {id:'pb7', name:'Kabel-Kickbacks (einarmig)',      sets:3,reps:'15–20',rest:45, notes:'pro Arm · leicht vorgebeugt, Oberarm eng am Körper, Arm nach hinten strecken (langer Trizepskopf)'},
     ]},
   { key:'pullB', title:'PULL B', subtitle:'Rücken & Bizeps', type:'pull', emoji:'🟢',
     exercises:[
@@ -336,7 +336,7 @@ const PLAN = [
       {id:'qb6', name:'Bizepsmaschine',                   sets:3,reps:'10–12',rest:60},
       {id:'qb7', name:'Kabel-Bizeps-21er',               sets:2,reps:'21',   rest:75, notes:'7 unten / 7 oben / 7 voll', floorUp:true},
     ]},
-  { key:'legsB', title:'BEINE B', subtitle:'Radfreundlich · Maschinen', type:'legs', emoji:'🟣',
+  { key:'legsB', title:'BEINE B', subtitle:'Optional · leichte Variante nach Radtagen', type:'legs', emoji:'🟣', optional:true,
     exercises:[
       {id:'lb1', name:'Beinpresse (E01)',                 sets:3,reps:'12–15',rest:75, notes:'leichter als Beine A'},
       {id:'lb2', name:'Beinpresse einbeinig (E01)',       sets:3,reps:'10/Bein',rest:75, notes:'ein Bein mittig auf Plattform, anderes zur Seite'},
@@ -561,7 +561,8 @@ function getRecommendation(){
     let overdue=false;
     if(missing.length&&!missing.includes(nextType)){nextType=missing[0];overdue=true;}
     const lastOfType=log.find(e=>typeOf(e.key)===nextType);
-    const variant=lastOfType&&lastOfType.key.endsWith('A')?'B':'A';
+    // Beine: immer Beine A – Beine B ist optional und nicht Teil der Rotation
+    const variant=nextType==='legs'?'A':(lastOfType&&lastOfType.key.endsWith('A')?'B':'A');
     const nk=nextType+variant;
     const np=PLAN.find(p=>p.key===nk);
     if(overdue){
@@ -972,7 +973,10 @@ function renderPicker(el){
       <div class="rec-arrow" style="color:${recColor}">›</div>
     </div>
     <div class="picker-heading">Alle Einheiten</div>`;
-  workouts.forEach(w=>{
+  const ordered=[...workouts.filter(w=>!w.optional),...workouts.filter(w=>w.optional)];
+  let optHead=false;
+  ordered.forEach(w=>{
+    if(w.optional&&!optHead){optHead=true;html+=`<div class="picker-heading">Optional</div>`;}
     const isRec=w.key===rec.key;
     const color=TYPE_COLORS[w.type];
     const lastDate=getLastDoneDate(w.key);
@@ -982,8 +986,8 @@ function renderPicker(el){
     const pct=total>0?Math.round(done/total*100):0;
     let badgeText,badgeColor;
     if(todayDone){badgeText=pct===100?'✓ Fertig':pct+'%';badgeColor=pct===100?'#27ae60':'#e67e22';}
-    else if(lastDate){badgeText=ds===0?'heute':ds===1?'gestern':`vor ${ds}d`;badgeColor=ds>6?'#e74c3c':color;}
-    else{badgeText='noch nie';badgeColor='#aaa';}
+    else if(lastDate){badgeText=ds===0?'heute':ds===1?'gestern':`vor ${ds}d`;badgeColor=(ds>6&&!w.optional)?'#e74c3c':color;}
+    else{badgeText=w.optional?'optional':'noch nie';badgeColor='#aaa';}
     html+=`
     <div class="picker-card${isRec?' recommended':''}" onclick="selectWorkout('${w.key}')" style="${isRec?`border-color:${color};background:${color}0d`:''}">
       <div class="picker-dot" style="background:${color}22">${w.emoji}</div>
@@ -1001,7 +1005,7 @@ function renderPicker(el){
 function renderOverview(el){
   const today=getTodayStr();
   el.innerHTML=(isVacation()?'':`<div class="plan-info">
-      <b>Plan v4</b> · 5× pro Woche · Reihenfolge <b>Push → Pull → Beine</b>, A/B im Wechsel. Beine nicht auslassen – an Radtagen tauschen und nachholen (die Empfehlung erinnert dich).<br>
+      <b>Plan v4</b> · 5× pro Woche · Reihenfolge <b>Push → Pull → Beine</b>, Push und Pull A/B im Wechsel, Beine immer A. <b>Beine B</b> ist optional (leichte Variante nach Radtagen) und zählt nicht zur Rotation. Beine nicht auslassen – die Empfehlung erinnert dich.<br>
       <b>Steigern:</b> alle Sätze mit gleichem Gewicht. Schaffst du in allen Sätzen das obere Ende der Spanne, zeigt die App beim nächsten Mal ⬆️ mit dem neuen Gewicht.<br>
       <b>Graue Werte</b> = Vorschlag. Echte Werte eintragen; beim Abhaken eines leeren Feldes wird der Vorschlag übernommen.
     </div>`)+'<div class="week-overview active" id="wo"></div>';
